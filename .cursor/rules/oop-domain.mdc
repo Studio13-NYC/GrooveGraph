@@ -1,0 +1,14 @@
+---
+description: OOP domain layer — entities and relationships as classes, one file per type
+globs: src/domain/**/*.ts
+alwaysApply: false
+---
+
+# Domain Layer OOP Standards
+
+- **Model as classes**: Every entity (Artist, Track, Album, Instrument, etc.) and every relationship (PerformedBy, RecordedAt, etc.) is a **class** in its own file.
+- **Layout**: Entity classes live in `src/domain/entities/`; relationship classes in `src/domain/relationships/`. Base types (GraphNode, GraphEdge) live in `src/domain/`.
+- **Inheritance**: Entity classes extend the base graph node type (e.g. GraphNode); relationship classes extend the base graph edge type (e.g. GraphEdge). Use further inheritance where it clarifies the model (e.g. PhysicalArtifact for Instrument/Equipment).
+- **One file per type**: One class per file — `Artist.ts`, `Track.ts`, `PerformedBy.ts`, `RecordedAt.ts`. No multi-type files in the domain layer.
+- **Typed properties**: Prefer typed fields on the class for core attributes. Use `properties` or `meta` only for extensibility (e.g. provenance). Do not use loose property bags for required/known fields.
+- **Reference**: Property lists and edge semantics come from [docs/DOMAIN_MODEL.md](docs/DOMAIN_MODEL.md). Keep each file focused and under a reasonable line count.

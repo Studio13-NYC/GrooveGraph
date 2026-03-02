@@ -77,6 +77,7 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 | [docs/FUNCTIONAL_SPEC.md](docs/FUNCTIONAL_SPEC.md) | Product outcome, actors, capabilities, discovery use cases, enrichment, import contract. |
 | [docs/STORAGE_ABSTRACTION.md](docs/STORAGE_ABSTRACTION.md) | `GraphStore` interface, in-memory default, future adapters. |
 | [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Implementation plan: domain types, OOP rule, entity/relationship layout, data population. |
+| [docs/RULES_AND_STANDARDS.md](docs/RULES_AND_STANDARDS.md) | Catalog of Cursor rules and coding/layout standards. |
 | [data/README.md](data/README.md) | Reference datasets (Last.fm, play history, Spotify lists) for import and testing. |
 
 ---

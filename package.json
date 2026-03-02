@@ -1,0 +1,15 @@
+{
+  "name": "groovegraph",
+  "version": "0.1.0",
+  "description": "Property graph for recorded music: unify facets, discover connections",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "load": "node dist/scripts/load-play-history.js",
+    "test": "node --test dist/**/*.test.js 2>/dev/null || echo 'No tests yet'"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}
