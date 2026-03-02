@@ -40,6 +40,14 @@ const linksBySource = (data: GraphJson): Map<string, GraphLink[]> => {
   return m;
 };
 
+/** Pick one artist at random from the graph; returns their name or null if none. */
+export function getRandomArtistName(data: GraphJson): string | null {
+  const artists = data.nodes.filter((n) => n.label === "Artist" && n.name);
+  if (artists.length === 0) return null;
+  const i = Math.floor(Math.random() * artists.length);
+  return (artists[i].name as string) ?? null;
+}
+
 /** Load /graph.json; returns null on 404 or error. */
 export async function loadGraphJson(): Promise<GraphJson | null> {
   try {
@@ -89,7 +97,10 @@ export function queryArtistFromGraph(data: GraphJson, name: string): QueryArtist
   };
 }
 
-/** Return full graph or subgraph for one artist (nodes + links only for that artist). */
+/**
+ * Return full graph or subgraph for one artist.
+ * Hierarchy: Artist → Album → Track (links: HAS_ALBUM from artist to album, CONTAINS from album to track).
+ */
 export function getGraphData(
   data: GraphJson,
   artistFilter?: string
@@ -101,6 +112,8 @@ export function getGraphData(
   const q = artistFilter.trim().toLowerCase();
   const nodesMap = new Map<string, GraphNode>();
   const links: GraphLink[] = [];
+  const byTarget = linksByTarget(data);
+  const bySource = linksBySource(data);
 
   const artist = data.nodes.find(
     (n) =>
@@ -110,26 +123,31 @@ export function getGraphData(
   if (!artist) return { nodes: [], links: [] };
 
   nodesMap.set(artist.id, artist);
-  const byTarget = linksByTarget(data);
-  const bySource = linksBySource(data);
-
   const performedBy = byTarget.get(artist.id)?.filter((l) => l.type === "PERFORMED_BY") ?? [];
-  const trackIds = new Set(performedBy.map((l) => l.source));
+  const trackIds = [...new Set(performedBy.map((l) => l.source))];
+  const albumIds = new Set<string>();
+  const trackToAlbum = new Map<string, string>();
 
   for (const trackId of trackIds) {
     const trackNode = data.nodes.find((n) => n.id === trackId);
-    if (trackNode) {
-      nodesMap.set(trackNode.id, trackNode);
-      links.push({ source: trackNode.id, target: artist.id, type: "PERFORMED_BY" });
-    }
+    if (trackNode) nodesMap.set(trackNode.id, trackNode);
     const releasedOn = bySource.get(trackId)?.find((l) => l.type === "RELEASED_ON");
     if (releasedOn) {
-      const albumNode = data.nodes.find((n) => n.id === releasedOn.target);
+      const albumId = releasedOn.target;
+      const albumNode = data.nodes.find((n) => n.id === albumId);
       if (albumNode) {
         nodesMap.set(albumNode.id, albumNode);
-        links.push({ source: trackId, target: albumNode.id, type: "RELEASED_ON" });
+        albumIds.add(albumId);
+        trackToAlbum.set(trackId, albumId);
       }
     }
+  }
+
+  for (const albumId of albumIds) {
+    links.push({ source: artist.id, target: albumId, type: "HAS_ALBUM" });
+  }
+  for (const [trackId, albumId] of trackToAlbum) {
+    links.push({ source: albumId, target: trackId, type: "CONTAINS" });
   }
 
   return { nodes: Array.from(nodesMap.values()), links };

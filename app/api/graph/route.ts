@@ -8,19 +8,26 @@ type GraphNode = { id: string; label: string; name?: string };
 type GraphLink = { source: string; target: string; type: string };
 
 /**
- * GET /api/graph?artist=Name
- * Returns { nodes, links } for force-graph. If artist= is set, returns subgraph
- * for that artist (artist + their tracks + albums). Otherwise returns a small
- * sample of the full graph (cap nodes/links for performance).
+ * GET /api/graph?artist=Name | ?random=1
+ * Returns { nodes, links } for force-graph. If artist= is set, returns that artist's subgraph.
+ * If random=1 (and no artist=), returns a single randomly chosen artist's subgraph.
  */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const artistQuery = searchParams.get("artist")?.trim();
+    let artistQuery = searchParams.get("artist")?.trim();
 
     const store = await buildGraphStoreFromPlayHistory();
     const nodesMap = new Map<string, GraphNode>();
     const links: GraphLink[] = [];
+
+    if (!artistQuery && searchParams.get("random")) {
+      const all = await store.findNodes({ label: "Artist", maxResults: 10000 });
+      if (all.length > 0) {
+        const idx = Math.floor(Math.random() * all.length);
+        artistQuery = all[idx].properties.name as string;
+      }
+    }
 
     if (artistQuery) {
       let artists = await store.findNodes({
@@ -51,6 +58,8 @@ export async function GET(request: NextRequest) {
       const inboundEdges = await store.getAdjacentEdges(artist.id, "inbound");
       const performedBy = inboundEdges.filter((e) => e.type === "PERFORMED_BY");
       const trackIds = [...new Set(performedBy.map((e) => e.fromNodeId))];
+      const albumIds = new Set<string>();
+      const trackToAlbum = new Map<string, string>();
 
       for (const trackId of trackIds) {
         const track = await store.getNode(trackId);
@@ -60,8 +69,6 @@ export async function GET(request: NextRequest) {
           label: "Track",
           name: track.properties.title as string,
         });
-        links.push({ source: track.id, target: artist.id, type: "PERFORMED_BY" });
-
         const outEdges = await store.getAdjacentEdges(trackId, "outbound");
         const releasedOn = outEdges.find((e) => e.type === "RELEASED_ON");
         if (releasedOn) {
@@ -72,12 +79,19 @@ export async function GET(request: NextRequest) {
               label: "Album",
               name: album.properties.title as string,
             });
-            links.push({ source: track.id, target: album.id, type: "RELEASED_ON" });
+            albumIds.add(album.id);
+            trackToAlbum.set(trackId, album.id);
           }
         }
       }
+      for (const albumId of albumIds) {
+        links.push({ source: artist.id, target: albumId, type: "HAS_ALBUM" });
+      }
+      for (const [trackId, albumId] of trackToAlbum) {
+        links.push({ source: albumId, target: trackId, type: "CONTAINS" });
+      }
     } else {
-      const artists = await store.findNodes({ label: "Artist", maxResults: 80 });
+      const artists = await store.findNodes({ label: "Artist", maxResults: 60 });
       for (const a of artists) {
         nodesMap.set(a.id, {
           id: a.id,
