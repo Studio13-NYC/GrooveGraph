@@ -1,108 +1,59 @@
 /**
- * Load play history from data/bobdobbsnyc.csv and produce Artist, Album, Track
- * entities plus ReleasedOn and Contains relationships. Dedupes by normalized name/key.
+ * Load play history from data/bobdobbsnyc.csv into an InMemoryGraphStore.
+ * Prints a summary and a short traversal demo (Beyoncé → tracks → albums).
  */
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
-import { Artist } from "../src/domain/entities/Artist.js";
-import { Album } from "../src/domain/entities/Album.js";
-import { Track } from "../src/domain/entities/Track.js";
-import { ReleasedOn } from "../src/domain/relationships/ReleasedOn.js";
-import { Contains } from "../src/domain/relationships/Contains.js";
+import { buildGraphStoreFromPlayHistory } from "./lib/build-graph.js";
 
-const DATA_PATH = join(process.cwd(), "data", "bobdobbsnyc.csv");
+async function main(): Promise<void> {
+  const store = await buildGraphStoreFromPlayHistory();
 
-function slug(s: string): string {
-  return s
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^a-z0-9-]/g, "");
-}
-
-function parseCsv(path: string): Array<{ artist: string; album: string; track: string; played_at: string }> {
-  const text = readFileSync(path, "utf-8");
-  const lines = text.split(/\r?\n/).filter((line) => line.trim());
-  return lines.map((line) => {
-    const parts = line.split(",").map((p) => p.trim());
-    return {
-      artist: parts[0] ?? "",
-      album: parts[1] ?? "",
-      track: parts[2] ?? "",
-      played_at: parts[3] ?? "",
-    };
-  });
-}
-
-const artistsById = new Map<string, Artist>();
-const albumsById = new Map<string, Album>();
-const tracksById = new Map<string, Track>();
-const releasedOnEdges: ReleasedOn[] = [];
-const containsEdges: Contains[] = [];
-
-function getOrCreateArtist(name: string): Artist {
-  const id = `artist-${slug(name)}`;
-  let artist = artistsById.get(id);
-  if (!artist) {
-    artist = new Artist(id, { name });
-    artistsById.set(id, artist);
-  }
-  return artist;
-}
-
-function getOrCreateAlbum(artistName: string, title: string): Album {
-  const id = `album-${slug(artistName)}-${slug(title)}`;
-  let album = albumsById.get(id);
-  if (!album) {
-    album = new Album(id, { title });
-    albumsById.set(id, album);
-  }
-  return album;
-}
-
-function getOrCreateTrack(artistName: string, albumTitle: string, trackTitle: string): Track {
-  const id = `track-${slug(artistName)}-${slug(albumTitle)}-${slug(trackTitle)}`;
-  let track = tracksById.get(id);
-  if (!track) {
-    track = new Track(id, { title: trackTitle });
-    tracksById.set(id, track);
-  }
-  return track;
-}
-
-function main(): void {
-  const rows = parseCsv(DATA_PATH);
-  for (const row of rows) {
-    if (!row.artist || !row.album || !row.track) continue;
-    const artist = getOrCreateArtist(row.artist);
-    const album = getOrCreateAlbum(row.artist, row.album);
-    const track = getOrCreateTrack(row.artist, row.album, row.track);
-    const releasedOnId = `released-${track.id}-${album.id}`;
-    if (!releasedOnEdges.some((e) => e.id === releasedOnId)) {
-      releasedOnEdges.push(new ReleasedOn(releasedOnId, track.id, album.id));
-    }
-    const containsId = `contains-${album.id}-${track.id}`;
-    if (!containsEdges.some((e) => e.id === containsId)) {
-      containsEdges.push(new Contains(containsId, album.id, track.id));
-    }
-  }
-
-  const artists = Array.from(artistsById.values());
-  const albums = Array.from(albumsById.values());
-  const tracks = Array.from(tracksById.values());
+  const artistsFromStore = await store.findNodes({ label: "Artist", maxResults: 20000 });
+  const albumsFromStore = await store.findNodes({ label: "Album", maxResults: 20000 });
+  const tracksFromStore = await store.findNodes({ label: "Track", maxResults: 20000 });
+  const releasedOnFromStore = await store.findEdges({ type: "RELEASED_ON", maxResults: 20000 });
+  const containsFromStore = await store.findEdges({ type: "CONTAINS", maxResults: 20000 });
+  const performedByFromStore = await store.findEdges({ type: "PERFORMED_BY", maxResults: 20000 });
 
   console.log(JSON.stringify({
     summary: {
-      artists: artists.length,
-      albums: albums.length,
-      tracks: tracks.length,
-      releasedOn: releasedOnEdges.length,
-      contains: containsEdges.length,
+      artists: artistsFromStore.length,
+      albums: albumsFromStore.length,
+      tracks: tracksFromStore.length,
+      releasedOn: releasedOnFromStore.length,
+      contains: containsFromStore.length,
+      performedBy: performedByFromStore.length,
     },
-    artists: artists.slice(0, 5).map((a) => ({ id: a.id, name: a.name })),
-    albums: albums.slice(0, 5).map((a) => ({ id: a.id, title: a.title })),
-    tracks: tracks.slice(0, 5).map((t) => ({ id: t.id, title: t.title })),
+    sampleArtists: artistsFromStore.slice(0, 5).map((a) => ({ id: a.id, name: a.properties.name })),
+    sampleAlbums: albumsFromStore.slice(0, 5).map((a) => ({ id: a.id, title: a.properties.title })),
+    sampleTracks: tracksFromStore.slice(0, 5).map((t) => ({ id: t.id, title: t.properties.title })),
   }, null, 2));
+
+  const demoArtistName = "Beyoncé";
+  const artistsNamed = await store.findNodes({
+    label: "Artist",
+    propertyKey: "name",
+    propertyValue: demoArtistName,
+    maxResults: 1,
+  });
+  if (artistsNamed.length > 0) {
+    const artistId = artistsNamed[0].id;
+    const inboundEdges = await store.getAdjacentEdges(artistId, "inbound");
+    const performedByToArtist = inboundEdges.filter((e) => e.type === "PERFORMED_BY");
+    const trackIds = [...new Set(performedByToArtist.map((e) => e.fromNodeId))].slice(0, 8);
+    const trackAlbumPairs: { trackTitle: string; albumTitle: string }[] = [];
+    for (const trackId of trackIds) {
+      const track = await store.getNode(trackId);
+      const outEdges = await store.getAdjacentEdges(trackId, "outbound");
+      const releasedOn = outEdges.find((e) => e.type === "RELEASED_ON");
+      const album = releasedOn ? await store.getNode(releasedOn.toNodeId) : null;
+      trackAlbumPairs.push({
+        trackTitle: (track?.properties.title as string) ?? trackId,
+        albumTitle: (album?.properties.title as string) ?? "—",
+      });
+    }
+    console.log("\n--- Traversal demo: %s → tracks → albums ---", demoArtistName);
+    console.log(JSON.stringify({ artist: demoArtistName, sampleTracksWithAlbums: trackAlbumPairs }, null, 2));
+  }
 }
 
 main();
