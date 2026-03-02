@@ -1,0 +1,8 @@
+flowchart TD
+  productIntent[ProductIntent] --> domainModel[DomainModel]
+  domainModel --> graphCore[GraphCore]
+  graphCore --> queryEngine[QueryAndTraversal]
+  graphCore --> validationLayer[ValidationAndConstraints]
+  graphCore --> storePort[GraphStorePort]
+  storePort --> inMemoryStore[InMemoryStore]
+  storePort --> futureStores[FutureStores]

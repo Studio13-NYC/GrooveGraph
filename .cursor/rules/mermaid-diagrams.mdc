@@ -1,0 +1,49 @@
+---
+description: When creating Mermaid diagrams, render to image and embed both; put source in collapsible section (default closed)
+globs: "**/*.md"
+alwaysApply: false
+---
+
+# Mermaid Diagram Documentation Pattern
+
+When adding or editing Mermaid diagrams in documentation:
+
+## 1. Render to PNG
+
+- Save the diagram to `docs/images/<descriptive-name>.mmd` (or a `.mmd` file next to the doc).
+- Render with mermaid-cli: `npx @mermaid-js/mermaid-cli -i docs/images/<name>.mmd -o docs/images/<name>.png -e png`
+- Use a descriptive filename (e.g. `pipeline-high-level`, `dependency-graph`).
+
+## 2. Document Structure
+
+Place the rendered image first, then the Mermaid source in a collapsible section (default closed):
+
+```markdown
+![Alt text for diagram](images/diagram-name.png)
+
+<details>
+<summary>Mermaid source</summary>
+
+```mermaid
+flowchart TB
+  ...
+```
+</details>
+```
+
+## 3. Rules
+
+- **Image first** — Readers see the diagram immediately.
+- **Collapsible source** — Use `<details><summary>Mermaid source</summary>` so the Mermaid code is hidden by default; users can expand to view or copy.
+- **Both always present** — Never add only the image or only the Mermaid; include both.
+- **Consistent paths** — For docs in `docs/`, use relative paths like `images/diagram-name.png`.
+
+## 4. Example
+
+Structure to follow:
+
+1. Heading or caption
+2. `![alt](images/name.png)` — rendered image
+3. `<details><summary>Mermaid source</summary>` — collapsible (closed by default)
+4. Mermaid fenced block with the diagram
+5. `</details>`
