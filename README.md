@@ -85,4 +85,4 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 - **Repository**: [github.com/Studio13-NYC/GrooveGraph](https://github.com/Studio13-NYC/GrooveGraph)  
 - **Organization**: [Studio13-NYC](https://github.com/Studio13-NYC) — *Exploring the Future of Media*
 
-This project is specification-first and implementation-clean: no Graphiti or agent-memory dependencies. The domain model and specs are intended to stand alone so that any team can build or adopt the graph layer with a clear target.
+This project is specification-first. The domain model and specs are intended to stand alone so that any team can build or adopt the graph layer with a clear target.
