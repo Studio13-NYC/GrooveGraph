@@ -76,6 +76,7 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 | [docs/DOMAIN_MODEL.md](docs/DOMAIN_MODEL.md) | **Single source of truth**: node labels, properties, edge types, and advanced structures (Instrument, SongWork, provenance). |
 | [docs/FUNCTIONAL_SPEC.md](docs/FUNCTIONAL_SPEC.md) | Product outcome, actors, capabilities, discovery use cases, enrichment, import contract. |
 | [docs/STORAGE_ABSTRACTION.md](docs/STORAGE_ABSTRACTION.md) | `GraphStore` interface, in-memory default, future adapters. |
+| [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Implementation plan: domain types, OOP rule, entity/relationship layout, data population. |
 | [data/README.md](data/README.md) | Reference datasets (Last.fm, play history, Spotify lists) for import and testing. |
 
 ---
