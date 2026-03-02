@@ -1,0 +1,12 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/graph.json", "/*.{css,js,json,ico,png,jpg,svg}"]
+  },
+  "routes": [
+    {
+      "route": "/graph",
+      "rewrite": "/graph/index.html"
+    }
+  ]
+}

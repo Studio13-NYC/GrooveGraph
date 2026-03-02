@@ -7,6 +7,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import Link from "next/link";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { loadGraphJson, getGraphData, type GraphJson } from "../lib/static-graph";
 
 const ForceGraph2D = dynamic(
   () => import("react-force-graph-2d").then((m) => m.default),
@@ -22,32 +23,42 @@ function GraphContent() {
   const searchParams = useSearchParams();
   const initialArtist = searchParams.get("artist") ?? "";
   const [artistFilter, setArtistFilter] = useState(initialArtist);
+  const [staticJson, setStaticJson] = useState<GraphJson | null | undefined>(undefined);
   const [data, setData] = useState<GraphData>({ nodes: [], links: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    loadGraphJson().then(setStaticJson);
+  }, []);
+
   const loadGraph = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const params = artistFilter.trim()
-      ? `?artist=${encodeURIComponent(artistFilter.trim())}`
-      : "";
     try {
-      const res = await fetch(`/api/graph${params}`);
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Failed to load graph");
-      setData({ nodes: json.nodes ?? [], links: json.links ?? [] });
+      if (staticJson) {
+        const out = getGraphData(staticJson, artistFilter.trim() || undefined);
+        setData({ nodes: out.nodes, links: out.links });
+      } else if (staticJson === null) {
+        const params = artistFilter.trim()
+          ? `?artist=${encodeURIComponent(artistFilter.trim())}`
+          : "";
+        const res = await fetch(`/api/graph${params}`);
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || "Failed to load graph");
+        setData({ nodes: json.nodes ?? [], links: json.links ?? [] });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load graph");
       setData({ nodes: [], links: [] });
     } finally {
       setLoading(false);
     }
-  }, [artistFilter]);
+  }, [artistFilter, staticJson]);
 
   useEffect(() => {
-    loadGraph();
-  }, [loadGraph]);
+    if (staticJson !== undefined) loadGraph();
+  }, [loadGraph, staticJson]);
 
   const graphData = {
     nodes: data.nodes.map((n) => ({ ...n, id: n.id })),

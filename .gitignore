@@ -5,6 +5,9 @@ node_modules/
 dist/
 build/
 .next/
+out/
+.api-backup-static-build/
+public/graph.json
 *.tsbuildinfo
 
 # Environment

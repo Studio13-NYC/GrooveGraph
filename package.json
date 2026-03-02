@@ -7,8 +7,11 @@
     "build": "tsc -p tsconfig.cli.json",
     "load": "node dist/scripts/load-play-history.js",
     "query": "node dist/scripts/query-by-artist.js",
+    "export-graph": "node dist/scripts/export-graph-json.js",
     "dev": "next dev",
     "build:web": "next build",
+    "build:static": "npm run build && npm run export-graph && node scripts/build-static.cjs",
+    "deploy:swa": "npx @azure/static-web-apps-cli deploy ./out --env production",
     "start": "next start",
     "test": "node --test dist/**/*.test.js 2>/dev/null || echo 'No tests yet'"
   },

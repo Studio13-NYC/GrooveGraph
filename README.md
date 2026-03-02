@@ -79,6 +79,7 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 | [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Implementation plan: domain types, OOP rule, entity/relationship layout, data population. |
 | [docs/RULES_AND_STANDARDS.md](docs/RULES_AND_STANDARDS.md) | Catalog of Cursor rules and coding/layout standards. |
 | [data/README.md](data/README.md) | Reference datasets (Last.fm, play history, Spotify lists) for import and testing. |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Deploy to Azure: provision rg-groovegraph + swa-groovegraph, build static + graph.json, deploy with SWA CLI. |
 
 **Run it:** From the repo root, `npm install` then `npm run build`. Use `npm run load` to ingest play history (CSV) into the in-memory graph and print a summary. Use `npm run query -- "Artist Name"` to list that artist’s tracks and albums (e.g. `npm run query -- "Kacey Musgraves"`).
 

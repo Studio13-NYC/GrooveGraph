@@ -1,11 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Sparkles, Music, Disc } from "lucide-react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "./components/ui/card";
 import Link from "next/link";
+import {
+  loadGraphJson,
+  queryArtistFromGraph,
+  type GraphJson,
+} from "./lib/static-graph";
 
 type QueryResult = {
   artist: string;
@@ -16,12 +21,20 @@ type QueryResult = {
 
 type EnrichMessage = string | null;
 
+const ENRICH_STUB_MESSAGE =
+  "Enrichment will attach external metadata (biography, genres, images) to this entity.";
+
 export default function HomePage() {
   const [artistQuery, setArtistQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<QueryResult>(null);
   const [error, setError] = useState<string | null>(null);
   const [enrichMessage, setEnrichMessage] = useState<EnrichMessage>(null);
+  const [graphData, setGraphData] = useState<GraphJson | null>(null);
+
+  useEffect(() => {
+    loadGraphJson().then(setGraphData);
+  }, []);
 
   async function handleQuery() {
     const q = artistQuery.trim();
@@ -31,17 +44,23 @@ export default function HomePage() {
     setResult(null);
     setEnrichMessage(null);
     try {
-      const res = await fetch("/api/query-artist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ artist: q }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error || "Query failed");
-        return;
+      if (graphData) {
+        const data = queryArtistFromGraph(graphData, q);
+        if (data) setResult(data);
+        else setError("No artist found");
+      } else {
+        const res = await fetch("/api/query-artist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ artist: q }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || "Query failed");
+          return;
+        }
+        setResult(data);
       }
-      setResult(data);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed");
     } finally {
@@ -51,6 +70,10 @@ export default function HomePage() {
 
   async function handleEnrich(type: "artist" | "album", id: string) {
     setEnrichMessage(null);
+    if (graphData) {
+      setEnrichMessage(ENRICH_STUB_MESSAGE);
+      return;
+    }
     try {
       const res = await fetch("/api/enrich", {
         method: "POST",
