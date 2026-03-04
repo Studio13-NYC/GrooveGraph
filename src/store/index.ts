@@ -1,4 +1,5 @@
 export { InMemoryGraphStore } from "./InMemoryGraphStore.js";
+export type { GraphStoreSnapshot } from "./InMemoryGraphStore.js";
 export type {
   GraphStore,
   Direction,

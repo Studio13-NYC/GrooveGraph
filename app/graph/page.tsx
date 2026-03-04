@@ -6,20 +6,76 @@ import { useSearchParams } from "next/navigation";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import Link from "next/link";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
 import { loadGraphJson, getGraphData, getRandomArtistName, type GraphJson } from "../lib/static-graph";
+import {
+  getNodeColor,
+  getLinkColor,
+  getEntityDisplayName,
+  ENTITY_LABELS,
+  RELATIONSHIP_TYPES,
+} from "../lib/graph-viz";
 
 const NODE_RADIUS = 6;
-function getNodeColor(label: string): string {
-  if (label === "Artist") return "hsl(262, 80%, 50%)";
-  if (label === "Album") return "hsl(142, 70%, 40%)";
-  return "hsl(210, 70%, 45%)";
-}
 
 const ForceGraph2D = dynamic(
   () => import("react-force-graph-2d").then((m) => m.default),
   { ssr: false }
 );
+
+function Legend() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] text-sm">
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center gap-2 px-3 py-2 text-left text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--accent))] hover:text-[hsl(var(--accent-foreground))]"
+      >
+        {open ? (
+          <ChevronDown className="h-4 w-4 shrink-0" />
+        ) : (
+          <ChevronRight className="h-4 w-4 shrink-0" />
+        )}
+        <span>Legend: entity and relationship types</span>
+      </button>
+      {open && (
+        <div className="grid gap-6 border-t border-[hsl(var(--border))] p-4 sm:grid-cols-2">
+          <div>
+            <h4 className="mb-2 font-medium text-[hsl(var(--foreground))]">Entities (nodes)</h4>
+            <ul className="flex flex-wrap gap-x-4 gap-y-1.5">
+              {ENTITY_LABELS.map((label) => (
+                <li key={label} className="flex items-center gap-1.5">
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: getNodeColor(label) }}
+                    aria-hidden
+                  />
+                  <span className="text-xs">{getEntityDisplayName(label)}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h4 className="mb-2 font-medium text-[hsl(var(--foreground))]">Relationships (edges)</h4>
+            <ul className="flex flex-wrap gap-x-4 gap-y-1.5">
+              {RELATIONSHIP_TYPES.map((type) => (
+                <li key={type} className="flex items-center gap-1.5">
+                  <span
+                    className="h-0.5 w-3 shrink-0 rounded"
+                    style={{ backgroundColor: getLinkColor(type) }}
+                    aria-hidden
+                  />
+                  <span className="text-xs">{type.replace(/_/g, " ")}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 type GraphData = {
   nodes: { id: string; label: string; name?: string }[];
@@ -160,7 +216,7 @@ function GraphContent() {
               ctx.fillStyle = "hsl(var(--foreground))";
               ctx.fillText(labelTrim, x, y + NODE_RADIUS + fontSize);
             }}
-            linkColor={() => "hsl(var(--muted-foreground))"}
+            linkColor={(link) => getLinkColor((link as { type?: string }).type ?? "")}
             linkCanvasObject={
               showEdgeLabels
                 ? (link, ctx, globalScale) => {
@@ -179,7 +235,7 @@ function GraphContent() {
                     ctx.beginPath();
                     ctx.moveTo(x1, y1);
                     ctx.lineTo(x2, y2);
-                    ctx.strokeStyle = "hsl(var(--muted-foreground))";
+                    ctx.strokeStyle = getLinkColor(l.type ?? "");
                     ctx.lineWidth = 1 / globalScale;
                     ctx.stroke();
                     // Draw the edge label at midpoint
@@ -207,10 +263,9 @@ function GraphContent() {
       </div>
       </div>
 
+      <Legend />
       <p className="text-xs text-[hsl(var(--muted-foreground))]">
-        <span style={{ color: "hsl(262, 80%, 50%)" }}>Purple</span> = Artist,{" "}
-        <span style={{ color: "hsl(142, 70%, 40%)" }}>Green</span> = Album,{" "}
-        <span style={{ color: "hsl(210, 70%, 45%)" }}>Blue</span> = Track. Drag nodes, scroll to zoom, drag canvas to pan.
+        Drag nodes, scroll to zoom, drag canvas to pan.
       </p>
     </>
   );

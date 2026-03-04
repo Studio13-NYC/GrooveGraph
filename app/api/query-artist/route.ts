@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildGraphStoreFromPlayHistory } from "@/load/build-graph";
+import { getGraphStore } from "@/load/persist-graph";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const store = await buildGraphStoreFromPlayHistory();
+    const store = await getGraphStore();
 
     let artists = await store.findNodes({
       label: "Artist",

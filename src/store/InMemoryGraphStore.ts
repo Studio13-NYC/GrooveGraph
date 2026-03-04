@@ -296,4 +296,57 @@ export class InMemoryGraphStore implements GraphStore {
   async runInTransaction<T>(work: () => Promise<T>): Promise<T> {
     return work();
   }
+
+  /**
+   * Serialize full store state (nodes + edges including meta) for persistence.
+   */
+  toJSON(): GraphStoreSnapshot {
+    return {
+      nodes: Array.from(this.nodes.values()),
+      edges: Array.from(this.edges.values()),
+    };
+  }
+
+  /**
+   * Rebuild store from a persisted snapshot (e.g. from file).
+   * Rebuilds label and adjacency indices.
+   */
+  static fromJSON(snapshot: GraphStoreSnapshot): InMemoryGraphStore {
+    const store = new InMemoryGraphStore();
+    store.loadSnapshot(snapshot.nodes, snapshot.edges);
+    return store;
+  }
+
+  private loadSnapshot(nodes: NodeRecord[], edges: EdgeRecord[]): void {
+    this.nodes.clear();
+    this.edges.clear();
+    this.labelIndex.clear();
+    this.outbound.clear();
+    this.inbound.clear();
+    for (const n of nodes) {
+      this.nodes.set(n.id, n);
+      this.indexNode(n);
+    }
+    for (const e of edges) {
+      this.edges.set(e.id, e);
+      this.indexEdge(e);
+    }
+  }
 }
+
+export type GraphStoreSnapshot = {
+  nodes: Array<{
+    id: string;
+    labels: string[];
+    properties: Record<string, unknown>;
+    meta?: Record<string, unknown>;
+  }>;
+  edges: Array<{
+    id: string;
+    type: string;
+    fromNodeId: string;
+    toNodeId: string;
+    properties: Record<string, unknown>;
+    meta?: Record<string, unknown>;
+  }>;
+};

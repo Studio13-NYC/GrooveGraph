@@ -12,6 +12,7 @@ import { Contains } from "../domain/relationships/Contains.js";
 import { PerformedBy } from "../domain/relationships/PerformedBy.js";
 import type { GraphStore } from "../store/index.js";
 import { InMemoryGraphStore } from "../store/index.js";
+import { seedAdditionalEntities } from "./seed-additional-entities.js";
 
 const DEFAULT_CSV_PATH = join(process.cwd(), "data", "bobdobbsnyc.csv");
 
@@ -110,5 +111,6 @@ export async function buildGraphStoreFromPlayHistory(csvPath?: string): Promise<
     for (const edge of performedByEdges) await store.createEdge(edge);
   });
 
+  await seedAdditionalEntities(store);
   return store;
 }

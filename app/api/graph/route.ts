@@ -1,11 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildGraphStoreFromPlayHistory } from "@/load/build-graph";
+import { getGraphStore } from "@/load/persist-graph";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 type GraphNode = { id: string; label: string; name?: string };
 type GraphLink = { source: string; target: string; type: string };
+
+function toGraphNode(node: { id: string; labels: string[]; properties: Record<string, unknown> }): GraphNode {
+  const label = node.labels[0] ?? "Node";
+  const name =
+    (node.properties.title as string) ??
+    (node.properties.name as string) ??
+    (node.properties.venue as string) ??
+    node.id;
+  return { id: node.id, label, name };
+}
 
 /**
  * GET /api/graph?artist=Name | ?random=1
@@ -17,7 +27,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     let artistQuery = searchParams.get("artist")?.trim();
 
-    const store = await buildGraphStoreFromPlayHistory();
+    const store = await getGraphStore();
     const nodesMap = new Map<string, GraphNode>();
     const links: GraphLink[] = [];
 
@@ -89,6 +99,57 @@ export async function GET(request: NextRequest) {
       }
       for (const [trackId, albumId] of trackToAlbum) {
         links.push({ source: albumId, target: trackId, type: "CONTAINS" });
+      }
+      for (const trackId of trackIds) {
+        links.push({ source: trackId, target: artist.id, type: "PERFORMED_BY" });
+      }
+
+      const seedEdgeTypes = [
+        "RECORDED_AT",
+        "WRITTEN_BY",
+        "PRODUCED_BY",
+        "PART_OF_GENRE",
+        "RECORDED_IN_SESSION",
+      ] as const;
+      for (const trackId of trackIds) {
+        const outEdges = await store.getAdjacentEdges(trackId, "outbound");
+        for (const e of outEdges) {
+          if (!seedEdgeTypes.includes(e.type as (typeof seedEdgeTypes)[number])) continue;
+          const target = await store.getNode(e.toNodeId);
+          if (target && !nodesMap.has(e.toNodeId)) {
+            nodesMap.set(e.toNodeId, toGraphNode(target));
+          }
+          links.push({ source: e.fromNodeId, target: e.toNodeId, type: e.type });
+        }
+      }
+      for (const albumId of albumIds) {
+        const outEdges = await store.getAdjacentEdges(albumId, "outbound");
+        for (const e of outEdges) {
+          if (e.type !== "RELEASED_BY") continue;
+          const target = await store.getNode(e.toNodeId);
+          if (target && !nodesMap.has(e.toNodeId)) {
+            nodesMap.set(e.toNodeId, toGraphNode(target));
+          }
+          links.push({ source: e.fromNodeId, target: e.toNodeId, type: e.type });
+        }
+      }
+      const artistOut = await store.getAdjacentEdges(artist.id, "outbound");
+      for (const e of artistOut) {
+        if (e.type !== "PART_OF_GENRE") continue;
+        const target = await store.getNode(e.toNodeId);
+        if (target && !nodesMap.has(e.toNodeId)) {
+          nodesMap.set(e.toNodeId, toGraphNode(target));
+        }
+        links.push({ source: e.fromNodeId, target: e.toNodeId, type: e.type });
+      }
+      const artistIn = await store.getAdjacentEdges(artist.id, "inbound");
+      for (const e of artistIn) {
+        if (e.type !== "MEMBER_OF") continue;
+        const source = await store.getNode(e.fromNodeId);
+        if (source && !nodesMap.has(e.fromNodeId)) {
+          nodesMap.set(e.fromNodeId, toGraphNode(source));
+        }
+        links.push({ source: e.fromNodeId, target: e.toNodeId, type: e.type });
       }
     } else {
       const artists = await store.findNodes({ label: "Artist", maxResults: 60 });
