@@ -59,6 +59,8 @@ export async function POST(request: NextRequest) {
       sourcesUsed: result.sourcesUsed,
       propertiesAdded: result.propertiesAdded,
       confidence: result.confidence,
+      nodesCreated: result.nodesCreated,
+      edgesCreated: result.edgesCreated,
     });
   } catch (e) {
     console.error("enrich", e);

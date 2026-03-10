@@ -74,11 +74,13 @@ Data is verified before loading so we can attach a confidence or verification fl
 
 ### 3.2 Write path
 
-- **Input**: Verified enrichment record (normalized properties + provenance) + target graph node id.
+- **Input**: Verified enrichment record (normalized properties + provenance) + target graph node id. Records may include `relatedNodes` and `relatedEdges` for structural expansion.
 - **Actions**:
   1. `store.updateNode(nodeId, patch)` with property updates and `meta` containing provenance.
-  2. Optionally create new nodes (e.g. Person, Studio) and edges (e.g. PRODUCED_BY, RECORDED_AT) with the same provenance metadata.
-- **Idempotency**: Same source + URL + entity can be applied multiple times; last write wins or version by `enrichment_date` depending on product choice.
+  2. For each `relatedNode` in the record: create or update the node (e.g. Genre, Person, Studio).
+  3. For each `relatedEdge` in the record: create or update the edge (e.g. PART_OF_GENRE, PRODUCED_BY, RECORDED_AT) with the same provenance metadata.
+- **Idempotency**: Same source + URL + entity can be applied multiple times; last write wins. Existing nodes/edges are updated; new ones are created.
+- **Store**: Production uses Neo4j Aura; writes persist immediately.
 
 ### 3.3 Provenance storage
 

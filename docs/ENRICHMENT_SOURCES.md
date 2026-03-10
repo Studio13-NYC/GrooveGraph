@@ -4,6 +4,10 @@ Catalog of 20+ sources (core + magazine/trade) for enriching graph entities. Eac
 
 See [ENRICHMENT_PROCESS.md](ENRICHMENT_PROCESS.md) for collect → verify → load.
 
+**Implemented adapters:**
+- **musicbrainz** — Artist: `name`, `country`, `active_years`, `biography`; creates Genre nodes and PART_OF_GENRE edges from genres/tags.
+- **wikipedia** — Artist (by name): `biography` from Wikipedia summary API.
+
 ---
 
 ## Core sources (1–20)

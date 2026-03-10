@@ -109,7 +109,7 @@ Each relationship file exports one class; constructor takes `id?`, `fromNodeId`,
 7. Add **barrel exports** (entities/index, relationships/index, domain/index).
 8. Add **scripts/load-play-history.ts** (or equivalent) that parses `data/bobdobbsnyc.csv`, dedupes artists/albums/tracks by name, creates entity and relationship instances, and logs or returns them.
 
-No GraphStore or persistence in this plan; that stays for a follow-up phase.
+**Update:** GraphStore is implemented. Production uses **Neo4j Aura** (`Neo4jGraphStore`); `InMemoryGraphStore` remains for scripts and tests. Run `npm run load:neo4j` to import the graph into Aura. See [STORAGE_ABSTRACTION.md](STORAGE_ABSTRACTION.md) and [neo4j.md](neo4j.md).
 
 ---
 

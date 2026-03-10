@@ -12,6 +12,22 @@ export interface SourceMetadata {
   citation?: string;
 }
 
+export interface EnrichmentNodeMutation {
+  id: string;
+  labels: string[];
+  properties: Record<string, unknown>;
+  meta?: Record<string, unknown>;
+}
+
+export interface EnrichmentEdgeMutation {
+  id: string;
+  type: string;
+  fromNodeId: string;
+  toNodeId: string;
+  properties?: Record<string, unknown>;
+  meta?: Record<string, unknown>;
+}
+
 /** Raw payload from an adapter; shape depends on source. */
 export interface RawEnrichmentPayload {
   /** Source metadata for provenance. */
@@ -20,6 +36,9 @@ export interface RawEnrichmentPayload {
   properties: Record<string, unknown>;
   /** Display name or title from the source (for entity match). */
   sourceDisplayName?: string;
+  /** Optional structural graph additions aligned to the domain model. */
+  relatedNodes?: EnrichmentNodeMutation[];
+  relatedEdges?: EnrichmentEdgeMutation[];
 }
 
 export type ConfidenceLevel = "high" | "medium" | "low";
@@ -34,4 +53,6 @@ export interface VerifiedEnrichmentRecord {
   retrieved_at: string;
   excerpt?: string;
   confidence: ConfidenceLevel;
+  relatedNodes?: EnrichmentNodeMutation[];
+  relatedEdges?: EnrichmentEdgeMutation[];
 }

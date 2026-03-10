@@ -1,6 +1,6 @@
 # Reference Data
 
-Collected datasets used for ingestion testing, adapter development, and graph population. These are read as reference only; the graph store is populated via import adapters.
+Collected datasets used for ingestion testing, adapter development, and graph population. The **production graph store** is **Neo4j Aura**. Data is loaded into Aura via `npm run load:neo4j`, which reads from the sources below (or from `data/graph-store.json` if present).
 
 ## Datasets
 
@@ -23,7 +23,7 @@ Use for: building Artist/Track/Album nodes and PLAYED_BY / LISTENED_TO-style edg
 
 Columns (conceptually): Artist, Album, Track, Played At (date/time).
 
-Use for: user listening timeline, linking Track → Album → Artist and optional temporal edges for discovery.
+Use for: user listening timeline, linking Track → Album → Artist and optional temporal edges for discovery. This is the primary source for `npm run load:neo4j` when `data/graph-store.json` does not exist.
 
 ### Spotify track lists
 
@@ -34,4 +34,4 @@ Use for: Track/Artist node creation and stable external IDs; linking to Spotify-
 
 ## Provenance
 
-When ingesting into the graph, source adapter should record provenance in node/edge `meta` (e.g. `source: "lastfm"`, `source_file`, `imported_at`) so Researchers can later layer web-sourced enrichment with their own provenance.
+When ingesting into the graph, source adapter should record provenance in node/edge `meta` (e.g. `source: "lastfm"`, `source_file`, `imported_at`) so Researchers can later layer web-sourced enrichment with their own provenance. Enrichment from MusicBrainz and Wikipedia writes directly to Neo4j Aura via the enrichment pipeline.

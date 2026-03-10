@@ -1,20 +1,40 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getGraphStore } from "@/load/persist-graph";
+import { Neo4jGraphStore } from "@/store";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-type GraphNode = { id: string; label: string; name?: string };
+type GraphNode = {
+  id: string;
+  label: string;
+  name?: string;
+  /** Enrichment / external source data when present */
+  biography?: string;
+  country?: string;
+  active_years?: string;
+  enrichment_source?: string;
+};
 type GraphLink = { source: string; target: string; type: string };
 
-function toGraphNode(node: { id: string; labels: string[]; properties: Record<string, unknown> }): GraphNode {
+function toGraphNode(node: {
+  id: string;
+  labels: string[];
+  properties: Record<string, unknown>;
+  meta?: Record<string, unknown>;
+}): GraphNode {
   const label = node.labels[0] ?? "Node";
   const name =
     (node.properties.title as string) ??
     (node.properties.name as string) ??
     (node.properties.venue as string) ??
     node.id;
-  return { id: node.id, label, name };
+  const out: GraphNode = { id: node.id, label, name };
+  if (node.properties.biography != null) out.biography = String(node.properties.biography);
+  if (node.properties.country != null) out.country = String(node.properties.country);
+  if (node.properties.active_years != null) out.active_years = String(node.properties.active_years);
+  if (node.meta?.enrichment_source != null) out.enrichment_source = String(node.meta.enrichment_source);
+  return out;
 }
 
 /**
@@ -40,6 +60,18 @@ export async function GET(request: NextRequest) {
     }
 
     if (artistQuery) {
+      if (store instanceof Neo4jGraphStore) {
+        const subgraph = await store.getArtistSubgraph(artistQuery);
+        return NextResponse.json({
+          nodes: subgraph.nodes.map((node) => toGraphNode(node)),
+          links: subgraph.edges.map((edge) => ({
+            source: edge.fromNodeId,
+            target: edge.toNodeId,
+            type: edge.type,
+          })),
+        });
+      }
+
       let artists = await store.findNodes({
         label: "Artist",
         propertyKey: "name",
@@ -59,11 +91,7 @@ export async function GET(request: NextRequest) {
       }
 
       const artist = artists[0];
-      nodesMap.set(artist.id, {
-        id: artist.id,
-        label: "Artist",
-        name: artist.properties.name as string,
-      });
+      nodesMap.set(artist.id, toGraphNode(artist));
 
       const inboundEdges = await store.getAdjacentEdges(artist.id, "inbound");
       const performedBy = inboundEdges.filter((e) => e.type === "PERFORMED_BY");
@@ -74,21 +102,13 @@ export async function GET(request: NextRequest) {
       for (const trackId of trackIds) {
         const track = await store.getNode(trackId);
         if (!track) continue;
-        nodesMap.set(track.id, {
-          id: track.id,
-          label: "Track",
-          name: track.properties.title as string,
-        });
+        nodesMap.set(track.id, toGraphNode(track));
         const outEdges = await store.getAdjacentEdges(trackId, "outbound");
         const releasedOn = outEdges.find((e) => e.type === "RELEASED_ON");
         if (releasedOn) {
           const album = await store.getNode(releasedOn.toNodeId);
           if (album) {
-            nodesMap.set(album.id, {
-              id: album.id,
-              label: "Album",
-              name: album.properties.title as string,
-            });
+            nodesMap.set(album.id, toGraphNode(album));
             albumIds.add(album.id);
             trackToAlbum.set(trackId, album.id);
           }
@@ -104,61 +124,32 @@ export async function GET(request: NextRequest) {
         links.push({ source: trackId, target: artist.id, type: "PERFORMED_BY" });
       }
 
-      const seedEdgeTypes = [
-        "RECORDED_AT",
-        "WRITTEN_BY",
-        "PRODUCED_BY",
-        "PART_OF_GENRE",
-        "RECORDED_IN_SESSION",
-      ] as const;
-      for (const trackId of trackIds) {
-        const outEdges = await store.getAdjacentEdges(trackId, "outbound");
-        for (const e of outEdges) {
-          if (!seedEdgeTypes.includes(e.type as (typeof seedEdgeTypes)[number])) continue;
+      const coreIds = new Set<string>([artist.id, ...trackIds, ...albumIds]);
+      const linkKeys = new Set<string>(links.map((link) => `${link.source}|${link.target}|${link.type}`));
+      const addLink = (source: string, target: string, type: string) => {
+        const key = `${source}|${target}|${type}`;
+        if (linkKeys.has(key)) return;
+        linkKeys.add(key);
+        links.push({ source, target, type });
+      };
+      for (const nodeId of coreIds) {
+        const adjacentEdges = await store.getAdjacentEdges(nodeId, "both");
+        for (const e of adjacentEdges) {
+          const source = await store.getNode(e.fromNodeId);
           const target = await store.getNode(e.toNodeId);
+          if (source && !nodesMap.has(e.fromNodeId)) {
+            nodesMap.set(e.fromNodeId, toGraphNode(source));
+          }
           if (target && !nodesMap.has(e.toNodeId)) {
             nodesMap.set(e.toNodeId, toGraphNode(target));
           }
-          links.push({ source: e.fromNodeId, target: e.toNodeId, type: e.type });
+          addLink(e.fromNodeId, e.toNodeId, e.type);
         }
-      }
-      for (const albumId of albumIds) {
-        const outEdges = await store.getAdjacentEdges(albumId, "outbound");
-        for (const e of outEdges) {
-          if (e.type !== "RELEASED_BY") continue;
-          const target = await store.getNode(e.toNodeId);
-          if (target && !nodesMap.has(e.toNodeId)) {
-            nodesMap.set(e.toNodeId, toGraphNode(target));
-          }
-          links.push({ source: e.fromNodeId, target: e.toNodeId, type: e.type });
-        }
-      }
-      const artistOut = await store.getAdjacentEdges(artist.id, "outbound");
-      for (const e of artistOut) {
-        if (e.type !== "PART_OF_GENRE") continue;
-        const target = await store.getNode(e.toNodeId);
-        if (target && !nodesMap.has(e.toNodeId)) {
-          nodesMap.set(e.toNodeId, toGraphNode(target));
-        }
-        links.push({ source: e.fromNodeId, target: e.toNodeId, type: e.type });
-      }
-      const artistIn = await store.getAdjacentEdges(artist.id, "inbound");
-      for (const e of artistIn) {
-        if (e.type !== "MEMBER_OF") continue;
-        const source = await store.getNode(e.fromNodeId);
-        if (source && !nodesMap.has(e.fromNodeId)) {
-          nodesMap.set(e.fromNodeId, toGraphNode(source));
-        }
-        links.push({ source: e.fromNodeId, target: e.toNodeId, type: e.type });
       }
     } else {
       const artists = await store.findNodes({ label: "Artist", maxResults: 60 });
       for (const a of artists) {
-        nodesMap.set(a.id, {
-          id: a.id,
-          label: "Artist",
-          name: a.properties.name as string,
-        });
+        nodesMap.set(a.id, toGraphNode(a));
       }
       const edges = await store.findEdges({ type: "PERFORMED_BY", maxResults: 400 });
       const trackIds = new Set<string>();
@@ -171,12 +162,7 @@ export async function GET(request: NextRequest) {
       }
       for (const id of trackIds) {
         const track = await store.getNode(id);
-        if (track)
-          nodesMap.set(id, {
-            id,
-            label: "Track",
-            name: track.properties.title as string,
-          });
+        if (track) nodesMap.set(id, toGraphNode(track));
       }
       const releasedOnEdges = await store.findEdges({
         type: "RELEASED_ON",
@@ -190,12 +176,7 @@ export async function GET(request: NextRequest) {
       }
       for (const id of albumIds) {
         const album = await store.getNode(id);
-        if (album)
-          nodesMap.set(id, {
-            id,
-            label: "Album",
-            name: album.properties.title as string,
-          });
+        if (album) nodesMap.set(id, toGraphNode(album));
       }
     }
 

@@ -6,36 +6,36 @@
   "scripts": {
     "build": "tsc -p tsconfig.cli.json",
     "load": "node dist/scripts/load-play-history.js",
+    "load:neo4j": "node dist/scripts/load-neo4j.js",
     "query": "node dist/scripts/query-by-artist.js",
     "enrich-artist": "node dist/scripts/enrich-artist.js",
     "export-graph": "node dist/scripts/export-graph-json.js",
     "dev": "next dev",
     "build:web": "next build",
-    "build:static": "npm run build && npm run export-graph && node scripts/build-static.cjs",
-    "deploy:swa": "npx @azure/static-web-apps-cli deploy ./out --env production",
     "start": "next start",
     "test": "node --test dist/**/*.test.js 2>/dev/null || echo 'No tests yet'"
   },
   "dependencies": {
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.400.0",
+    "neo4j-driver": "^6.0.1",
     "next": "^14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-force-graph-2d": "^1.29.1",
-    "zustand": "^4.5.0",
-    "lucide-react": "^0.400.0",
-    "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.0",
-    "class-variance-authority": "^0.7.0"
+    "zustand": "^4.5.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "typescript": "^5.7.0",
-    "tailwindcss": "^3.4.0",
-    "postcss": "^8.4.0",
     "autoprefixer": "^10.4.0",
     "eslint": "^8.0.0",
-    "eslint-config-next": "^14.2.0"
+    "eslint-config-next": "^14.2.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.7.0"
   }
 }

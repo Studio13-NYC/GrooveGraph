@@ -4,7 +4,7 @@
 
 Define a pluggable persistence contract so Groovegraph core behavior is consistent regardless of storage backend.
 
-Default for v1 is an in-memory reference implementation. Future adapters can target persistent stores without changing core semantics.
+**Production** uses **Neo4j Aura** as the persistent graph store. The **InMemoryGraphStore** remains for tests, scripts, and as a reference implementation.
 
 ## 2. Design Requirements
 
@@ -50,15 +50,31 @@ export interface GraphStore {
 }
 ```
 
-## 4. InMemoryGraphStore (Default v1)
+## 4. Neo4jGraphStore (Production)
 
 ### 4.1 Purpose
 
-- Fast prototyping
-- Deterministic test target
-- Baseline semantics for future adapters
+- **Production runtime**: All API routes and enrichment persist to Neo4j Aura.
+- Configure via `.env.local` (see [neo4j.md](neo4j.md)).
+- Uses the official `neo4j-driver`; implements `GraphStore` with Cypher.
 
-### 4.2 Internal structures
+### 4.2 Capabilities
+
+- Batched `importGraph()` for loading CSV/JSON snapshot into Aura.
+- `getArtistSubgraph()` for fast single-query artist subgraph retrieval.
+- Full CRUD via `GraphStore` interface; writes are persisted immediately.
+
+---
+
+## 5. InMemoryGraphStore (Reference / Scripts)
+
+### 5.1 Purpose
+
+- Fast prototyping and deterministic tests
+- Baseline semantics for adapter parity
+- Source for `load:neo4j` import (build from CSV or load from `data/graph-store.json`)
+
+### 5.2 Internal structures
 
 - `Map<string, GraphNode>` for nodes by ID
 - `Map<string, GraphEdge>` for edges by ID
@@ -66,13 +82,13 @@ export interface GraphStore {
 - Property index maps for targeted filter acceleration
 - Adjacency maps for inbound/outbound edge IDs
 
-### 4.3 Behavioral guarantees
+### 5.3 Behavioral guarantees
 
 - O(1) ID lookups
 - Consistent validation behavior
 - Deterministic traversal ordering policy (documented)
 
-## 5. Adapter Compliance Rules
+## 6. Adapter Compliance Rules
 
 Every backend adapter must preserve:
 
@@ -81,17 +97,16 @@ Every backend adapter must preserve:
 - Traversal result semantics for equivalent queries
 - Atomicity for single operation transactions
 
-## 6. Future Adapters
+## 7. Future Adapters
 
-Potential storage adapters:
+Potential additional storage adapters:
 
 - `SQLiteGraphStore`
-- `Neo4jGraphStore`
 - `PostgresGraphStore` (edge/node tables + indexes)
 
 All future adapters must implement `GraphStore` directly and pass shared conformance tests.
 
-## 7. Conformance Test Suite
+## 8. Conformance Test Suite
 
 Create backend-agnostic tests that run against every adapter:
 
@@ -103,7 +118,7 @@ Create backend-agnostic tests that run against every adapter:
 
 The in-memory implementation acts as the first reference backend and baseline for adapter parity.
 
-## 8. Explicit Exclusions
+## 9. Explicit Exclusions
 
 - No Graphiti-specific storage APIs
 - No memory synchronization persistence model

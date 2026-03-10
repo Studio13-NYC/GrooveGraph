@@ -51,6 +51,8 @@ export interface EnrichmentResult {
   sourcesUsed: string[];
   propertiesAdded: number;
   confidence: string[];
+  nodesCreated: number;
+  edgesCreated: number;
 }
 
 /**
@@ -78,16 +80,22 @@ export async function runEnrichmentPipeline(
   const sourcesUsed: string[] = [];
   const confidence: string[] = [];
   let propertiesAdded = 0;
+  let nodesCreated = 0;
+  let edgesCreated = 0;
   for (const { record } of verified) {
-    await loadVerifiedRecord(store, nodeId, record);
+    const loadResult = await loadVerifiedRecord(store, nodeId, record);
     sourcesUsed.push(record.source_name);
     confidence.push(record.confidence);
     propertiesAdded += Object.keys(record.properties).length;
+    nodesCreated += loadResult.nodesCreated;
+    edgesCreated += loadResult.edgesCreated;
   }
   return {
     nodeId,
     sourcesUsed: [...new Set(sourcesUsed)],
     propertiesAdded,
     confidence,
+    nodesCreated,
+    edgesCreated,
   };
 }

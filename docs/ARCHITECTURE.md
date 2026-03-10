@@ -38,6 +38,7 @@ flowchart TD
   graphCore --> queryEngine[QueryAndTraversal]
   graphCore --> validationLayer[ValidationAndConstraints]
   graphCore --> storePort[GraphStorePort]
+  storePort --> neo4jStore[Neo4j Aura]
   storePort --> inMemoryStore[InMemoryStore]
   storePort --> futureStores[FutureStores]
 ```
@@ -139,5 +140,5 @@ Validation is explicit and fail-fast:
 This architecture is intended to translate directly into:
 
 - TypeScript type contracts for primitives and commands
-- A `GraphStore` interface with an in-memory reference backend
+- A `GraphStore` interface with Neo4j Aura as the production backend and InMemory as reference
 - A core service that composes validation + persistence + traversal

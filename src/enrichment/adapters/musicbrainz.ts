@@ -4,6 +4,7 @@
  */
 
 import type { RawEnrichmentPayload, SourceMetadata } from "../types.js";
+import { slug } from "../../load/build-graph.js";
 
 const BASE_URL = "https://musicbrainz.org/ws/2";
 const USER_AGENT = "GrooveGraph/1.0 (https://github.com/Studio13-NYC/GrooveGraph)";
@@ -16,6 +17,11 @@ interface MusicBrainzArtist {
   country?: string;
   "life-span"?: { begin?: string; end?: string; ended?: boolean };
   disambiguation?: string;
+}
+
+interface MusicBrainzArtistDetail extends MusicBrainzArtist {
+  genres?: Array<{ id?: string; name?: string; count?: number }>;
+  tags?: Array<{ name?: string; count?: number }>;
 }
 
 function buildSourceMetadata(url: string): SourceMetadata {
@@ -46,6 +52,21 @@ export async function fetchArtistByName(
   if (artists.length === 0) return [];
   const a = artists[0];
   const sourceUrl = a.id ? `https://musicbrainz.org/artist/${a.id}` : url;
+  let genres: string[] = [];
+  if (a.id) {
+    const detailUrl = `${BASE_URL}/artist/${a.id}?inc=genres+tags&fmt=json`;
+    const detailRes = await fetch(detailUrl, {
+      headers: { "User-Agent": USER_AGENT },
+    });
+    if (detailRes.ok) {
+      const detail = (await detailRes.json()) as MusicBrainzArtistDetail;
+      const rawGenres = [
+        ...(detail.genres ?? []).map((genre) => genre.name),
+        ...(detail.tags ?? []).map((tag) => tag.name),
+      ];
+      genres = [...new Set(rawGenres.filter(Boolean).map((genre) => String(genre).trim()))].slice(0, 5);
+    }
+  }
   const lifeSpan = a["life-span"];
   const activeYears =
     lifeSpan?.begin && lifeSpan?.end
@@ -61,10 +82,27 @@ export async function fetchArtistByName(
         name: a.name,
         country: a.country,
         active_years: activeYears,
+        ...(genres.length > 0 ? { genres } : {}),
         biography: a.disambiguation
           ? `(${a.disambiguation})`
           : undefined,
       },
+      ...(a.id && genres.length > 0
+        ? {
+            relatedNodes: genres.map((genre) => ({
+              id: `genre-${slug(genre)}`,
+              labels: ["Genre"],
+              properties: { name: genre },
+            })),
+            relatedEdges: genres.map((genre, index) => ({
+              id: `enriched-part-of-genre-artist-${slug(artistName)}-${slug(genre)}`,
+              type: "PART_OF_GENRE",
+              fromNodeId: `artist-${slug(artistName)}`,
+              toNodeId: `genre-${slug(genre)}`,
+              properties: { primary: index === 0 },
+            })),
+          }
+        : {}),
     },
   ];
 }

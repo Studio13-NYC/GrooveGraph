@@ -30,7 +30,7 @@ Success looks like: you ask a relationship question and get back a traversable g
 | Triple stores or flat metadata | **Property graph**: nodes and edges both carry rich, typed properties (dates, roles, specs, provenance). |
 | Generic knowledge graphs | **Music-native ontology**: entities and relationships that match how music is made—Artist, Track, Studio, Instrument (brand, model, year), Credit, Session, Label, Performance, and more. |
 | Single-source ingestion | **Multi-source + enrichment**: import from catalogs, APIs, and play history; then **Connection Curator**-style enrichment (web search, attach facts with provenance) so the graph improves over time. |
-| Lock-in to one database | **Pluggable storage**: a clear `GraphStore` interface with an in-memory reference implementation; later, SQLite, Neo4j, or others without changing core behavior. |
+| Lock-in to one database | **Pluggable storage**: a clear `GraphStore` interface; production uses Neo4j Aura; in-memory reference for tests and scripts. |
 | Implementation-first | **Spec-first**: architecture, domain model, and functional spec are the single source of truth so the graph semantics stay clear before and after implementation. |
 
 We’re not building another metadata API or another recommendation engine. We’re building **the graph layer** that makes “every facet of a recording, connected” possible—so discovery, research, and product experiences can sit on top of it.
@@ -68,22 +68,25 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 
 ## Project status and docs
 
-**Phase 1 (current)** is specification and domain design: we have a clear architecture, a full ontology, a functional spec, and a storage abstraction. Implementation (graph core, in-memory store, traversal, and adapters) follows in Phase 2.
+**Phase 2 (current)** implements the graph with Neo4j Aura as the production store. The app runs dynamically: API routes serve graph data, query-artist, and enrichment from Neo4j.
 
 | Document | Purpose |
 |----------|---------|
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Property-graph core, conceptual layers, query model, indexing, validation. |
 | [docs/DOMAIN_MODEL.md](docs/DOMAIN_MODEL.md) | **Single source of truth**: node labels, properties, edge types, and advanced structures (Instrument, SongWork, provenance). |
 | [docs/FUNCTIONAL_SPEC.md](docs/FUNCTIONAL_SPEC.md) | Product outcome, actors, capabilities, discovery use cases, enrichment, import contract. |
-| [docs/STORAGE_ABSTRACTION.md](docs/STORAGE_ABSTRACTION.md) | `GraphStore` interface, in-memory default, future adapters. |
+| [docs/STORAGE_ABSTRACTION.md](docs/STORAGE_ABSTRACTION.md) | `GraphStore` interface, Neo4j Aura production store, InMemory reference adapter. |
+| [docs/neo4j.md](docs/neo4j.md) | Neo4j Aura setup: configure `.env.local` for connection. |
 | [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Implementation plan: domain types, OOP rule, entity/relationship layout, data population. |
 | [docs/RULES_AND_STANDARDS.md](docs/RULES_AND_STANDARDS.md) | Catalog of Cursor rules and coding/layout standards. |
+| [docs/ENRICHMENT_PROCESS.md](docs/ENRICHMENT_PROCESS.md) | Enrichment pipeline: collect → verify → load (property + structural). |
+| [docs/ENRICHMENT_SOURCES.md](docs/ENRICHMENT_SOURCES.md) | Catalog of enrichment sources; MusicBrainz and Wikipedia implemented. |
 | [data/README.md](data/README.md) | Reference datasets (Last.fm, play history, Spotify lists) for import and testing. |
-| [docs/DEPLOY.md](docs/DEPLOY.md) | Deploy to Azure: provision rg-groovegraph + swa-groovegraph, build static + graph.json, deploy with SWA CLI. |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Deploy the dynamic app (Node hosting, Vercel, or similar). |
 
-**Run it:** From the repo root, `npm install` then `npm run build`. Use `npm run load` to ingest play history (CSV) into the in-memory graph and print a summary. Use `npm run query -- "Artist Name"` to list that artist’s tracks and albums (e.g. `npm run query -- "Kacey Musgraves"`).
+**Run it:** From the repo root, `npm install` then `npm run build`. Configure Neo4j Aura in `.env.local` (see [docs/neo4j.md](docs/neo4j.md)). Use `npm run load:neo4j` to import the graph from `data/bobdobbsnyc.csv` (or `data/graph-store.json` if present) into Aura. Use `npm run query -- "Artist Name"` to list that artist’s tracks and albums (e.g. `npm run query -- "Kacey Musgraves"`).
 
-**Web UI:** Run `npm run dev` and open http://localhost:3000. Query by artist, view an artist subgraph in the graph view, or trigger Enrich (stub). The graph uses react-force-graph-2d for force-directed visualization.
+**Web UI:** Run `npm run dev` and open http://localhost:3000. Query by artist, view an artist subgraph in the graph view, or trigger Enrich. Enrichment fetches metadata from MusicBrainz and Wikipedia, persists property updates and optional new nodes/relationships (e.g. Genre, PART_OF_GENRE) to Neo4j. The graph uses react-force-graph-2d for force-directed visualization.
 
 ---
 

@@ -3,7 +3,15 @@
  * Fetch once, then query or filter in memory.
  */
 
-export type GraphNode = { id: string; label: string; name?: string };
+export type GraphNode = {
+  id: string;
+  label: string;
+  name?: string;
+  biography?: string;
+  country?: string;
+  active_years?: string;
+  enrichment_source?: string;
+};
 export type GraphLink = { source: string; target: string; type: string };
 export type GraphJson = { nodes: GraphNode[]; links: GraphLink[] };
 
@@ -112,6 +120,7 @@ export function getGraphData(
   const q = artistFilter.trim().toLowerCase();
   const nodesMap = new Map<string, GraphNode>();
   const links: GraphLink[] = [];
+  const linkKeys = new Set<string>();
   const byTarget = linksByTarget(data);
   const bySource = linksBySource(data);
 
@@ -143,11 +152,28 @@ export function getGraphData(
     }
   }
 
+  const addLink = (link: GraphLink) => {
+    const key = `${link.source}|${link.target}|${link.type}`;
+    if (linkKeys.has(key)) return;
+    linkKeys.add(key);
+    links.push(link);
+  };
+
   for (const albumId of albumIds) {
-    links.push({ source: artist.id, target: albumId, type: "HAS_ALBUM" });
+    addLink({ source: artist.id, target: albumId, type: "HAS_ALBUM" });
   }
   for (const [trackId, albumId] of trackToAlbum) {
-    links.push({ source: albumId, target: trackId, type: "CONTAINS" });
+    addLink({ source: albumId, target: trackId, type: "CONTAINS" });
+  }
+
+  const coreIds = new Set<string>([artist.id, ...trackIds, ...albumIds]);
+  for (const link of data.links) {
+    if (!coreIds.has(link.source) && !coreIds.has(link.target)) continue;
+    const sourceNode = data.nodes.find((n) => n.id === link.source);
+    const targetNode = data.nodes.find((n) => n.id === link.target);
+    if (sourceNode) nodesMap.set(sourceNode.id, sourceNode);
+    if (targetNode) nodesMap.set(targetNode.id, targetNode);
+    addLink(link);
   }
 
   return { nodes: Array.from(nodesMap.values()), links };

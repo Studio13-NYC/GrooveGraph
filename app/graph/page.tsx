@@ -7,7 +7,6 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import Link from "next/link";
 import { ArrowLeft, ChevronDown, ChevronRight, Loader2 } from "lucide-react";
-import { loadGraphJson, getGraphData, getRandomArtistName, type GraphJson } from "../lib/static-graph";
 import {
   getNodeColor,
   getLinkColor,
@@ -77,49 +76,79 @@ function Legend() {
   );
 }
 
+type GraphNodeData = {
+  id: string;
+  label: string;
+  name?: string;
+  biography?: string;
+  country?: string;
+  active_years?: string;
+  enrichment_source?: string;
+};
 type GraphData = {
-  nodes: { id: string; label: string; name?: string }[];
+  nodes: GraphNodeData[];
   links: { source: string; target: string; type: string }[];
 };
+
+function hasEnrichment(node: GraphNodeData): boolean {
+  return !!(node.biography ?? node.country ?? node.active_years ?? node.enrichment_source);
+}
 
 function GraphContent() {
   const searchParams = useSearchParams();
   const initialArtist = searchParams.get("artist") ?? "";
   const [artistFilter, setArtistFilter] = useState(initialArtist);
-  const [staticJson, setStaticJson] = useState<GraphJson | null | undefined>(undefined);
   const [data, setData] = useState<GraphData>({ nodes: [], links: [] });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showEdgeLabels, setShowEdgeLabels] = useState(false);
-
-  useEffect(() => {
-    loadGraphJson().then(setStaticJson);
-  }, []);
+  const [hoveredNode, setHoveredNode] = useState<GraphNodeData | null>(null);
+  const [selectedNode, setSelectedNode] = useState<GraphNodeData | null>(null);
+  const [hasAutoLoaded, setHasAutoLoaded] = useState(false);
 
   const loadGraph = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      if (staticJson) {
-        const artistName = artistFilter.trim() || getRandomArtistName(staticJson);
-        const out = getGraphData(staticJson, artistName || undefined);
-        setData({ nodes: out.nodes, links: out.links });
-      } else if (staticJson === null) {
-        const params = artistFilter.trim()
-          ? `?artist=${encodeURIComponent(artistFilter.trim())}`
-          : "?random=1";
-        const res = await fetch(`/api/graph${params}`);
+      const artistName = artistFilter.trim();
+      if (artistName) {
+        const res = await fetch(`/api/graph?artist=${encodeURIComponent(artistName)}`);
         const json = await res.json();
         if (!res.ok) throw new Error(json.error || "Failed to load graph");
-        setData({ nodes: json.nodes ?? [], links: json.links ?? [] });
+        const nextNodes = (json.nodes ?? []) as GraphNodeData[];
+        setData({ nodes: nextNodes, links: json.links ?? [] });
+        const selectedArtist =
+          nextNodes.find(
+            (node) =>
+              node.label === "Artist" &&
+              String(node.name ?? "").toLowerCase() === artistName.toLowerCase()
+          ) ??
+          nextNodes.find((node) => node.label === "Artist") ??
+          null;
+        setSelectedNode(selectedArtist);
+        return;
       }
+      const res = await fetch("/api/graph?random=1");
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Failed to load graph");
+      setData({ nodes: json.nodes ?? [], links: json.links ?? [] });
+      setSelectedNode(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to load graph");
       setData({ nodes: [], links: [] });
+      setSelectedNode(null);
     } finally {
       setLoading(false);
     }
-  }, [artistFilter, staticJson]);
+  }, [artistFilter]);
+
+  useEffect(() => {
+    if (hasAutoLoaded || !initialArtist.trim()) return;
+    setHasAutoLoaded(true);
+    void loadGraph();
+  }, [hasAutoLoaded, initialArtist, loadGraph]);
+
+  const activeNode = hoveredNode ?? selectedNode;
 
   const graphData = useMemo(
     () => ({ nodes: data.nodes, links: data.links }),
@@ -170,7 +199,30 @@ function GraphContent() {
         <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       )}
 
-      <div className="h-[70vh] min-h-[400px] w-full overflow-hidden rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+      <div className="relative h-[70vh] min-h-[400px] w-full overflow-hidden rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+        {activeNode && (
+          <div className="absolute bottom-3 left-3 z-10 max-h-[40vh] w-80 overflow-auto rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-3 shadow-lg">
+            <p className="font-medium text-[hsl(var(--foreground))]">
+              {activeNode.name ?? activeNode.id}
+            </p>
+            {hasEnrichment(activeNode) && (
+              <div className="mt-2 space-y-1.5 border-t border-[hsl(var(--border))] pt-2 text-xs text-[hsl(var(--muted-foreground))]">
+                {activeNode.country && (
+                  <p><span className="font-medium text-[hsl(var(--foreground))]">Country:</span> {activeNode.country}</p>
+                )}
+                {activeNode.active_years && (
+                  <p><span className="font-medium text-[hsl(var(--foreground))]">Active:</span> {activeNode.active_years}</p>
+                )}
+                {activeNode.biography && (
+                  <p className="line-clamp-6">{activeNode.biography}</p>
+                )}
+                {activeNode.enrichment_source && (
+                  <p className="italic">Source: {activeNode.enrichment_source}</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
         {loading ? (
           <div className="flex h-full items-center justify-center">
             <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--muted-foreground))]" />
@@ -251,6 +303,7 @@ function GraphContent() {
                 : undefined
             }
             nodeColor={(node) => getNodeColor((node as { label?: string }).label ?? "Track")}
+            onNodeHover={(node, prev) => setHoveredNode(node ? (node as GraphNodeData) : null)}
             backgroundColor="hsl(var(--card))"
             enableZoomInteraction={true}
             enablePanInteraction={true}

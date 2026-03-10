@@ -4,6 +4,8 @@
  */
 
 import type {
+  EnrichmentEdgeMutation,
+  EnrichmentNodeMutation,
   RawEnrichmentPayload,
   VerifiedEnrichmentRecord,
   ConfidenceLevel,
@@ -66,6 +68,36 @@ function sanitizeProperties(
   return out;
 }
 
+function sanitizeRelatedNodes(nodes: EnrichmentNodeMutation[] | undefined): EnrichmentNodeMutation[] | undefined {
+  if (!nodes?.length) return undefined;
+  const out = nodes
+    .filter((node) => node.id && Array.isArray(node.labels) && node.labels.length > 0)
+    .map((node) => ({
+      id: sanitizeString(node.id, 200) ?? node.id,
+      labels: node.labels.map((label) => sanitizeString(label, 100) ?? label).filter(Boolean),
+      properties: sanitizeProperties(node.properties ?? {}),
+      ...(node.meta ? { meta: sanitizeProperties(node.meta) } : {}),
+    }))
+    .filter((node) => node.id && node.labels.length > 0);
+  return out.length > 0 ? out : undefined;
+}
+
+function sanitizeRelatedEdges(edges: EnrichmentEdgeMutation[] | undefined): EnrichmentEdgeMutation[] | undefined {
+  if (!edges?.length) return undefined;
+  const out = edges
+    .filter((edge) => edge.id && edge.type && edge.fromNodeId && edge.toNodeId)
+    .map((edge) => ({
+      id: sanitizeString(edge.id, 200) ?? edge.id,
+      type: sanitizeString(edge.type, 100) ?? edge.type,
+      fromNodeId: sanitizeString(edge.fromNodeId, 200) ?? edge.fromNodeId,
+      toNodeId: sanitizeString(edge.toNodeId, 200) ?? edge.toNodeId,
+      ...(edge.properties ? { properties: sanitizeProperties(edge.properties) } : {}),
+      ...(edge.meta ? { meta: sanitizeProperties(edge.meta) } : {}),
+    }))
+    .filter((edge) => edge.id && edge.type && edge.fromNodeId && edge.toNodeId);
+  return out.length > 0 ? out : undefined;
+}
+
 /**
  * Verify a raw enrichment payload: schema (has at least one property), entity match, sanitization.
  * Returns a verified record or null if rejected.
@@ -89,5 +121,7 @@ export function verifyPayload(
     retrieved_at: raw.source.retrieved_at,
     excerpt: raw.source.excerpt ? sanitizeString(raw.source.excerpt, 2000) : undefined,
     confidence,
+    relatedNodes: sanitizeRelatedNodes(raw.relatedNodes),
+    relatedEdges: sanitizeRelatedEdges(raw.relatedEdges),
   };
 }
