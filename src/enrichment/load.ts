@@ -3,7 +3,12 @@
  */
 
 import type { GraphStore } from "../store/index.js";
-import type { VerifiedEnrichmentRecord } from "./types.js";
+import type {
+  PersistedEdgeChange,
+  PersistedNodeChange,
+  PersistedPropertyChange,
+  VerifiedEnrichmentRecord,
+} from "./types.js";
 import { GraphNode } from "../domain/GraphNode.js";
 import { GraphEdge } from "../domain/GraphEdge.js";
 
@@ -44,6 +49,26 @@ function buildProvenanceMeta(record: VerifiedEnrichmentRecord): Record<string, u
   };
 }
 
+function valuesEqual(a: unknown, b: unknown): boolean {
+  return JSON.stringify(a) === JSON.stringify(b);
+}
+
+function getDisplayName(node: {
+  id: string;
+  properties: Record<string, unknown>;
+}): string {
+  return String(
+    node.properties.name ??
+      node.properties.title ??
+      node.properties.venue ??
+      node.id
+  );
+}
+
+function getTargetLabel(node: { labels: string[] }): string {
+  return node.labels[0] ?? "Node";
+}
+
 /**
  * Apply a verified enrichment record to a graph node: merge properties and set provenance in meta.
  */
@@ -51,39 +76,97 @@ export async function loadVerifiedRecord(
   store: GraphStore,
   nodeId: string,
   record: VerifiedEnrichmentRecord
-): Promise<{ nodesCreated: number; edgesCreated: number }> {
+): Promise<{
+  propertyChanges: PersistedPropertyChange[];
+  nodeChanges: PersistedNodeChange[];
+  edgeChanges: PersistedEdgeChange[];
+  nodesCreated: number;
+  edgesCreated: number;
+}> {
   const existing = await store.getNode(nodeId);
-  if (!existing) return { nodesCreated: 0, edgesCreated: 0 };
+  if (!existing) {
+    return {
+      propertyChanges: [],
+      nodeChanges: [],
+      edgeChanges: [],
+      nodesCreated: 0,
+      edgesCreated: 0,
+    };
+  }
   const existingMeta = (existing.meta ?? {}) as Record<string, unknown>;
   const provenanceMeta = buildProvenanceMeta(record);
   const mergedMeta = { ...existingMeta, ...provenanceMeta };
+  const propertyChanges: PersistedPropertyChange[] = Object.entries(record.properties)
+    .filter(([key, value]) => !valuesEqual(existing.properties[key], value))
+    .map(([key, value]) => ({
+      key,
+      value,
+      action: existing.properties[key] === undefined ? "created" : "updated",
+      targetId: existing.id,
+      targetLabel: getTargetLabel(existing),
+    }));
+
   await store.updateNode(nodeId, {
     properties: record.properties,
     meta: mergedMeta,
   });
 
+  const nodeChanges: PersistedNodeChange[] = [];
+  const edgeChanges: PersistedEdgeChange[] = [];
   let nodesCreated = 0;
   let edgesCreated = 0;
   for (const node of record.relatedNodes ?? []) {
     const current = await store.getNode(node.id);
     if (current) {
+      const changedProperties = Object.entries(node.properties)
+        .filter(([key, value]) => !valuesEqual(current.properties[key], value))
+        .map(([key]) => key);
       await store.updateNode(node.id, {
         labels: node.labels,
         properties: node.properties,
         meta: node.meta ?? current.meta,
       });
+      nodeChanges.push({
+        id: node.id,
+        label: node.labels[0] ?? current.labels[0] ?? "Node",
+        name: getDisplayName({ id: node.id, properties: node.properties }),
+        action: changedProperties.length > 0 ? "updated_existing" : "matched_existing",
+        changedProperties,
+      });
       continue;
     }
     await store.createNode(new EnrichedNode(node.id, node.labels, node.properties, node.meta));
     nodesCreated += 1;
+    nodeChanges.push({
+      id: node.id,
+      label: node.labels[0] ?? "Node",
+      name: getDisplayName({ id: node.id, properties: node.properties }),
+      action: "created",
+      changedProperties: Object.keys(node.properties),
+    });
   }
 
   for (const edge of record.relatedEdges ?? []) {
     const current = await store.getEdge(edge.id);
+    const fromNode = await store.getNode(edge.fromNodeId);
+    const toNode = await store.getNode(edge.toNodeId);
+    const changedProperties = Object.entries(edge.properties ?? {})
+      .filter(([key, value]) => !valuesEqual(current?.properties[key], value))
+      .map(([key]) => key);
     if (current) {
       await store.updateEdge(edge.id, {
         properties: edge.properties,
         meta: edge.meta ?? current.meta,
+      });
+      edgeChanges.push({
+        id: edge.id,
+        type: edge.type,
+        fromNodeId: edge.fromNodeId,
+        toNodeId: edge.toNodeId,
+        fromName: fromNode ? getDisplayName(fromNode) : edge.fromNodeId,
+        toName: toNode ? getDisplayName(toNode) : edge.toNodeId,
+        action: changedProperties.length > 0 ? "updated_existing" : "matched_existing",
+        changedProperties,
       });
       continue;
     }
@@ -98,7 +181,17 @@ export async function loadVerifiedRecord(
       )
     );
     edgesCreated += 1;
+    edgeChanges.push({
+      id: edge.id,
+      type: edge.type,
+      fromNodeId: edge.fromNodeId,
+      toNodeId: edge.toNodeId,
+      fromName: fromNode ? getDisplayName(fromNode) : edge.fromNodeId,
+      toName: toNode ? getDisplayName(toNode) : edge.toNodeId,
+      action: "created",
+      changedProperties,
+    });
   }
 
-  return { nodesCreated, edgesCreated };
+  return { propertyChanges, nodeChanges, edgeChanges, nodesCreated, edgesCreated };
 }

@@ -10,7 +10,7 @@ const fontSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "GrooveGraph",
-  description: "Property graph for recorded music: query, enrich, visualize",
+  description: "Unified graph-first exploration for recorded music relationships",
 };
 
 export default function RootLayout({
@@ -26,19 +26,16 @@ export default function RootLayout({
             <Link href="/" className="text-lg font-semibold">
               GrooveGraph
             </Link>
-            <nav className="flex gap-6">
+            <nav className="flex items-center gap-6">
               <Link
                 href="/"
                 className="text-sm text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
               >
-                Query
+                Explore
               </Link>
-              <Link
-                href="/graph"
-                className="text-sm text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
-              >
-                Graph
-              </Link>
+              <span className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
+                Graph default
+              </span>
             </nav>
           </div>
         </header>

@@ -3,27 +3,11 @@
  * Aligns with docs/DOMAIN_MODEL.md (17 node labels, 26 edge types).
  */
 
-export const ENTITY_LABELS = [
-  "Artist",
-  "Album",
-  "Track",
-  "Equipment",
-  "Instrument",
-  "Studio",
-  "Person",
-  "Credit",
-  "Label",
-  "Performance",
-  "Effect",
-  "Genre",
-  "Playlist",
-  "Venue",
-  "SongWork",
-  "Session",
-  "Release",
-] as const;
-
-export type EntityLabel = (typeof ENTITY_LABELS)[number];
+export {
+  ENTITY_LABELS,
+  getEntityDisplayName,
+  type EntityLabel,
+} from "@/lib/entity-config";
 
 export const RELATIONSHIP_TYPES = [
   "PERFORMED_BY",
@@ -119,9 +103,3 @@ export function getLinkColor(type: string): string {
   return LINK_COLOR_GROUP[type] ?? DEFAULT_LINK_COLOR;
 }
 
-export function getEntityDisplayName(label: string): string {
-  const names: Record<string, string> = {
-    SongWork: "Song work",
-  };
-  return names[label] ?? label;
-}

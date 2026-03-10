@@ -1,6 +1,7 @@
 import neo4j, { Driver, Integer, Record as Neo4jRecord } from "neo4j-driver";
 import { GraphNode } from "../domain/GraphNode.js";
 import { GraphEdge } from "../domain/GraphEdge.js";
+import { getEntityDisplayPropertyKeys } from "../lib/entity-config.js";
 import type {
   DeleteNodeOptions,
   Direction,
@@ -55,6 +56,13 @@ class StoredEdge extends GraphEdge {
 function assertSafeToken(value: string, kind: "label" | "relationship"): string {
   if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(value)) {
     throw new Error(`Invalid ${kind} token: ${value}`);
+  }
+  return value;
+}
+
+function assertSafePropertyKey(value: string): string {
+  if (!/^[A-Za-z][A-Za-z0-9_]*$/.test(value)) {
+    throw new Error(`Invalid property key: ${value}`);
   }
   return value;
 }
@@ -315,55 +323,65 @@ export class Neo4jGraphStore implements GraphStore {
     });
   }
 
-  async getArtistSubgraph(artistQuery: string): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
+  async findBestNodeMatch(label: string, query: string): Promise<GraphNode | null> {
+    const safeLabel = assertSafeToken(label, "label");
+    const propertyKeys = getEntityDisplayPropertyKeys(label).map((key) => assertSafePropertyKey(key));
     return this.read(async (session) => {
       const result = await session.run(
-        `MATCH (artist:GraphEntity:Artist)
-         WHERE toLower(artist.name) = toLower($artistQuery)
-            OR toLower(artist.name) CONTAINS toLower($artistQuery)
-         WITH artist
-         ORDER BY CASE WHEN toLower(artist.name) = toLower($artistQuery) THEN 0 ELSE 1 END, artist.name
-         LIMIT 1
-         OPTIONAL MATCH (track:GraphEntity:Track)-[performed:PERFORMED_BY]->(artist)
-         OPTIONAL MATCH (track)-[released:RELEASED_ON]->(album:GraphEntity:Album)
-         WITH artist,
-              collect(DISTINCT track) AS tracks,
-              collect(DISTINCT album) AS albums,
-              collect(DISTINCT performed) AS seedPerformed,
-              collect(DISTINCT released) AS seedReleased
-         WITH artist,
-              [artist] + [node IN tracks WHERE node IS NOT NULL] + [node IN albums WHERE node IS NOT NULL] AS coreNodes,
-              [rel IN seedPerformed WHERE rel IS NOT NULL] + [rel IN seedReleased WHERE rel IS NOT NULL] AS seedEdges
-         UNWIND coreNodes AS core
-         OPTIONAL MATCH (core)-[adj]-(neighbor:GraphEntity)
+        `MATCH (n:GraphEntity:${safeLabel})
+         WITH n, [key IN $propertyKeys WHERE n[key] IS NOT NULL | toString(n[key])] AS values
+         WHERE size(values) > 0
+           AND any(value IN values WHERE toLower(value) = toLower($query) OR toLower(value) CONTAINS toLower($query))
+         WITH n, values,
+              CASE
+                WHEN any(value IN values WHERE toLower(value) = toLower($query)) THEN 0
+                ELSE 1
+              END AS exactRank,
+              head(values) AS displayValue
+         RETURN n, labels(n) AS labels
+         ORDER BY exactRank, displayValue
+         LIMIT 1`,
+        { propertyKeys, query }
+      );
+      if (result.records.length === 0) return null;
+      const record = toNodeRecord(result.records[0]);
+      return new StoredNode(record.id, record.labels, record.properties, record.meta);
+    });
+  }
+
+  async getNodeSubgraph(nodeId: string): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
+    return this.read(async (session) => {
+      const result = await session.run(
+        `MATCH (seed:GraphEntity {id: $nodeId})
+         OPTIONAL MATCH path=(seed)-[*1..2]-(neighbor:GraphEntity)
+         WITH seed, collect(path)[0..250] AS rawPaths
          WITH
-           collect(DISTINCT {
-             id: core.id,
-             labels: labels(core),
-             properties: properties(core)
-           }) +
-           collect(DISTINCT CASE
-             WHEN neighbor IS NULL THEN NULL
-             ELSE {
-               id: neighbor.id,
-               labels: labels(neighbor),
-               properties: properties(neighbor)
-             }
-           END) AS nodeMaps,
-           collect(DISTINCT CASE
-             WHEN adj IS NULL THEN NULL
-             ELSE {
-               id: adj.id,
-               type: type(adj),
-               fromNodeId: startNode(adj).id,
-               toNodeId: endNode(adj).id,
-               properties: properties(adj)
-             }
-           END) AS adjacentEdgeMaps,
-           seedEdges
-         WITH nodeMaps, adjacentEdgeMaps + seedEdges AS edgeMaps
-         RETURN nodeMaps, edgeMaps`,
-        { artistQuery }
+           [seed] + reduce(nodeAcc = [], path IN rawPaths |
+             nodeAcc + CASE
+               WHEN path IS NULL THEN []
+               ELSE nodes(path)
+             END
+           ) AS nodeList,
+           reduce(edgeAcc = [], path IN rawPaths |
+             edgeAcc + CASE
+               WHEN path IS NULL THEN []
+               ELSE relationships(path)
+             END
+           ) AS edgeList
+         RETURN
+           [node IN nodeList WHERE node IS NOT NULL | {
+             id: node.id,
+             labels: labels(node),
+             properties: properties(node)
+           }] AS nodeMaps,
+           [edge IN edgeList WHERE edge IS NOT NULL | {
+             id: edge.id,
+             type: type(edge),
+             fromNodeId: startNode(edge).id,
+             toNodeId: endNode(edge).id,
+             properties: properties(edge)
+           }] AS edgeMaps`,
+        { nodeId }
       );
       if (result.records.length === 0) {
         return { nodes: [], edges: [] };
@@ -405,6 +423,75 @@ export class Neo4jGraphStore implements GraphStore {
 
       return { nodes, edges };
     });
+  }
+
+  async getNodePreview(nodeId: string): Promise<
+    Array<{
+      id: string;
+      label: string;
+      name: string;
+      relationshipType: string;
+      direction: "inbound" | "outbound";
+    }>
+  > {
+    return this.read(async (session) => {
+      const result = await session.run(
+        `MATCH (seed:GraphEntity {id: $nodeId})
+         CALL {
+           WITH seed
+           OPTIONAL MATCH (seed)-[outRel]->(outNode:GraphEntity)
+           RETURN collect(DISTINCT CASE
+             WHEN outNode IS NULL THEN NULL
+             ELSE {
+               id: outNode.id,
+               label: head([label IN labels(outNode) WHERE label <> 'GraphEntity']),
+               name: coalesce(outNode.name, outNode.title, outNode.venue, outNode.id),
+               relationshipType: type(outRel),
+               direction: 'outbound'
+             }
+           END) AS outboundItems
+         }
+         CALL {
+           WITH seed
+           OPTIONAL MATCH (inNode:GraphEntity)-[inRel]->(seed)
+           RETURN collect(DISTINCT CASE
+             WHEN inNode IS NULL THEN NULL
+             ELSE {
+               id: inNode.id,
+               label: head([label IN labels(inNode) WHERE label <> 'GraphEntity']),
+               name: coalesce(inNode.name, inNode.title, inNode.venue, inNode.id),
+               relationshipType: type(inRel),
+               direction: 'inbound'
+             }
+           END) AS inboundItems
+         }
+         RETURN outboundItems + inboundItems AS previewItems`,
+        { nodeId }
+      );
+
+      if (result.records.length === 0) {
+        return [];
+      }
+
+      const items = (result.records[0].get("previewItems") as Array<Record<string, unknown> | null>) ?? [];
+      return items
+        .filter((item): item is Record<string, unknown> => !!item && !!item.id)
+        .map((item) => ({
+          id: String(item.id),
+          label: String(item.label ?? "Node"),
+          name: String(item.name ?? item.id),
+          relationshipType: String(item.relationshipType ?? ""),
+          direction: item.direction === "inbound" ? "inbound" : "outbound",
+        }));
+    });
+  }
+
+  async getArtistSubgraph(artistQuery: string): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
+    const artist = await this.findBestNodeMatch("Artist", artistQuery);
+    if (!artist) {
+      return { nodes: [], edges: [] };
+    }
+    return this.getNodeSubgraph(artist.id);
   }
 
   async createNode(node: GraphNode): Promise<void> {

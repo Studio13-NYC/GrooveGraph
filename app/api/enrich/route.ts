@@ -61,6 +61,11 @@ export async function POST(request: NextRequest) {
       confidence: result.confidence,
       nodesCreated: result.nodesCreated,
       edgesCreated: result.edgesCreated,
+      entitiesIdentified: result.nodeChanges.length,
+      relationshipsIdentified: result.edgeChanges.length,
+      propertyChanges: result.propertyChanges,
+      nodeChanges: result.nodeChanges,
+      edgeChanges: result.edgeChanges,
     });
   } catch (e) {
     console.error("enrich", e);

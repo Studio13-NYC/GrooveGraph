@@ -6,7 +6,12 @@ import type { GraphStore } from "../store/index.js";
 import { getSourcesForEntityType } from "./sources/registry.js";
 import { fetchArtistByName } from "./adapters/musicbrainz.js";
 import { fetchSummaryByName } from "./adapters/wikipedia.js";
-import type { RawEnrichmentPayload } from "./types.js";
+import type {
+  PersistedEdgeChange,
+  PersistedNodeChange,
+  PersistedPropertyChange,
+  RawEnrichmentPayload,
+} from "./types.js";
 import { verifyPayload } from "./verify.js";
 import { loadVerifiedRecord } from "./load.js";
 
@@ -53,6 +58,9 @@ export interface EnrichmentResult {
   confidence: string[];
   nodesCreated: number;
   edgesCreated: number;
+  propertyChanges: PersistedPropertyChange[];
+  nodeChanges: PersistedNodeChange[];
+  edgeChanges: PersistedEdgeChange[];
 }
 
 /**
@@ -79,23 +87,36 @@ export async function runEnrichmentPipeline(
   }
   const sourcesUsed: string[] = [];
   const confidence: string[] = [];
-  let propertiesAdded = 0;
+  const propertyChanges = new Map<string, PersistedPropertyChange>();
+  const nodeChanges = new Map<string, PersistedNodeChange>();
+  const edgeChanges = new Map<string, PersistedEdgeChange>();
   let nodesCreated = 0;
   let edgesCreated = 0;
   for (const { record } of verified) {
     const loadResult = await loadVerifiedRecord(store, nodeId, record);
     sourcesUsed.push(record.source_name);
     confidence.push(record.confidence);
-    propertiesAdded += Object.keys(record.properties).length;
+    for (const change of loadResult.propertyChanges) {
+      propertyChanges.set(`${change.targetId}:${change.key}`, change);
+    }
+    for (const change of loadResult.nodeChanges) {
+      nodeChanges.set(change.id, change);
+    }
+    for (const change of loadResult.edgeChanges) {
+      edgeChanges.set(change.id, change);
+    }
     nodesCreated += loadResult.nodesCreated;
     edgesCreated += loadResult.edgesCreated;
   }
   return {
     nodeId,
     sourcesUsed: [...new Set(sourcesUsed)],
-    propertiesAdded,
+    propertiesAdded: propertyChanges.size,
     confidence,
     nodesCreated,
     edgesCreated,
+    propertyChanges: [...propertyChanges.values()],
+    nodeChanges: [...nodeChanges.values()],
+    edgeChanges: [...edgeChanges.values()],
   };
 }

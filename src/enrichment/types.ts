@@ -28,6 +28,33 @@ export interface EnrichmentEdgeMutation {
   meta?: Record<string, unknown>;
 }
 
+export interface PersistedPropertyChange {
+  key: string;
+  value: unknown;
+  action: "created" | "updated";
+  targetId: string;
+  targetLabel: string;
+}
+
+export interface PersistedNodeChange {
+  id: string;
+  label: string;
+  name: string;
+  action: "created" | "matched_existing" | "updated_existing";
+  changedProperties: string[];
+}
+
+export interface PersistedEdgeChange {
+  id: string;
+  type: string;
+  fromNodeId: string;
+  toNodeId: string;
+  fromName: string;
+  toName: string;
+  action: "created" | "matched_existing" | "updated_existing";
+  changedProperties: string[];
+}
+
 /** Raw payload from an adapter; shape depends on source. */
 export interface RawEnrichmentPayload {
   /** Source metadata for provenance. */
