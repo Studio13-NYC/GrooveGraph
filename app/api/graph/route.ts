@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getGraphStore } from "@/load/persist-graph";
-import { Neo4jGraphStore } from "@/store";
 import {
-  collectNodeNeighborhood,
+  buildExplorationGraphPayload,
   resolveEntityNode,
-  toGraphLinkPayload,
-  toGraphNodePayload,
 } from "@/lib/exploration";
 
 export const dynamic = "force-dynamic";
@@ -46,15 +43,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ nodes: [], links: [] });
     }
 
-    const subgraph =
-      store instanceof Neo4jGraphStore
-        ? await store.getNodeSubgraph(seedNode.id)
-        : await collectNodeNeighborhood(store, seedNode.id);
+    const graphPayload = await buildExplorationGraphPayload(store, seedNode);
 
     return NextResponse.json({
-      nodes: subgraph.nodes.map((node) => toGraphNodePayload(node)),
-      links: subgraph.edges.map((edge) => toGraphLinkPayload(edge)),
-      focusNodeId: seedNode.id,
+      ...graphPayload,
       metrics: {
         durationMs: Date.now() - startedAt,
       },

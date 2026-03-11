@@ -1,9 +1,17 @@
+export type GraphNodeKind = "focus" | "type_hub" | "entity";
+
 export type ExplorationViewMode = "graph" | "query";
 
 export type GraphNodePayload = {
   id: string;
   label: string;
   name: string;
+  labels?: string[];
+  nodeKind?: GraphNodeKind;
+  entityLabel?: string;
+  groupKey?: string;
+  relatedCount?: number;
+  hiddenByDefault?: boolean;
   biography?: string;
   country?: string;
   active_years?: string;
@@ -18,6 +26,10 @@ export type GraphLinkPayload = {
   source: string;
   target: string;
   type: string;
+  groupKey?: string;
+  hiddenByDefault?: boolean;
+  relationshipCount?: number;
+  isSynthetic?: boolean;
 };
 
 export type RelatedEntityPreview = {
@@ -42,6 +54,7 @@ export type PropertyFact = {
 export type QueryResultPayload = {
   id: string;
   entityType: string;
+  labels: string[];
   name: string;
   query: string;
   summary: string;

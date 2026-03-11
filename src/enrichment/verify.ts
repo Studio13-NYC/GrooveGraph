@@ -117,6 +117,7 @@ export function verifyPayload(
     properties: sanitized,
     source_id: raw.source.source_id,
     source_name: raw.source.source_name,
+    source_type: raw.source.source_type,
     url: raw.source.url,
     retrieved_at: raw.source.retrieved_at,
     excerpt: raw.source.excerpt ? sanitizeString(raw.source.excerpt, 2000) : undefined,

@@ -4,6 +4,8 @@
  */
 import { GraphNode } from "../domain/GraphNode.js";
 import { GraphEdge } from "../domain/GraphEdge.js";
+import { normalizeEntityLabels } from "../lib/entity-identity.js";
+import { isTypeHubNodeLabels, reconcileTypeHubLinksForNode } from "../lib/type-hubs.js";
 import type {
   GraphStore,
   NodePatch,
@@ -118,22 +120,28 @@ export class InMemoryGraphStore implements GraphStore {
     }
     const record: NodeRecord = {
       id: node.id,
-      labels: [...node.labels],
+      labels: normalizeEntityLabels(node.labels),
       properties: { ...node.properties },
       meta: node.meta ? { ...node.meta } : undefined,
     };
     this.nodes.set(node.id, record);
     this.indexNode(record);
+    if (!isTypeHubNodeLabels(record.labels)) {
+      await reconcileTypeHubLinksForNode(this, node.id);
+    }
   }
 
   async updateNode(nodeId: string, patch: NodePatch): Promise<GraphNode> {
     const record = this.nodes.get(nodeId);
     if (!record) throw new Error(`Node not found: ${nodeId}`);
     this.unindexNode(record);
-    if (patch.labels !== undefined) record.labels = [...patch.labels];
+    if (patch.labels !== undefined) record.labels = normalizeEntityLabels(patch.labels);
     if (patch.properties !== undefined) record.properties = { ...record.properties, ...patch.properties };
     if (patch.meta !== undefined) record.meta = { ...patch.meta };
     this.indexNode(record);
+    if (!isTypeHubNodeLabels(record.labels)) {
+      await reconcileTypeHubLinksForNode(this, nodeId);
+    }
     return new StoredNode(record.id, record.labels, record.properties, record.meta);
   }
 

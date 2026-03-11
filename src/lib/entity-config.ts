@@ -217,7 +217,11 @@ export function getNodeDisplayName(node: {
   labels: string[];
   properties: Record<string, unknown>;
 }): string {
-  const label = node.labels[0] ?? "";
+  const label = node.labels.includes("Artist")
+    ? "Artist"
+    : node.labels.includes("Person")
+      ? "Person"
+      : node.labels[0] ?? "";
   const propertyKeys = getEntityDisplayPropertyKeys(label);
   for (const key of propertyKeys) {
     const value = node.properties[key];

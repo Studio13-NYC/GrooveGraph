@@ -1,6 +1,6 @@
-# Enrichment Process: Collect → Verify → Load
+# Enrichment Process: Collect → Verify → Review → Load
 
-This document defines how enrichment data is **collected**, **verified**, and **loaded** into the graph with full provenance. See [FUNCTIONAL_SPEC.md](FUNCTIONAL_SPEC.md) §5 and [ENRICHMENT_SOURCES.md](ENRICHMENT_SOURCES.md).
+This document defines how enrichment data is **collected**, **verified**, **reviewed**, and **loaded** into the graph with full provenance. See [FUNCTIONAL_SPEC.md](FUNCTIONAL_SPEC.md) §5 and [ENRICHMENT_SOURCES.md](ENRICHMENT_SOURCES.md).
 
 ---
 
@@ -32,6 +32,14 @@ The enrich API or a dedicated service:
 2. Consults the **source registry** for sources that can enrich that entity’s label.
 3. Invokes each source’s **adapter** (implemented or stubbed).
 4. Aggregates raw payloads + source metadata and passes them to **Verify**.
+
+For the staged curator workflow, GrooveGraph also supports a review-session path:
+
+1. A subset of target graph entities is selected in the `/enrichment` UI.
+2. That subset is approved and saved as a review session.
+3. The project-level `enrichment-curator` subagent researches the approved targets using the documented source list first, then web search and Firecrawl where helpful.
+4. The subagent returns a structured JSON bundle of candidate properties, nodes, and relationships with provenance.
+5. The bundle is imported into the review session for human review before any writes happen.
 
 ---
 
@@ -82,6 +90,16 @@ Data is verified before loading so we can attach a confidence or verification fl
 - **Idempotency**: Same source + URL + entity can be applied multiple times; last write wins. Existing nodes/edges are updated; new ones are created.
 - **Store**: Production uses Neo4j Aura; writes persist immediately.
 
+### 3.4 Review before load
+
+For curator-led enrichment, GrooveGraph stages data before loading:
+
+- **Session creation**: The UI creates a review session from an approved subset of target entities.
+- **Candidate import**: The subagent's JSON bundle is imported as candidate property changes, node candidates, and edge candidates.
+- **Provenance review**: Each staged candidate keeps source URL, retrieval time, optional excerpt, and confidence.
+- **Human rejection**: The reviewer can reject bad items in the web UI before apply.
+- **Deduped apply**: Only non-rejected candidates are applied, with node and relationship matching against existing graph data before creating anything new.
+
 ### 3.3 Provenance storage
 
 Provenance is stored in node/edge `meta` or in dedicated properties:
@@ -96,6 +114,17 @@ Provenance is stored in node/edge `meta` or in dedicated properties:
 
 ## End-to-end flow
 
+### Direct pipeline
+
 1. **Collect**: Registry + adapters produce raw payloads + source metadata.
 2. **Verify**: Schema validation, entity match confidence, sanitization → verified enrichment records.
 3. **Load**: Map to domain properties, attach provenance, update node (and optionally create nodes/edges).
+
+### Staged curator workflow
+
+1. **Select subset**: Choose the entities to enrich in the `/enrichment` workspace.
+2. **Approve subset**: Save the subset as a review session.
+3. **Research**: Run the `enrichment-curator` subagent using the generated research packet.
+4. **Import**: Paste the subagent JSON bundle into the review session.
+5. **Review**: Reject bad items and explicitly approve ambiguous ones when needed.
+6. **Apply**: Persist the remaining deduped properties, nodes, and relationships to Neo4j with provenance and review-session metadata.

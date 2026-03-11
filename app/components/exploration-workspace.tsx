@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Sparkles } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { EntitySearchControls } from "./entity-search-controls";
@@ -18,6 +18,7 @@ import {
 } from "@/lib/entity-config";
 import type {
   ExplorationViewMode,
+  GraphLinkPayload,
   GraphNodePayload,
   QueryResultPayload,
 } from "@/lib/exploration-types";
@@ -29,8 +30,13 @@ const ForceGraph2D = dynamic(
 );
 
 const NODE_RADIUS = 6;
-const COLUMN_GAP = 240;
-const ROW_GAP = 92;
+const COLLAPSED_TYPE_RING_RADIUS = 150;
+const EXPANDED_TYPE_RING_RADIUS = 240;
+const EXPANDED_ENTITY_RING_RADIUS = 96;
+const EXPANDED_ENTITY_SPREAD = 28;
+const GRAPH_FIT_PADDING = 120;
+const GRAPH_CENTER_Y = 60;
+const FOCUS_NODE_Y = -56;
 const GUIDED_ENTITY_TYPES: EntityLabel[] = ["Artist", "Genre", "Label", "Venue"];
 
 type PropertyChange = {
@@ -70,19 +76,7 @@ type EnrichFeedback = {
 
 type GraphState = {
   nodes: GraphNodePayload[];
-  links: Array<{
-    source:
-      | string
-      | {
-          id?: string;
-        };
-    target:
-      | string
-      | {
-          id?: string;
-        };
-    type: string;
-  }>;
+  links: GraphLinkPayload[];
   focusNodeId?: string;
 };
 
@@ -95,6 +89,12 @@ type GraphRenderNode = GraphNodePayload & {
   vy?: number;
 };
 
+type ExplorationHistoryEntry = {
+  entityType: EntityLabel;
+  query: string;
+  expandedTypeKeys: string[];
+};
+
 function formatValue(value: unknown): string {
   if (Array.isArray(value)) return value.join(", ");
   if (value && typeof value === "object") return JSON.stringify(value);
@@ -105,89 +105,74 @@ function normalizeEntityType(value: string | null): EntityLabel {
   return value && isEntityLabel(value) ? value : "Artist";
 }
 
-function getLayoutColumn(label: string, focusLabel: string): number {
-  if (label === focusLabel) return 0;
-
-  if (focusLabel === "Artist") {
-    if (label === "Album" || label === "Release") return 1;
-    if (label === "Track" || label === "SongWork") return 2;
-    return 3;
+function getTypeNodeAngle(index: number, total: number): number {
+  if (total <= 1) {
+    return 0;
   }
 
-  if (focusLabel === "Album" || focusLabel === "Release") {
-    if (label === "Artist") return 0;
-    if (label === "Album" || label === "Release") return 1;
-    if (label === "Track" || label === "SongWork") return 2;
-    return 3;
-  }
-
-  if (focusLabel === "Track" || focusLabel === "SongWork") {
-    if (label === "Artist") return 0;
-    if (label === "Album" || label === "Release") return 1;
-    if (label === "Track" || label === "SongWork") return 2;
-    return 3;
-  }
-
-  if (focusLabel === "Genre") {
-    if (label === "Artist") return 1;
-    if (label === "Album" || label === "Release") return 2;
-    if (label === "Track" || label === "SongWork") return 3;
-    return 2;
-  }
-
-  if (label === "Artist") return 1;
-  if (label === "Album" || label === "Release") return 2;
-  if (label === "Track" || label === "SongWork") return 3;
-  return 2;
+  const arcStart = -Math.PI / 3;
+  const arcEnd = Math.PI / 3;
+  const progress = total === 1 ? 0.5 : index / (total - 1);
+  return arcStart + (arcEnd - arcStart) * progress;
 }
 
-function applySemanticLayout(graph: GraphState): GraphState {
+function applySemanticLayout(graph: GraphState, expandedTypeKeys: string[] = []): GraphState {
   if (graph.nodes.length === 0) return graph;
 
-  const focusNode =
-    graph.nodes.find((node) => node.id === graph.focusNodeId) ?? graph.nodes[0];
+  const focusNode = graph.nodes.find((node) => node.id === graph.focusNodeId) ?? graph.nodes[0];
   if (!focusNode) return graph;
 
-  const focusLabel = focusNode.label;
-  const orderedNodes = [...graph.nodes].sort((left, right) => {
-    const leftColumn = getLayoutColumn(left.label, focusLabel);
-    const rightColumn = getLayoutColumn(right.label, focusLabel);
-    if (left.id === focusNode.id) return -1;
-    if (right.id === focusNode.id) return 1;
-    if (leftColumn !== rightColumn) return leftColumn - rightColumn;
-    if (left.label !== right.label) {
-      return left.label.localeCompare(right.label, "en", { sensitivity: "base" });
-    }
-    return left.name.localeCompare(right.name, "en", { sensitivity: "base" });
+  const positionedNodes = new Map<string, GraphRenderNode>();
+  positionedNodes.set(focusNode.id, {
+    ...focusNode,
+    x: 0,
+    y: FOCUS_NODE_Y,
+    fx: 0,
+    fy: FOCUS_NODE_Y,
   });
 
-  const columnBuckets = new Map<number, GraphRenderNode[]>();
-  for (const node of orderedNodes) {
-    const column = node.id === focusNode.id ? 0 : getLayoutColumn(node.label, focusLabel);
-    const bucket = columnBuckets.get(column) ?? [];
-    bucket.push({ ...node });
-    columnBuckets.set(column, bucket);
-  }
+  const typeNodes = graph.nodes
+    .filter((node) => node.nodeKind === "type_hub")
+    .sort((left, right) => (right.relatedCount ?? 0) - (left.relatedCount ?? 0) || left.name.localeCompare(right.name));
 
-  const columns = [...columnBuckets.keys()].sort((a, b) => a - b);
-  const offset = (columns.length - 1) / 2;
-  const positionedNodes = new Map<string, GraphRenderNode>();
+  typeNodes.forEach((node, index) => {
+    const angle = getTypeNodeAngle(index, typeNodes.length);
+    const isExpanded = Boolean(node.groupKey && expandedTypeKeys.includes(node.groupKey));
+    const typeRadius = isExpanded ? EXPANDED_TYPE_RING_RADIUS : COLLAPSED_TYPE_RING_RADIUS;
+    const x = Math.cos(angle) * typeRadius;
+    const y = FOCUS_NODE_Y + Math.sin(angle) * typeRadius;
+    positionedNodes.set(node.id, {
+      ...node,
+      x,
+      y,
+      fx: x,
+      fy: y,
+    });
 
-  for (const column of columns) {
-    const bucket = columnBuckets.get(column) ?? [];
-    const verticalOffset = (bucket.length - 1) / 2;
-    bucket.forEach((node, index) => {
-      const x = (column - offset) * COLUMN_GAP;
-      const y = node.id === focusNode.id ? 0 : (index - verticalOffset) * ROW_GAP;
-      positionedNodes.set(node.id, {
-        ...node,
-        x,
-        y,
-        fx: x,
-        fy: y,
+    const childNodes = graph.nodes
+      .filter((candidate) => candidate.nodeKind === "entity" && candidate.groupKey === node.groupKey)
+      .sort((left, right) => left.name.localeCompare(right.name, "en", { sensitivity: "base" }));
+
+    childNodes.forEach((childNode, childIndex) => {
+      const offsetIndex = childIndex - (childNodes.length - 1) / 2;
+      const radialX = Math.cos(angle);
+      const radialY = Math.sin(angle);
+      const tangentX = -radialY;
+      const tangentY = radialX;
+      const childX = radialX * EXPANDED_ENTITY_RING_RADIUS + tangentX * offsetIndex * EXPANDED_ENTITY_SPREAD;
+      const childY =
+        FOCUS_NODE_Y +
+        radialY * EXPANDED_ENTITY_RING_RADIUS +
+        tangentY * offsetIndex * EXPANDED_ENTITY_SPREAD;
+      positionedNodes.set(childNode.id, {
+        ...childNode,
+        x: childX,
+        y: childY,
+        fx: childX,
+        fy: childY,
       });
     });
-  }
+  });
 
   return {
     ...graph,
@@ -223,8 +208,10 @@ export function ExplorationWorkspace() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const graphContainerRef = useRef<HTMLDivElement | null>(null);
   const graphRef = useRef<{
     zoomToFit?: (durationMs?: number, paddingPx?: number) => void;
+    centerAt?: (x?: number, y?: number, durationMs?: number) => void;
   } | null>(null);
 
   const initialEntityType = normalizeEntityType(searchParams.get("entityType"));
@@ -244,10 +231,14 @@ export function ExplorationWorkspace() {
   const [highlightEnriched, setHighlightEnriched] = useState(true);
   const [hoveredNode, setHoveredNode] = useState<GraphNodePayload | null>(null);
   const [selectedNode, setSelectedNode] = useState<GraphNodePayload | null>(null);
+  const [expandedTypeKeys, setExpandedTypeKeys] = useState<string[]>([]);
   const [hasAutoLoaded, setHasAutoLoaded] = useState(false);
   const [enrichFeedback, setEnrichFeedback] = useState<EnrichFeedback>(null);
   const [recentEnrichedNodeIds, setRecentEnrichedNodeIds] = useState<Set<string>>(new Set());
   const [graphInstanceKey, setGraphInstanceKey] = useState(0);
+  const [historyEntries, setHistoryEntries] = useState<ExplorationHistoryEntry[]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const lastAutoResetKeyRef = useRef<string>("");
 
   const activeNode = hoveredNode ?? selectedNode;
   const loading = loadingQuery || loadingGraph;
@@ -270,10 +261,17 @@ export function ExplorationWorkspace() {
     async (
       nextEntityType: EntityLabel = entityType,
       nextQuery: string = searchText,
-      options?: { preserveFeedback?: boolean }
+      options?: {
+        preserveFeedback?: boolean;
+        historyMode?: "push" | "replace" | "none";
+        expandedTypeKeys?: string[];
+      }
     ) => {
       const trimmedQuery = nextQuery.trim();
+      const nextExpandedTypeKeys = options?.expandedTypeKeys ?? [];
       syncUrl(nextEntityType, trimmedQuery, viewMode);
+      setEntityType(nextEntityType);
+      setSearchText(nextQuery);
       if (!options?.preserveFeedback) {
         setEnrichFeedback(null);
         setRecentEnrichedNodeIds(new Set());
@@ -316,19 +314,37 @@ export function ExplorationWorkspace() {
         const [graphResult, queryResponse] = await Promise.allSettled([graphPromise, queryPromise]);
 
         if (graphResult.status === "fulfilled") {
-          const nextGraph = applySemanticLayout({
-            nodes: Array.isArray(graphResult.value.nodes) ? graphResult.value.nodes : [],
-            links: Array.isArray(graphResult.value.links) ? graphResult.value.links : [],
-            focusNodeId:
-              typeof graphResult.value.focusNodeId === "string" ? graphResult.value.focusNodeId : undefined,
-          });
+          const nextGraph = applySemanticLayout(
+            {
+              nodes: Array.isArray(graphResult.value.nodes) ? graphResult.value.nodes : [],
+              links: Array.isArray(graphResult.value.links) ? graphResult.value.links : [],
+              focusNodeId:
+                typeof graphResult.value.focusNodeId === "string" ? graphResult.value.focusNodeId : undefined,
+            },
+            nextExpandedTypeKeys
+          );
           setGraphState(nextGraph);
+          setExpandedTypeKeys(nextExpandedTypeKeys);
           setGraphInstanceKey((current) => current + 1);
           const focusNode =
             nextGraph.nodes.find((node) => node.id === nextGraph.focusNodeId) ??
             nextGraph.nodes[0] ??
             null;
           setSelectedNode(focusNode);
+
+          const historyEntry: ExplorationHistoryEntry = {
+            entityType: nextEntityType,
+            query: trimmedQuery,
+            expandedTypeKeys: nextExpandedTypeKeys,
+          };
+          if (options?.historyMode === "replace") {
+            setHistoryEntries((current) =>
+              current.map((entry, index) => (index === historyIndex ? historyEntry : entry))
+            );
+          } else if (options?.historyMode !== "none") {
+            setHistoryEntries((current) => [...current.slice(0, historyIndex + 1), historyEntry]);
+            setHistoryIndex((current) => current + 1);
+          }
         } else {
           setGraphState({ nodes: [], links: [] });
           setSelectedNode(null);
@@ -353,87 +369,178 @@ export function ExplorationWorkspace() {
         setLoadingQuery(false);
       }
     },
-    [entityType, searchText, syncUrl, viewMode]
+    [entityType, historyIndex, searchText, syncUrl, viewMode]
   );
 
   useEffect(() => {
     if (hasAutoLoaded) return;
     setHasAutoLoaded(true);
-    void loadContext(initialEntityType, initialQuery);
+    void loadContext(initialEntityType, initialQuery, { historyMode: "push" });
   }, [hasAutoLoaded, initialEntityType, initialQuery, loadContext]);
 
   const graphData = useMemo(
-    () => ({
-      nodes: graphState.nodes.map((node) => ({ ...node })),
-      links: graphState.links.map((link) => ({
-        source:
-          typeof link.source === "string"
-            ? link.source
-            : String(link.source?.id ?? ""),
-        target:
-          typeof link.target === "string"
-            ? link.target
-            : String(link.target?.id ?? ""),
-        type: link.type,
-      })),
-    }),
-    [graphState]
+    () => {
+      const visibleNodes = graphState.nodes.filter(
+        (node) =>
+          node.nodeKind === "focus" ||
+          node.nodeKind === "type_hub" ||
+          (node.nodeKind === "entity" && node.groupKey && expandedTypeKeys.includes(node.groupKey))
+      );
+      const visibleNodeIds = new Set(visibleNodes.map((node) => node.id));
+
+      return {
+        nodes: visibleNodes.map((node) => ({ ...node })),
+        links: graphState.links
+          .filter(
+            (link) =>
+              (!link.hiddenByDefault || (link.groupKey && expandedTypeKeys.includes(link.groupKey))) &&
+              visibleNodeIds.has(link.source) &&
+              visibleNodeIds.has(link.target)
+          )
+          .map((link) => ({
+            ...link,
+          })),
+      };
+    },
+    [expandedTypeKeys, graphState]
   );
 
-  const resetGraphLayout = useCallback(() => {
-    setGraphState((current) => applySemanticLayout(current));
-    setGraphInstanceKey((current) => current + 1);
+  const fitGraphToViewport = useCallback(() => {
+    graphRef.current?.zoomToFit?.(250, GRAPH_FIT_PADDING);
+    graphRef.current?.centerAt?.(0, GRAPH_CENTER_Y, 250);
   }, []);
+
+  const resetGraphLayout = useCallback(() => {
+    setGraphState((current) => applySemanticLayout(current, expandedTypeKeys));
+    setGraphInstanceKey((current) => current + 1);
+  }, [expandedTypeKeys]);
+
+  useEffect(() => {
+    if (loadingGraph || graphData.nodes.length === 0) {
+      return;
+    }
+
+    const earlyFitTimeoutId = window.setTimeout(() => {
+      fitGraphToViewport();
+    }, 120);
+
+    const settledFitTimeoutId = window.setTimeout(() => {
+      fitGraphToViewport();
+    }, 360);
+
+    return () => {
+      window.clearTimeout(earlyFitTimeoutId);
+      window.clearTimeout(settledFitTimeoutId);
+    };
+  }, [fitGraphToViewport, graphData, graphInstanceKey, loadingGraph, queryResult]);
+
+  useEffect(() => {
+    if (!graphContainerRef.current || graphData.nodes.length === 0) {
+      return;
+    }
+
+    const container = graphContainerRef.current;
+    let resizeTimeoutId: number | null = null;
+    const observer = new ResizeObserver(() => {
+      if (resizeTimeoutId !== null) {
+        window.clearTimeout(resizeTimeoutId);
+      }
+      resizeTimeoutId = window.setTimeout(() => {
+        fitGraphToViewport();
+      }, 120);
+    });
+
+    observer.observe(container);
+
+    return () => {
+      observer.disconnect();
+      if (resizeTimeoutId !== null) {
+        window.clearTimeout(resizeTimeoutId);
+      }
+    };
+  }, [fitGraphToViewport, graphData.nodes.length]);
+
+  useEffect(() => {
+    if (loadingGraph || graphState.nodes.length === 0) {
+      return;
+    }
+
+    const autoResetKey = [
+      entityType,
+      searchText.trim().toLowerCase(),
+      queryResult?.id ?? "no-query-result",
+      expandedTypeKeys.join(","),
+    ].join("|");
+
+    if (lastAutoResetKeyRef.current === autoResetKey) {
+      return;
+    }
+
+    lastAutoResetKeyRef.current = autoResetKey;
+    const earlyTimeoutId = window.setTimeout(() => {
+      resetGraphLayout();
+    }, 240);
+
+    const settledTimeoutId = window.setTimeout(() => {
+      resetGraphLayout();
+    }, 1200);
+
+    return () => {
+      window.clearTimeout(earlyTimeoutId);
+      window.clearTimeout(settledTimeoutId);
+    };
+  }, [entityType, expandedTypeKeys, graphState.nodes.length, loadingGraph, queryResult?.id, resetGraphLayout, searchText]);
 
   const errorMessage = queryError ?? graphError;
 
   async function handleEnrich() {
-    if (!queryResult || (queryResult.entityType !== "Artist" && queryResult.entityType !== "Album")) {
+    if (
+      !queryResult ||
+      (queryResult.entityType !== "Artist" &&
+        queryResult.entityType !== "Album" &&
+        queryResult.entityType !== "Person")
+    ) {
       return;
     }
-    try {
-      const response = await fetch("/api/enrich", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: queryResult.entityType.toLowerCase(),
-          id: queryResult.id,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Enrichment failed");
-      }
-      const nextFeedback: EnrichFeedback = {
-        summary: String(data.message ?? "Enrichment applied."),
-        sourcesUsed: Array.isArray(data.sourcesUsed) ? data.sourcesUsed : [],
-        propertyChanges: Array.isArray(data.propertyChanges) ? data.propertyChanges : [],
-        nodeChanges: Array.isArray(data.nodeChanges) ? data.nodeChanges : [],
-        edgeChanges: Array.isArray(data.edgeChanges) ? data.edgeChanges : [],
-      };
-      setEnrichFeedback(nextFeedback);
-      setRecentEnrichedNodeIds(
-        new Set([
-          queryResult.id,
-          ...nextFeedback.nodeChanges.map((change) => change.id),
-          ...(nextFeedback.propertyChanges.length > 0 ? [queryResult.id] : []),
-        ])
-      );
-      await loadContext(entityType, searchText, { preserveFeedback: true });
-    } catch (error) {
-      setEnrichFeedback({
-        summary: error instanceof Error ? error.message : "Enrichment failed",
-        sourcesUsed: [],
-        propertyChanges: [],
-        nodeChanges: [],
-        edgeChanges: [],
-      });
-    }
+    const params = new URLSearchParams();
+    params.set("entityType", queryResult.entityType);
+    params.set("targetId", queryResult.id);
+    params.set("targetLabel", queryResult.entityType);
+    params.set("targetName", queryResult.name);
+    router.push(`/enrichment?${params.toString()}`);
   }
 
   function handleViewChange(nextView: ExplorationViewMode) {
     setViewMode(nextView);
     syncUrl(entityType, searchText, nextView);
+  }
+
+  function toggleTypeGroup(groupKey: string) {
+    setExpandedTypeKeys((current) => {
+      const next = current.includes(groupKey)
+        ? current.filter((item) => item !== groupKey)
+        : [...current, groupKey];
+      setHistoryEntries((entries) =>
+        entries.map((entry, index) => (index === historyIndex ? { ...entry, expandedTypeKeys: next } : entry))
+      );
+      return next;
+    });
+    setGraphInstanceKey((current) => current + 1);
+  }
+
+  async function focusEntityNode(node: GraphNodePayload) {
+    const nextEntityType = normalizeEntityType(node.entityLabel ?? node.label);
+    await loadContext(nextEntityType, node.name, { historyMode: "push" });
+  }
+
+  async function navigateHistory(nextIndex: number) {
+    const entry = historyEntries[nextIndex];
+    if (!entry) return;
+    setHistoryIndex(nextIndex);
+    await loadContext(entry.entityType, entry.query, {
+      historyMode: "none",
+      expandedTypeKeys: entry.expandedTypeKeys,
+    });
   }
 
   function renderQueryPanel() {
@@ -457,7 +564,7 @@ export function ExplorationWorkspace() {
           <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
-                <span>{getEntityDisplayName(queryResult.entityType)}</span>
+                <span>{queryResult.labels.map((label) => getEntityDisplayName(label)).join(" / ")}</span>
                 {queryResult.sourceBadges.map((badge) => (
                   <span
                     key={badge}
@@ -638,6 +745,24 @@ export function ExplorationWorkspace() {
       <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void navigateHistory(historyIndex - 1)}
+              disabled={historyIndex <= 0 || loading}
+            >
+              <ArrowLeft className="mr-1 h-3.5 w-3.5" />
+              Back
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void navigateHistory(historyIndex + 1)}
+              disabled={historyIndex < 0 || historyIndex >= historyEntries.length - 1 || loading}
+            >
+              <ArrowRight className="mr-1 h-3.5 w-3.5" />
+              Forward
+            </Button>
             <label className="flex cursor-pointer items-center gap-2 text-sm text-[hsl(var(--muted-foreground))]">
               <input
                 type="checkbox"
@@ -661,18 +786,36 @@ export function ExplorationWorkspace() {
             </Button>
           </div>
           <p className="text-xs text-[hsl(var(--muted-foreground))]">
-            Drag nodes to pin them where you drop them, scroll to zoom, and pan to inspect relationships.
+            Click a type node to show or hide that group. Click an entity node to make it the new focus.
           </p>
         </div>
 
-        <div className="relative h-[70vh] min-h-[420px] overflow-hidden rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))]">
+        <div
+          ref={graphContainerRef}
+          data-testid="exploration-graph"
+          className="relative h-[70vh] min-h-[420px] overflow-hidden rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))]"
+        >
           {activeNode && (
             <div className="absolute bottom-3 left-3 z-10 max-h-[40vh] w-80 overflow-auto rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-3 shadow-lg">
               <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
-                {getEntityDisplayName(activeNode.label)}
+                {activeNode.nodeKind === "type_hub"
+                  ? "Related entity type"
+                  : getEntityDisplayName(activeNode.entityLabel ?? activeNode.label)}
               </p>
               <p className="mt-1 font-medium text-[hsl(var(--foreground))]">{activeNode.name}</p>
               <div className="mt-3 space-y-1.5 border-t border-[hsl(var(--border))] pt-2 text-xs text-[hsl(var(--muted-foreground))]">
+                {activeNode.labels && activeNode.labels.length > 1 && activeNode.nodeKind !== "type_hub" && (
+                  <p>
+                    <span className="font-medium text-[hsl(var(--foreground))]">Labels:</span>{" "}
+                    {activeNode.labels.map((label) => getEntityDisplayName(label)).join(", ")}
+                  </p>
+                )}
+                {typeof activeNode.relatedCount === "number" && (
+                  <p>
+                    <span className="font-medium text-[hsl(var(--foreground))]">Related entities:</span>{" "}
+                    {activeNode.relatedCount}
+                  </p>
+                )}
                 {activeNode.country && (
                   <p>
                     <span className="font-medium text-[hsl(var(--foreground))]">Country:</span>{" "}
@@ -714,11 +857,15 @@ export function ExplorationWorkspace() {
                 const current = node as GraphRenderNode;
                 const x = current.x ?? 0;
                 const y = current.y ?? 0;
-                const color = getNodeColor(current.label ?? "Track");
+                const color =
+                  current.nodeKind === "type_hub"
+                    ? getNodeColor("Genre")
+                    : getNodeColor(current.entityLabel ?? current.label ?? "Track");
                 const isHighlighted =
                   highlightEnriched &&
                   (Boolean(current.enrichment_source) || recentEnrichedNodeIds.has(current.id));
-                const radius = isHighlighted ? NODE_RADIUS + 2 : NODE_RADIUS;
+                const baseRadius = current.nodeKind === "focus" ? NODE_RADIUS * 2 : NODE_RADIUS;
+                const radius = isHighlighted ? baseRadius + 2 : baseRadius;
 
                 if (isHighlighted) {
                   ctx.beginPath();
@@ -738,7 +885,11 @@ export function ExplorationWorkspace() {
                 const fontSize = 12 / globalScale;
                 ctx.font = `${fontSize}px Sans-Serif`;
                 const label =
-                  current.name.length > 20 ? `${current.name.slice(0, 18)}...` : current.name;
+                  current.nodeKind === "type_hub" && typeof current.relatedCount === "number"
+                    ? `${current.name} (${current.relatedCount})`
+                    : current.name.length > 20
+                      ? `${current.name.slice(0, 18)}...`
+                      : current.name;
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 ctx.fillStyle = "hsl(var(--foreground))";
@@ -775,8 +926,18 @@ export function ExplorationWorkspace() {
                     }
                   : undefined
               }
-              nodeColor={(node) => getNodeColor((node as { label?: string }).label ?? "Track")}
-              onNodeClick={(node) => setSelectedNode(node as GraphNodePayload)}
+              nodeColor={(node) => getNodeColor((node as { entityLabel?: string; label?: string }).entityLabel ?? (node as { label?: string }).label ?? "Track")}
+              onNodeClick={(node) => {
+                const selected = node as GraphNodePayload;
+                setSelectedNode(selected);
+                if (selected.nodeKind === "type_hub" && selected.groupKey) {
+                  toggleTypeGroup(selected.groupKey);
+                  return;
+                }
+                if (selected.nodeKind === "entity") {
+                  void focusEntityNode(selected);
+                }
+              }}
               onNodeHover={(node) => setHoveredNode(node ? (node as GraphNodePayload) : null)}
               onNodeDragEnd={(node) => {
                 const draggedNode = node as GraphRenderNode;
@@ -808,6 +969,7 @@ export function ExplorationWorkspace() {
               cooldownTicks={100}
               onEngineStop={() => {
                 setGraphState((current) => freezeGraphPositions(current));
+                fitGraphToViewport();
               }}
             />
           )}
@@ -831,30 +993,14 @@ export function ExplorationWorkspace() {
                 Explore artists, genres, labels, venues, and more in one graph-first workspace.
               </h1>
             </div>
-            <div className="inline-flex rounded-lg border border-[hsl(var(--border))] p-1">
-              <button
-                type="button"
-                onClick={() => handleViewChange("graph")}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                  viewMode === "graph"
-                    ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
-                    : "text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))]"
-                }`}
-              >
-                Graph
-              </button>
-              <button
-                type="button"
-                onClick={() => handleViewChange("query")}
-                className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                  viewMode === "query"
-                    ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
-                    : "text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))]"
-                }`}
-              >
-                Query
-              </button>
-            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handleViewChange(viewMode === "graph" ? "query" : "graph")}
+            >
+              {viewMode === "graph" ? "Query" : "Graph"}
+            </Button>
           </div>
 
           <p className="max-w-3xl text-sm text-[hsl(var(--muted-foreground))]">
@@ -868,9 +1014,9 @@ export function ExplorationWorkspace() {
             query={searchText}
             onEntityTypeChange={(value) => setEntityType(value)}
             onQueryChange={setSearchText}
-            onSubmit={() => void loadContext()}
+            onSubmit={() => void loadContext(entityType, searchText, { historyMode: "push" })}
             loading={loading}
-            buttonLabel={viewMode === "graph" ? "Load graph" : "Load summary"}
+            buttonLabel="Search"
           />
 
           <div className="flex flex-wrap items-center gap-2">
@@ -885,7 +1031,7 @@ export function ExplorationWorkspace() {
                   const example = getEntityExample(label);
                   setEntityType(label);
                   setSearchText(example);
-                  void loadContext(label, example);
+                  void loadContext(label, example, { historyMode: "push" });
                 }}
                 className="rounded-full border border-[hsl(var(--border))] px-3 py-1 text-xs text-[hsl(var(--muted-foreground))] transition-colors hover:bg-[hsl(var(--muted))]"
               >
@@ -915,7 +1061,7 @@ export function ExplorationWorkspace() {
               </p>
               <p className="mt-2 text-base font-semibold">{queryResult.name}</p>
               <p className="mt-1 text-sm text-[hsl(var(--muted-foreground))]">
-                {getEntityDisplayName(queryResult.entityType)}
+                {queryResult.labels.map((label) => getEntityDisplayName(label)).join(" / ")}
               </p>
             </CardContent>
           </Card>

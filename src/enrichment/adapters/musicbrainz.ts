@@ -38,7 +38,8 @@ function buildSourceMetadata(url: string): SourceMetadata {
  * Fetch artist data from MusicBrainz by name. Returns zero or one raw payload.
  */
 export async function fetchArtistByName(
-  artistName: string
+  artistName: string,
+  targetNodeId?: string
 ): Promise<RawEnrichmentPayload[]> {
   if (!artistName.trim()) return [];
   const query = encodeURIComponent(artistName.trim());
@@ -97,7 +98,7 @@ export async function fetchArtistByName(
             relatedEdges: genres.map((genre, index) => ({
               id: `enriched-part-of-genre-artist-${slug(artistName)}-${slug(genre)}`,
               type: "PART_OF_GENRE",
-              fromNodeId: `artist-${slug(artistName)}`,
+              fromNodeId: targetNodeId ?? `artist-${slug(artistName)}`,
               toNodeId: `genre-${slug(genre)}`,
               properties: { primary: index === 0 },
             })),

@@ -76,10 +76,158 @@ export interface VerifiedEnrichmentRecord {
   /** Provenance. */
   source_id: string;
   source_name: string;
+  source_type: SourceMetadata["source_type"];
   url: string;
   retrieved_at: string;
   excerpt?: string;
   confidence: ConfidenceLevel;
   relatedNodes?: EnrichmentNodeMutation[];
   relatedEdges?: EnrichmentEdgeMutation[];
+}
+
+export type ReviewSessionStatus = "draft" | "ready_for_import" | "ready_for_review" | "applied";
+
+export type ReviewDecisionStatus = "pending" | "approved" | "rejected";
+
+export type CandidateMatchStatus =
+  | "updates_existing_target"
+  | "matched_existing"
+  | "create_new"
+  | "ambiguous";
+
+export interface CandidateProvenance extends SourceMetadata {
+  confidence: ConfidenceLevel;
+  notes?: string;
+}
+
+export interface ReviewTargetEntity {
+  id: string;
+  label: string;
+  name: string;
+}
+
+export interface CandidatePropertyChange {
+  candidateId: string;
+  targetId: string;
+  key: string;
+  value: unknown;
+  previousValue?: unknown;
+  confidence: ConfidenceLevel;
+  provenance: CandidateProvenance[];
+  matchStatus: "updates_existing_target";
+  reviewStatus: ReviewDecisionStatus;
+  notes?: string;
+}
+
+export interface CandidateNode {
+  candidateId: string;
+  label: string;
+  name: string;
+  canonicalKey: string;
+  properties: Record<string, unknown>;
+  externalIds?: Record<string, string>;
+  aliases?: string[];
+  confidence: ConfidenceLevel;
+  provenance: CandidateProvenance[];
+  matchStatus: CandidateMatchStatus;
+  matchedNodeId?: string;
+  reviewStatus: ReviewDecisionStatus;
+  notes?: string;
+}
+
+export interface CandidateNodeReference {
+  kind: "target" | "candidate" | "existing";
+  id: string;
+  label?: string;
+  name?: string;
+}
+
+export interface CandidateEdge {
+  candidateId: string;
+  type: string;
+  fromRef: CandidateNodeReference;
+  toRef: CandidateNodeReference;
+  properties?: Record<string, unknown>;
+  confidence: ConfidenceLevel;
+  provenance: CandidateProvenance[];
+  matchStatus: Exclude<CandidateMatchStatus, "updates_existing_target">;
+  matchedEdgeId?: string;
+  reviewStatus: ReviewDecisionStatus;
+  notes?: string;
+}
+
+export interface ResearchBundle {
+  sessionId: string;
+  generatedAt: string;
+  summary?: string;
+  targets: ReviewTargetEntity[];
+  propertyChanges: CandidatePropertyChange[];
+  nodeCandidates: CandidateNode[];
+  edgeCandidates: CandidateEdge[];
+}
+
+export type SourceExecutionMode = "automated" | "curator";
+export type SourceRuntimeRoute = "api" | "firecrawl";
+
+export type SourceRunStatus =
+  | "checked_used"
+  | "checked_no_result"
+  | "ready_for_curator"
+  | "out_of_scope";
+
+export interface SourceRunEntry {
+  id: string;
+  name: string;
+  type: string;
+  method: SourceMetadata["source_type"];
+  baseUrl?: string;
+  entityTypes: string[];
+  executionMode: SourceExecutionMode;
+  applicableTargetIds: string[];
+  status: SourceRunStatus;
+  effectiveRoute?: SourceRuntimeRoute;
+}
+
+export interface SourceRunReport {
+  totalSources: number;
+  inScopeCount: number;
+  checkedCount: number;
+  usedCount: number;
+  automatedReadyCount: number;
+  curatorReadyCount: number;
+  outOfScopeCount: number;
+  entries: SourceRunEntry[];
+}
+
+export interface ResearchPacket {
+  sessionId: string;
+  targets: ReviewTargetEntity[];
+  instructions: string[];
+  sourcePlan?: SourceRunReport;
+}
+
+export interface EnrichmentReviewSession {
+  id: string;
+  status: ReviewSessionStatus;
+  createdAt: string;
+  updatedAt: string;
+  approvedAt?: string;
+  importedAt?: string;
+  appliedAt?: string;
+  summary?: string;
+  targets: ReviewTargetEntity[];
+  propertyChanges: CandidatePropertyChange[];
+  nodeCandidates: CandidateNode[];
+  edgeCandidates: CandidateEdge[];
+  sourceReport?: SourceRunReport;
+  importMetadata?: {
+    generatedAt?: string;
+    importedFrom?: string;
+  };
+}
+
+export interface ReviewDecision {
+  candidateType: "property" | "node" | "edge";
+  candidateId: string;
+  reviewStatus: ReviewDecisionStatus;
 }

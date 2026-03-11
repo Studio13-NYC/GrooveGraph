@@ -1,7 +1,16 @@
 import neo4j, { Driver, Integer, Record as Neo4jRecord } from "neo4j-driver";
 import { GraphNode } from "../domain/GraphNode.js";
 import { GraphEdge } from "../domain/GraphEdge.js";
+import {
+  getSearchLabelsForEntityType,
+  normalizeEntityLabels,
+} from "../lib/entity-identity.js";
 import { getEntityDisplayPropertyKeys } from "../lib/entity-config.js";
+import {
+  isTypeHubNodeLabels,
+  reconcileAllTypeHubLinks,
+  reconcileTypeHubLinksForNode,
+} from "../lib/type-hubs.js";
 import type {
   DeleteNodeOptions,
   Direction,
@@ -146,7 +155,7 @@ function toPlainObject(
 
 function toNodeRecord(record: Neo4jRecord): Neo4jNodeRecord {
   const node = record.get("n") as { properties: Record<string, unknown> };
-  const labels = (record.get("labels") as string[]).filter((label) => label !== "GraphEntity");
+  const labels = normalizeEntityLabels((record.get("labels") as string[]).filter((label) => label !== "GraphEntity"));
   const props = toPlainObject(node.properties);
   const { properties, meta } = extractProperties(props);
   return {
@@ -176,7 +185,7 @@ function toNodeRecordFromMap(raw: Record<string, unknown>): Neo4jNodeRecord {
   const { properties, meta } = extractProperties(props);
   return {
     id: String(raw.id),
-    labels: ((raw.labels as string[]) ?? []).filter((label) => label !== "GraphEntity"),
+    labels: normalizeEntityLabels(((raw.labels as string[]) ?? []).filter((label) => label !== "GraphEntity")),
     properties,
     meta,
   };
@@ -262,7 +271,7 @@ export class Neo4jGraphStore implements GraphStore {
   async importGraph(nodes: GraphNode[], edges: GraphEdge[]): Promise<void> {
     const nodeGroups = new Map<string, Array<{ id: string; props: Record<string, unknown> }>>();
     for (const node of nodes) {
-      const key = [...node.labels].sort().join("|");
+      const key = [...normalizeEntityLabels(node.labels)].sort().join("|");
       const list = nodeGroups.get(key) ?? [];
       list.push({
         id: node.id,
@@ -293,6 +302,8 @@ export class Neo4jGraphStore implements GraphStore {
         const labels = labelKey
           .split("|")
           .filter(Boolean)
+          .flatMap((label) => normalizeEntityLabels([label]))
+          .filter((label, index, items) => items.indexOf(label) === index)
           .map((label) => assertSafeToken(label, "label"));
         const setLabelsClause = labels.map((label) => `SET n:${label}`).join(" ");
         for (let i = 0; i < rows.length; i += 500) {
@@ -321,14 +332,18 @@ export class Neo4jGraphStore implements GraphStore {
         }
       }
     });
+    await reconcileAllTypeHubLinks(this);
   }
 
   async findBestNodeMatch(label: string, query: string): Promise<GraphNode | null> {
-    const safeLabel = assertSafeToken(label, "label");
-    const propertyKeys = getEntityDisplayPropertyKeys(label).map((key) => assertSafePropertyKey(key));
+    const searchLabels = getSearchLabelsForEntityType(label).map((item) => assertSafeToken(item, "label"));
+    const propertyKeys = [...new Set(searchLabels.flatMap((item) => getEntityDisplayPropertyKeys(item)))].map((key) =>
+      assertSafePropertyKey(key)
+    );
     return this.read(async (session) => {
       const result = await session.run(
-        `MATCH (n:GraphEntity:${safeLabel})
+        `MATCH (n:GraphEntity)
+         WHERE any(labelName IN labels(n) WHERE labelName IN $searchLabels)
          WITH n, [key IN $propertyKeys WHERE n[key] IS NOT NULL | toString(n[key])] AS values
          WHERE size(values) > 0
            AND any(value IN values WHERE toLower(value) = toLower($query) OR toLower(value) CONTAINS toLower($query))
@@ -341,11 +356,11 @@ export class Neo4jGraphStore implements GraphStore {
          RETURN n, labels(n) AS labels
          ORDER BY exactRank, displayValue
          LIMIT 1`,
-        { propertyKeys, query }
+        { propertyKeys, query, searchLabels }
       );
       if (result.records.length === 0) return null;
       const record = toNodeRecord(result.records[0]);
-      return new StoredNode(record.id, record.labels, record.properties, record.meta);
+      return new StoredNode(record.id, normalizeEntityLabels(record.labels), record.properties, record.meta);
     });
   }
 
@@ -353,8 +368,11 @@ export class Neo4jGraphStore implements GraphStore {
     return this.read(async (session) => {
       const result = await session.run(
         `MATCH (seed:GraphEntity {id: $nodeId})
-         OPTIONAL MATCH path=(seed)-[*1..2]-(neighbor:GraphEntity)
-         WITH seed, collect(path)[0..250] AS rawPaths
+         OPTIONAL MATCH directPath=(seed)-[]-(directNeighbor:GraphEntity)
+         WITH seed, collect(DISTINCT directPath) AS directPaths
+         OPTIONAL MATCH indirectPath=(seed)-[*2..2]-(indirectNeighbor:GraphEntity)
+         WITH seed, directPaths, collect(indirectPath)[0..200] AS indirectPaths
+         WITH seed, [path IN directPaths + indirectPaths WHERE path IS NOT NULL] AS rawPaths
          WITH
            [seed] + reduce(nodeAcc = [], path IN rawPaths |
              nodeAcc + CASE
@@ -495,7 +513,8 @@ export class Neo4jGraphStore implements GraphStore {
   }
 
   async createNode(node: GraphNode): Promise<void> {
-    const labels = [":GraphEntity", ...node.labels.map((label) => `:${assertSafeToken(label, "label")}`)].join("");
+    const normalizedLabels = normalizeEntityLabels(node.labels);
+    const labels = [":GraphEntity", ...normalizedLabels.map((label) => `:${assertSafeToken(label, "label")}`)].join("");
     const props = serializeProperties(node.properties, node.meta);
     await this.write(async (session) => {
       await session.run(
@@ -503,12 +522,15 @@ export class Neo4jGraphStore implements GraphStore {
         { id: node.id, props }
       );
     });
+    if (!isTypeHubNodeLabels(normalizedLabels)) {
+      await reconcileTypeHubLinksForNode(this, node.id);
+    }
   }
 
   async updateNode(nodeId: string, patch: NodePatch): Promise<GraphNode> {
     const existing = await this.getNode(nodeId);
     if (!existing) throw new Error(`Node not found: ${nodeId}`);
-    const labels = patch.labels ?? existing.labels;
+    const labels = normalizeEntityLabels(patch.labels ?? existing.labels);
     const nextProps = patch.properties ? { ...existing.properties, ...patch.properties } : existing.properties;
     const nextMeta = patch.meta ?? existing.meta;
     const addLabels = labels.filter((label) => !existing.labels.includes(label));
@@ -521,6 +543,9 @@ export class Neo4jGraphStore implements GraphStore {
         { id: nodeId, props: serializeProperties(nextProps, nextMeta) }
       );
     });
+    if (!isTypeHubNodeLabels(labels)) {
+      await reconcileTypeHubLinksForNode(this, nodeId);
+    }
     return new StoredNode(nodeId, labels, nextProps, nextMeta);
   }
 
@@ -676,10 +701,10 @@ export class Neo4jGraphStore implements GraphStore {
     const query =
       direction === "both"
         ? `MATCH ${pattern}
-           RETURN r, type(r) AS type, startNode(r).id AS fromNodeId, endNode(r).id AS toNodeId
+           RETURN DISTINCT r, type(r) AS type, startNode(r).id AS fromNodeId, endNode(r).id AS toNodeId
            ORDER BY r.id`
         : `MATCH ${pattern}
-           RETURN r, type(r) AS type, from.id AS fromNodeId, to.id AS toNodeId
+           RETURN DISTINCT r, type(r) AS type, from.id AS fromNodeId, to.id AS toNodeId
            ORDER BY r.id`;
     return this.read(async (session) => {
       const result = await session.run(query, { nodeId });

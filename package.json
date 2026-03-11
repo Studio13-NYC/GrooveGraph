@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p tsconfig.cli.json",
+    "backfill:type-hubs": "node dist/scripts/backfill-type-hubs.js",
     "load": "node dist/scripts/load-play-history.js",
     "load:neo4j": "node dist/scripts/load-neo4j.js",
+    "merge:person-artist": "node dist/scripts/merge-person-artist-identities.js",
+    "repair:wikidata-memberships": "node dist/scripts/repair-wikidata-memberships.js",
     "query": "node dist/scripts/query-by-artist.js",
     "enrich-artist": "node dist/scripts/enrich-artist.js",
     "export-graph": "node dist/scripts/export-graph-json.js",
@@ -18,6 +21,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "firecrawl": "^4.15.4",
     "lucide-react": "^0.400.0",
     "neo4j-driver": "^6.0.1",
     "next": "^14.2.0",

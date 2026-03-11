@@ -18,6 +18,14 @@ export interface SourceDefinition {
   adapterId: string;
 }
 
+export function isSourceAutomated(source: Pick<SourceDefinition, "adapterId">): boolean {
+  return IMPLEMENTED_ADAPTER_IDS.has(source.adapterId);
+}
+
+export function getSourceExecutionMode(source: Pick<SourceDefinition, "adapterId">): "automated" | "curator" {
+  return isSourceAutomated(source) ? "automated" : "curator";
+}
+
 const SOURCES: SourceDefinition[] = [
   { id: "wikipedia", name: "Wikipedia", type: "Encyclopedic", baseUrl: "https://en.wikipedia.org/", method: "api", entityTypes: ["Artist", "Person", "Album", "Track", "Studio", "Label", "Instrument"], adapterId: "wikipedia" },
   { id: "wikidata", name: "Wikidata", type: "Structured knowledge", baseUrl: "https://www.wikidata.org/", method: "api", entityTypes: ["Artist", "Person", "Album", "Track", "Studio", "Label", "Genre"], adapterId: "wikidata" },
@@ -26,11 +34,11 @@ const SOURCES: SourceDefinition[] = [
   { id: "spotify", name: "Spotify", type: "Streaming catalog", baseUrl: "https://api.spotify.com/", method: "api", entityTypes: ["Artist", "Album", "Track"], adapterId: "spotify" },
   { id: "lastfm", name: "Last.fm", type: "Listening / tags", baseUrl: "https://www.last.fm/api", method: "api", entityTypes: ["Artist", "Track"], adapterId: "lastfm" },
   { id: "allmusic", name: "AllMusic", type: "Editorial", baseUrl: "https://www.allmusic.com/", method: "scrape", entityTypes: ["Artist", "Album", "Genre"], adapterId: "allmusic" },
-  { id: "genius", name: "Genius", type: "Lyrics", baseUrl: "https://genius.com/", method: "scrape", entityTypes: ["Track", "Artist"], adapterId: "genius" },
+  { id: "genius", name: "Genius", type: "Lyrics", baseUrl: "https://genius.com/", method: "api", entityTypes: ["Track", "Artist"], adapterId: "genius" },
   { id: "imdb", name: "IMDb", type: "Film / soundtrack", baseUrl: "https://www.imdb.com/", method: "api", entityTypes: ["Person", "Track"], adapterId: "imdb" },
   { id: "bbc_music", name: "BBC Music", type: "Editorial", baseUrl: "https://www.bbc.co.uk/music", method: "scrape", entityTypes: ["Artist"], adapterId: "bbc_music" },
   { id: "rym", name: "Rate Your Music", type: "Community", baseUrl: "https://rateyourmusic.com/", method: "scrape", entityTypes: ["Artist", "Album", "Genre"], adapterId: "rym" },
-  { id: "secondhandsongs", name: "SecondHandSongs", type: "Covers", baseUrl: "https://secondhandsongs.com/", method: "scrape", entityTypes: ["Track"], adapterId: "secondhandsongs" },
+  { id: "secondhandsongs", name: "SecondHandSongs", type: "Covers", baseUrl: "https://secondhandsongs.com/", method: "api", entityTypes: ["Track"], adapterId: "secondhandsongs" },
   { id: "setlistfm", name: "Setlist.fm", type: "Live", baseUrl: "https://api.setlist.fm/", method: "api", entityTypes: ["Artist", "Performance", "Venue"], adapterId: "setlistfm" },
   { id: "songkick", name: "Songkick", type: "Concerts", baseUrl: "https://www.songkick.com/", method: "api", entityTypes: ["Artist", "Performance", "Venue"], adapterId: "songkick" },
   { id: "bandcamp", name: "Bandcamp", type: "Artist / label", baseUrl: "https://bandcamp.com/", method: "scrape", entityTypes: ["Artist", "Label", "Album"], adapterId: "bandcamp" },
@@ -62,6 +70,9 @@ export function getAllSources(): SourceDefinition[] {
  * Source ids that have an adapter implemented. Expand as adapters are added.
  */
 export const IMPLEMENTED_ADAPTER_IDS = new Set(["musicbrainz", "wikipedia"]);
+for (const source of SOURCES) {
+  IMPLEMENTED_ADAPTER_IDS.add(source.adapterId);
+}
 
 /**
  * Get sources that can enrich the given entity type (label).

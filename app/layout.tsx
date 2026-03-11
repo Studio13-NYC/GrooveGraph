@@ -33,9 +33,12 @@ export default function RootLayout({
               >
                 Explore
               </Link>
-              <span className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
-                Graph default
-              </span>
+              <Link
+                href="/enrichment"
+                className="text-sm text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
+              >
+                Enrichment
+              </Link>
             </nav>
           </div>
         </header>

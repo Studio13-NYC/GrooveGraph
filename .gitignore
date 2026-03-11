@@ -30,6 +30,7 @@ npm-debug.log*
 # Test / coverage
 coverage/
 .nyc_output/
+.firecrawl/
 
 # Optional: uncomment to ignore large data files (keep README and small samples)
 # /data/*.json

@@ -68,7 +68,7 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 
 ## Project status and docs
 
-**Phase 2 (current)** implements the graph with Neo4j Aura as the production store. The app runs dynamically: API routes serve graph data, type-aware query summaries, and enrichment from Neo4j.
+**Phase 2 (current)** implements the graph with Neo4j Aura as the production store. The app runs dynamically: API routes serve graph data, type-aware query summaries, direct enrichment, and a staged enrichment review workflow for curator-led imports.
 
 | Document | Purpose |
 |----------|---------|
@@ -79,7 +79,7 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 | [docs/neo4j.md](docs/neo4j.md) | Neo4j Aura setup: configure `.env.local` for connection. |
 | [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Implementation plan: domain types, OOP rule, entity/relationship layout, data population. |
 | [docs/RULES_AND_STANDARDS.md](docs/RULES_AND_STANDARDS.md) | Catalog of Cursor rules and coding/layout standards. |
-| [docs/ENRICHMENT_PROCESS.md](docs/ENRICHMENT_PROCESS.md) | Enrichment pipeline: collect → verify → load (property + structural). |
+| [docs/ENRICHMENT_PROCESS.md](docs/ENRICHMENT_PROCESS.md) | Enrichment pipeline: direct collect → verify → load plus staged review-session workflow. |
 | [docs/ENRICHMENT_SOURCES.md](docs/ENRICHMENT_SOURCES.md) | Catalog of enrichment sources; MusicBrainz and Wikipedia implemented. |
 | [data/README.md](data/README.md) | Reference datasets (Last.fm, play history, Spotify lists) for import and testing. |
 | [docs/DEPLOY.md](docs/DEPLOY.md) | Deploy the dynamic app (Node hosting, Vercel, or similar). |
@@ -94,8 +94,9 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 - guided example searches to kick off discovery
 - pinned node dragging so dropped nodes stay where you place them
 - a `Reset layout` action that reapplies the graph's structured layout
+- a dedicated `/enrichment` workspace for staged curator review before applying new facts to Neo4j
 
-Search for an entity, inspect its structured summary in query mode, or view its neighborhood in the graph without leaving the page. The current graph presentation is biased toward the common `Artist -> Album -> Song` mental model while still supporting shared songs, cover relationships, and broader cross-entity discovery. Enrichment fetches metadata from MusicBrainz and Wikipedia, persists property updates and optional new nodes/relationships (for example `Genre` and `PART_OF_GENRE`) to Neo4j, and surfaces deduped persistence results directly in the UI. The graph uses `react-force-graph-2d` for force-directed visualization.
+Search for an entity, inspect its structured summary in query mode, or view its neighborhood in the graph without leaving the page. The current graph presentation is biased toward the common `Artist -> Album -> Song` mental model while still supporting shared songs, cover relationships, and broader cross-entity discovery. Direct enrichment still fetches metadata from MusicBrainz and Wikipedia and persists property updates and optional new nodes/relationships (for example `Genre` and `PART_OF_GENRE`) to Neo4j. For broader curator-led work, the `/enrichment` workspace lets you approve a subset of target entities, generate a research packet for the project-level `enrichment-curator` subagent, import staged JSON with provenance, reject bad candidates, and apply only the remaining deduped nodes and relationships to Neo4j. The graph uses `react-force-graph-2d` for force-directed visualization.
 
 ---
 
