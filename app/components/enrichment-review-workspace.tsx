@@ -213,6 +213,7 @@ export function EnrichmentReviewWorkspace() {
   const [tripletScopeName, setTripletScopeName] = useState("");
   const [extractWorkflowType, setExtractWorkflowType] = useState<EnrichmentWorkflowType>("triplet");
   const [tripletWorking, setTripletWorking] = useState(false);
+  const isTripletWorkflow = extractWorkflowType === "triplet";
 
   const syncUrl = useCallback(
     (nextSessionId?: string) => {
@@ -734,11 +735,12 @@ export function EnrichmentReviewWorkspace() {
 
           <div className="mt-6 border-t border-[hsl(var(--border))] pt-6">
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[hsl(var(--muted-foreground))]">
-              Explore by triplet
+              {isTripletWorkflow ? "Explore by triplet" : "Extraction preview"}
             </p>
             <p className="mb-3 max-w-2xl text-sm text-[hsl(var(--muted-foreground))]">
-              Choose subject and object entity types, relationship, and names. The LLM will return all information that
-              fits (e.g. guitars Paul Weller plays).
+              {isTripletWorkflow
+                ? "Choose subject and object entity types, relationship, and names. The LLM will return all information that fits (e.g. guitars Paul Weller plays)."
+                : `Workflow '${extractWorkflowType}' is visible in the UI but not wired yet. Keep triplet inputs as-is, then switch to triplet to run extraction.`}
             </p>
             <div className="flex flex-wrap items-center gap-2">
               <select
@@ -831,7 +833,7 @@ export function EnrichmentReviewWorkspace() {
                 }
               >
                 {tripletWorking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
-                Explore triplet
+                {isTripletWorkflow ? "Explore triplet" : "Run extraction"}
               </Button>
             </div>
           </div>
