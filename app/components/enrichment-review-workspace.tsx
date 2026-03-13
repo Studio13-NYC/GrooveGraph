@@ -20,6 +20,7 @@ import type {
   CandidateEvidence,
   CandidateNode,
   CandidatePropertyChange,
+  EnrichmentWorkflowType,
   EnrichmentReviewSession,
   ReviewDecision,
   ReviewDecisionStatus,
@@ -210,6 +211,7 @@ export function EnrichmentReviewWorkspace() {
   const [tripletObjectName, setTripletObjectName] = useState("");
   const [tripletScopeLabel, setTripletScopeLabel] = useState<EntityLabel>("Artist");
   const [tripletScopeName, setTripletScopeName] = useState("");
+  const [extractWorkflowType, setExtractWorkflowType] = useState<EnrichmentWorkflowType>("triplet");
   const [tripletWorking, setTripletWorking] = useState(false);
 
   const syncUrl = useCallback(
@@ -377,6 +379,12 @@ export function EnrichmentReviewWorkspace() {
   }
 
   async function createTripletSession() {
+    if (extractWorkflowType !== "triplet") {
+      setMessage(
+        `workflowType '${extractWorkflowType}' is not implemented yet. Use workflowType: 'triplet' for now.`
+      );
+      return;
+    }
     const sub = normalizeAnyPlaceholder(tripletSubjectName);
     const obj = normalizeAnyPlaceholder(tripletObjectName);
     if (!sub || !obj) {
@@ -396,7 +404,7 @@ export function EnrichmentReviewWorkspace() {
       const response = await fetch("/api/enrich/extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workflowType: "triplet", triplet: spec, ...(scope ? { scope } : {}) }),
+        body: JSON.stringify({ workflowType: extractWorkflowType, triplet: spec, ...(scope ? { scope } : {}) }),
       });
       const data = (await response.json()) as SessionResponse & { error?: string; triplet?: unknown };
       if (!response.ok) {
@@ -733,6 +741,17 @@ export function EnrichmentReviewWorkspace() {
               fits (e.g. guitars Paul Weller plays).
             </p>
             <div className="flex flex-wrap items-center gap-2">
+              <select
+                value={extractWorkflowType}
+                onChange={(e) => setExtractWorkflowType(e.target.value as EnrichmentWorkflowType)}
+                className="flex h-10 min-w-[10rem] rounded-md border border-[hsl(var(--border))] bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
+                aria-label="Extraction workflow type"
+              >
+                <option value="triplet">triplet</option>
+                <option value="span_mention">span_mention</option>
+                <option value="llm_only">llm_only</option>
+                <option value="hybrid">hybrid</option>
+              </select>
               <select
                 value={tripletSubjectLabel}
                 onChange={(e) => setTripletSubjectLabel(e.target.value as EntityLabel)}

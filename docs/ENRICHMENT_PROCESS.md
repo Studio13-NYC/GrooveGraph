@@ -127,6 +127,7 @@ API notes:
 
 - Generic extraction entrypoint: `POST /api/enrich/extract`
 - Current supported mode: `workflowType: "triplet"` (delegates to triplet exploration route)
+- Other workflow types are surfaced but currently return a not-implemented response until their adapters/pipelines are enabled.
 
 Operational notes:
 

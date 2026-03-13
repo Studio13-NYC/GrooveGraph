@@ -5,6 +5,7 @@
 - Prefer actionable implementation over proposing plans without changes.
 - Keep responses concise and use Markdown only when semantically helpful.
 - Format paths, files, functions, and classes with inline code backticks.
+- Keep local runtime deterministic: `npm run dev` must guarantee port `3000` via the project port guard.
 
 ## Learned Workspace Facts
 
@@ -15,3 +16,4 @@
 - Generic extraction entrypoint is `POST /api/enrich/extract` and currently supports `workflowType: "triplet"`.
 - Enrichment validation and review logic lives primarily in `src/enrichment/review.ts` and `src/enrichment/llm/validate-bundle.ts`.
 - Project workflow rules are enforced via files in `.cursor/rules/`.
+- Runtime hygiene rule `port-3000-runtime-hygiene.mdc` requires deterministic startup on `3000` via `npm run dev`.

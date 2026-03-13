@@ -13,15 +13,15 @@
     "query": "node dist/scripts/query-by-artist.js",
     "enrich-artist": "node dist/scripts/enrich-artist.js",
     "export-graph": "node dist/scripts/export-graph-json.js",
-    "dev": "next dev",
+    "dev:port-guard": "node scripts/ensure-port-3000.mjs",
+    "dev": "node scripts/dev-with-port-guard.mjs",
     "build:web": "next build",
     "start": "next start",
-    "test": "node --test dist/**/*.test.js 2>/dev/null || echo 'No tests yet'"
+    "test": "node --test dist/**/*.test.js"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
-    "firecrawl": "^4.15.4",
     "lucide-react": "^0.400.0",
     "neo4j-driver": "^6.0.1",
     "next": "^14.2.0",
@@ -29,16 +29,16 @@
     "react-dom": "^18.2.0",
     "react-force-graph-2d": "^1.29.1",
     "tailwind-merge": "^2.2.0",
-    "zustand": "^4.5.0"
+    "undici": "^7.24.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.0",
-    "eslint": "^8.0.0",
-    "eslint-config-next": "^14.2.0",
+    "knip": "^5.86.0",
     "postcss": "^8.4.0",
+    "postcss-load-config": "^6.0.1",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.7.0"
   }

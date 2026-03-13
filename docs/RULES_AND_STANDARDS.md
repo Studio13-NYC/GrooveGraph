@@ -13,6 +13,7 @@ This document catalogs all Cursor rules and coding/layout standards for GrooveGr
 | **feature-start-commit-tag.mdc** | Enforces feature/enhancement kickoff workflow: choose commit prefix with suggestion+override, perform documentation sweep before every commit/push, create detailed kickoff commit (plan+why), push, and increment/push `0.0.XXX` tag. | Always |
 | **feature-cleanup-cruft.mdc** | Enforces cruft cleanup checkpoints (feature start and end) using `npm prune` and `npx knip`, with a mandatory human approval gate before removals. | Always |
 | **ui-debug-testing.mdc** | Requires autonomous browser-based end-to-end UI workflow testing for feature/enhancement/debug tasks, progress updates during attempts, and terminal hygiene including port `3000` preflight availability before local runs. | Always |
+| **port-3000-runtime-hygiene.mdc** | Enforces deterministic local runtime on port `3000`, including stale-listener cleanup and mandatory `npm run dev` startup path with project port guard. | Always |
 
 ---
 
@@ -55,3 +56,4 @@ This document catalogs all Cursor rules and coding/layout standards for GrooveGr
 - For feature, enhancement, and debug work, validate full user workflows with browser automation before considering work complete.
 - While attempts are running, provide concise status updates (attempt, result, next step) without requiring user intervention.
 - Before starting local runs expected on `3000`, verify port `3000` is free and avoid duplicate/stale dev servers.
+- Use the built-in guarded startup via `npm run dev` (port guard + automatic retry on `EADDRINUSE` before binding to `3000`).
