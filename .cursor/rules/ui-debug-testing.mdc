@@ -1,0 +1,61 @@
+---
+description: Autonomous browser workflow testing with terminal hygiene and progress updates
+alwaysApply: true
+---
+
+# Autonomous UI Workflow Validation Rule
+
+For any feature build, enhancement, or debugging task that affects user workflows, the model must autonomously validate the full workflow from a user/UI perspective using browser automation. Do not stop at code changes alone.
+
+## 1. Mandatory autonomous browser testing
+
+Use built-in browser automation (`@browser` / `cursor-ide-browser`) to execute realistic end-to-end flows:
+
+- Navigate to the real workflow entry point (for example `http://localhost:3000/enrichment`).
+- Snapshot before interaction to capture structure and element refs.
+- Exercise the full interaction path (type/click/select/submit/wait).
+- Snapshot after each critical step and after completion.
+- Verify visible user outcomes, not only API/network assumptions.
+
+Do this repeatedly until the workflow works end-to-end or a hard blocker is identified with evidence.
+
+## 2. Progress updates during attempts (mandatory)
+
+While testing/fixing, provide concise status updates as attempts are made:
+
+- State what attempt is running.
+- Report observed outcome (pass/fail and user-visible behavior).
+- State what will be tried next if it fails.
+
+Do not wait for the user to intervene to continue the validation cycle.
+
+## 3. Terminal session hygiene and port preflight
+
+Before starting a local run expected on port `3000`:
+
+1. Check existing terminal sessions and running processes.
+2. Stop or reuse stale/duplicate dev servers.
+3. Ensure port `3000` is available before launching a new server.
+4. Start only the required process for the current validation run.
+
+As work progresses:
+
+- Keep terminal usage clean (avoid accumulating redundant server sessions).
+- Shut down no-longer-needed local processes at natural checkpoints.
+
+## 4. Evidence-first debugging and validation
+
+When failures occur:
+
+- Add/inspect runtime logs at route entry, pipeline stages, validation gates, and error boundaries.
+- Use consistent log prefixes for traceability.
+- Make fixes based on observed evidence.
+- Re-run the same browser flow to confirm the fix from the user perspective.
+
+## 5. Completion criteria
+
+A task is not considered complete until:
+
+- The end-to-end UI workflow has been exercised through browser automation.
+- The user-visible result is confirmed working.
+- The validation attempts and outcomes were communicated in status updates.

@@ -1,0 +1,95 @@
+---
+description: Feature start commit workflow with prefix selection and tagging
+alwaysApply: true
+---
+
+# Feature Start Commit, Prefix, And Tag Rule
+
+When beginning any new feature or enhancement, follow this workflow:
+
+1. Create and switch to a new feature/function branch before implementation starts.
+2. Select a standardized commit prefix.
+3. Perform a documentation sweep and update all relevant docs before commit/push.
+4. Create a commit immediately at kickoff with a detailed message that explains:
+   - the implementation plan
+   - why the work is being done
+5. Push the commit to the current remote branch.
+6. Create and push an incremental tag in the format `0.0.XXX`.
+
+## Incremental delivery policy (no big-bang)
+
+For feature and enhancement work:
+
+1. Break implementation into small, user-visible slices that can be validated through the UI.
+2. After each slice, run autonomous browser workflow testing end-to-end.
+3. Commit frequently after each validated slice; do not batch many unrelated changes into one commit.
+4. Report status after each test attempt and each completed slice.
+
+Only move to the next slice after the current slice is working from the user perspective.
+
+## Allowed commit prefixes
+
+- `feat` - new feature
+- `enhance` - improvement to an existing feature
+- `fix` - bug fix or regression fix
+- `refactor` - code restructuring with no behavior change
+- `test` - tests added or updated
+- `docs` - documentation-only change
+- `chore` - tooling, config, maintenance, or housekeeping
+- `perf` - performance optimization
+
+## Required prefix interaction
+
+Before every commit:
+
+1. Propose a best-fit prefix based on staged changes.
+2. Ask for confirmation and present override options.
+3. Use the user's final choice, even if it differs from the suggestion.
+
+Prompt pattern:
+
+- `Suggested prefix: <prefix> (<why>)`
+- `Override options: feat, enhance, fix, refactor, test, docs, chore, perf`
+- `Which prefix should I use for this commit?`
+
+## Documentation gate (mandatory before every commit/push)
+
+Before every commit and push, the model must perform a documentation review and update pass:
+
+1. Analyze all relevant docs in the repository (not just one file).
+2. Correct inaccuracies and stale statements.
+3. Remove obsolete information.
+4. Append or insert new information introduced by the changes.
+5. Ensure docs stay consistent with code behavior and terminology.
+
+If docs are impacted, documentation updates must be included in the same commit.
+
+## PowerShell-friendly command pattern
+
+```powershell
+$msg = @'
+<prefix>: start <feature-name>
+
+Plan:
+- <planned step 1>
+- <planned step 2>
+
+Why:
+- <business or technical reason>
+'@
+
+git add .
+git commit -m $msg
+git push
+```
+
+```powershell
+$latest = git tag --list "0.0.*" | Sort-Object { [int]($_.Split('.')[2]) } | Select-Object -Last 1
+$next = if ($latest) { [int]($latest.Split('.')[2]) + 1 } else { 1 }
+$tag = "0.0.{0:D3}" -f $next
+
+git tag $tag
+git push origin $tag
+```
+
+Do not skip this workflow for feature/enhancement starts.
