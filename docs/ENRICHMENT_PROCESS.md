@@ -107,6 +107,7 @@ For curator-led enrichment, GrooveGraph stages data before loading:
 - **Session creation**: The UI creates a review session from an approved subset of target entities.
 - **Candidate import**: The subagent's JSON bundle is imported as candidate property changes, node candidates, and edge candidates.
 - **Workflow metadata**: Imported bundles persist `workflowType` metadata (`triplet`, `span_mention`, `llm_only`, `hybrid`) for routing and UI clarity.
+- **Import provenance metadata**: Sessions also persist `importedFrom` (for example `triplet-exploration`, `llm-only`, `auto-preview`) to make ingestion path explicit in review UI.
 - **Provenance review**: Each staged candidate keeps source URL, retrieval time, optional excerpt, and confidence.
 - **Human rejection**: The reviewer can reject bad items in the web UI before apply.
 - **Deduped apply**: Only non-rejected candidates are applied, with node and relationship matching against existing graph data before creating anything new.

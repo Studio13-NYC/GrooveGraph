@@ -474,6 +474,7 @@ export function EnrichmentReviewWorkspace() {
       0;
     return {
       workflowType: session.importMetadata?.workflowType ?? "hybrid",
+      importedFrom: session.importMetadata?.importedFrom ?? "unknown",
       generator: session.importMetadata?.generator ?? "manual",
       provider: session.importMetadata?.provider ?? null,
       model: session.importMetadata?.model ?? null,
@@ -899,6 +900,10 @@ export function EnrichmentReviewWorkspace() {
                     <div className="rounded-lg border border-[hsl(var(--border))] p-3">
                       <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Workflow</p>
                       <p className="mt-2 font-semibold">{synthesisSummary.workflowType.replace(/_/g, " ")}</p>
+                    </div>
+                    <div className="rounded-lg border border-[hsl(var(--border))] p-3">
+                      <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Import source</p>
+                      <p className="mt-2 font-semibold">{synthesisSummary.importedFrom.replace(/_/g, " ")}</p>
                     </div>
                     <div className="rounded-lg border border-[hsl(var(--border))] p-3">
                       <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Synthesis</p>
