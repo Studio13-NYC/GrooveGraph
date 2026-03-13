@@ -13,7 +13,7 @@
 - The primary enrichment UX path is staged review and apply under `/enrichment`.
 - `POST /api/enrich` is intentionally disabled and should remain disabled unless explicitly re-scoped.
 - Triplet exploration is handled by `POST /api/enrich/explore-triplet` and feeds into review sessions.
-- Generic extraction entrypoint is `POST /api/enrich/extract` and currently supports `workflowType: "triplet"`.
+- Generic extraction entrypoint is `POST /api/enrich/extract`; supported workflow types: `triplet` (delegates to triplet exploration), `llm_only` (same body; runs LLM-only pipeline, no external sources).
 - Enrichment validation and review logic lives primarily in `src/enrichment/review.ts` and `src/enrichment/llm/validate-bundle.ts`.
 - Project workflow rules are enforced via files in `.cursor/rules/`.
 - Runtime hygiene rule `port-3000-runtime-hygiene.mdc` requires deterministic startup on `3000` via `npm run dev`.

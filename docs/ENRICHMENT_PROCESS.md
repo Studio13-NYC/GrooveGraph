@@ -126,8 +126,10 @@ GrooveGraph also supports triplet-driven enrichment in the `/enrichment` workspa
 API notes:
 
 - Generic extraction entrypoint: `POST /api/enrich/extract`
-- Current supported mode: `workflowType: "triplet"` (delegates to triplet exploration route)
-- Other workflow types are surfaced but currently return a not-implemented response until their adapters/pipelines are enabled.
+- Supported workflow types:
+  - `workflowType: "triplet"` — delegates to triplet exploration (same body: `triplet`, optional `scope`).
+  - `workflowType: "llm_only"` — same body as triplet; resolves targets from subject/object/scope, creates a review session, runs the LLM-only pipeline (no external sources), imports the bundle with `importedFrom: "llm-only"` and `workflowType: "llm_only"`.
+- `span_mention` and `hybrid` return 400 until their adapters/pipelines are enabled.
 
 Operational notes:
 

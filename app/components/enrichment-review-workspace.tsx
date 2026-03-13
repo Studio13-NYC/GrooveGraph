@@ -380,9 +380,10 @@ export function EnrichmentReviewWorkspace() {
   }
 
   async function createTripletSession() {
-    if (extractWorkflowType !== "triplet") {
+    const implementedWorkflows: EnrichmentWorkflowType[] = ["triplet", "llm_only"];
+    if (!implementedWorkflows.includes(extractWorkflowType)) {
       setMessage(
-        `workflowType '${extractWorkflowType}' is not implemented yet. Use workflowType: 'triplet' for now.`
+        `workflowType '${extractWorkflowType}' is not implemented yet. Use workflowType: 'triplet' or 'llm_only'.`
       );
       return;
     }
@@ -735,12 +736,18 @@ export function EnrichmentReviewWorkspace() {
 
           <div className="mt-6 border-t border-[hsl(var(--border))] pt-6">
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[hsl(var(--muted-foreground))]">
-              {isTripletWorkflow ? "Explore by triplet" : "Extraction preview"}
+              {isTripletWorkflow
+                ? "Explore by triplet"
+                : extractWorkflowType === "llm_only"
+                  ? "LLM-only extraction"
+                  : "Extraction preview"}
             </p>
             <p className="mb-3 max-w-2xl text-sm text-[hsl(var(--muted-foreground))]">
               {isTripletWorkflow
                 ? "Choose subject and object entity types, relationship, and names. The LLM will return all information that fits (e.g. guitars Paul Weller plays)."
-                : `Workflow '${extractWorkflowType}' is visible in the UI but not wired yet. Keep triplet inputs as-is, then switch to triplet to run extraction.`}
+                : extractWorkflowType === "llm_only"
+                  ? "Same subject, object, and scope as triplet. Runs the LLM-only pipeline (no external sources like Wikipedia or MusicBrainz)."
+                  : `Workflow '${extractWorkflowType}' is not implemented yet. Use triplet or llm_only.`}
             </p>
             <div className="flex flex-wrap items-center gap-2">
               <select
