@@ -1,19 +1,35 @@
 import { createHash, randomUUID } from "node:crypto";
-import { GraphEdge } from "../domain/GraphEdge.js";
-import { GraphNode } from "../domain/GraphNode.js";
-import { getEntityDisplayPropertyKeys, getNodeDisplayName } from "../lib/entity-config.js";
-import { getPrimaryEntityLabel } from "../lib/entity-identity.js";
-import type { GraphStore } from "../store/types.js";
-import { previewEnrichmentPipeline } from "./pipeline.js";
-import { getEffectiveSourceRoute } from "./adapters/source-access.js";
-import { getAllSources, getSourceExecutionMode } from "./sources/registry.js";
-import { readReviewSession, writeReviewSession } from "./review-session-store.js";
+import { GraphEdge } from "../domain/GraphEdge";
+import { GraphNode } from "../domain/GraphNode";
+import { getEntityDisplayPropertyKeys, getNodeDisplayName } from "../lib/entity-config";
+import { isRelationshipType } from "../lib/relationship-config";
+import {
+  coerceArtistPersonIdentity,
+  getPrimaryEntityLabel,
+  normalizeEntityLabels,
+} from "../lib/entity-identity";
+import type { GraphStore } from "../store/types";
+import { previewEnrichmentPipeline } from "./pipeline";
+import type { EnrichmentPreviewResult } from "./pipeline";
+import { getEffectiveSourceRoute } from "./adapters/source-access";
+import { buildResearchOntologyContext, ENRICHMENT_PROMPT_VERSION } from "./llm/ontology-context";
+import { isEnrichmentLlmConfigured, synthesizeResearchBundle } from "./llm/index";
+import { validateResearchBundle } from "./llm/validate-bundle";
+import {
+  isLlmOnlyPipelineConfigured,
+  runLlmOnlyPipeline,
+  useLlmOnlyPipeline,
+} from "./pipelines/llm-only";
+import { getAllSources, getSourceExecutionMode } from "./sources/registry";
+import { readReviewSession, writeReviewSession } from "./review-session-store";
 import type {
   CandidateEdge,
+  CandidateEvidence,
   CandidateNode,
   CandidateNodeReference,
   CandidatePropertyChange,
   CandidateProvenance,
+  EnrichmentWorkflowType,
   EnrichmentReviewSession,
   ResearchPacket,
   ResearchBundle,
@@ -24,7 +40,7 @@ import type {
   SourceRunReport,
   SourceMetadata,
   VerifiedEnrichmentRecord,
-} from "./types.js";
+} from "./types";
 
 class ReviewGraphNode extends GraphNode {
   constructor(
@@ -81,6 +97,34 @@ function sanitizeRecord(value: unknown): Record<string, unknown> {
 function sanitizeString(value: unknown, fallback = ""): string {
   if (typeof value !== "string") return fallback;
   return value.trim();
+}
+
+function sanitizeEvidenceList(value: unknown, fallbackConfidence: "high" | "medium" | "low"): CandidateEvidence[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((item) => {
+      const record = sanitizeRecord(item);
+      const source = sanitizeSourceMetadata(record);
+      if (!source.url) return null;
+      return {
+        ...source,
+        confidence: isConfidence(record.confidence) ? record.confidence : fallbackConfidence,
+        ...(sanitizeString(record.evidenceId) ? { evidenceId: sanitizeString(record.evidenceId) } : {}),
+        ...(sanitizeString(record.notes) ? { notes: sanitizeString(record.notes) } : {}),
+        ...(record.structuredFacts && typeof record.structuredFacts === "object" && !Array.isArray(record.structuredFacts)
+          ? { structuredFacts: sanitizeRecord(record.structuredFacts) }
+          : {}),
+      };
+    })
+    .filter((item): item is CandidateEvidence => item !== null);
+}
+
+function normalizeCandidateLabels(label: string, labels?: string[]): { label: string; labels: string[] } {
+  const normalized = coerceArtistPersonIdentity(normalizeEntityLabels([label, ...(labels ?? [])].filter(Boolean)));
+  return {
+    label: getPrimaryEntityLabel(normalized),
+    labels: normalized,
+  };
 }
 
 function trimTrailingPunctuation(value: string): string {
@@ -206,23 +250,28 @@ async function matchNodeCandidate(store: GraphStore, candidate: CandidateNode): 
   matchStatus: CandidateNode["matchStatus"];
   matchedNodeId?: string;
 }> {
+  const searchLabels = candidate.labels && candidate.labels.length > 0 ? candidate.labels : [candidate.label];
   const externalIds = candidate.externalIds ?? {};
   for (const [key, value] of Object.entries(externalIds)) {
-    const exact = await store.findNodes({
-      label: candidate.label,
-      propertyKey: key,
-      propertyValue: value,
-      maxResults: 1,
-    });
-    if (exact.length > 0) {
-      return { matchStatus: "matched_existing", matchedNodeId: exact[0].id };
+    for (const label of searchLabels) {
+      const exact = await store.findNodes({
+        label,
+        propertyKey: key,
+        propertyValue: value,
+        maxResults: 1,
+      });
+      if (exact.length > 0) {
+        return { matchStatus: "matched_existing", matchedNodeId: exact[0].id };
+      }
     }
   }
 
   const nameCandidates = [candidate.name, ...(candidate.aliases ?? [])].filter(Boolean);
-  const exactDisplay = await exactLabelMatchByDisplay(store, candidate.label, nameCandidates);
-  if (exactDisplay) {
-    return { matchStatus: "matched_existing", matchedNodeId: exactDisplay.id };
+  for (const label of searchLabels) {
+    const exactDisplay = await exactLabelMatchByDisplay(store, label, nameCandidates);
+    if (exactDisplay) {
+      return { matchStatus: "matched_existing", matchedNodeId: exactDisplay.id };
+    }
   }
 
   return { matchStatus: "create_new" };
@@ -274,6 +323,7 @@ function sanitizePropertyChange(value: unknown): CandidatePropertyChange | null 
   const key = sanitizeString(record.key);
   const confidence = isConfidence(record.confidence) ? record.confidence : "medium";
   const provenance = sanitizeProvenanceList(record.provenance, confidence);
+  const evidence = sanitizeEvidenceList(record.evidence, confidence);
   if (!candidateId || !targetId || !key || provenance.length === 0) return null;
   return {
     candidateId,
@@ -283,9 +333,11 @@ function sanitizePropertyChange(value: unknown): CandidatePropertyChange | null 
     ...(record.previousValue !== undefined ? { previousValue: record.previousValue } : {}),
     confidence,
     provenance,
+    ...(evidence.length > 0 ? { evidence } : {}),
     matchStatus: "updates_existing_target",
     reviewStatus: isReviewDecision(record.reviewStatus) ? record.reviewStatus : "pending",
     ...(sanitizeString(record.notes) ? { notes: sanitizeString(record.notes) } : {}),
+    ...(sanitizeString(record.justification) ? { justification: sanitizeString(record.justification) } : {}),
   };
 }
 
@@ -296,16 +348,23 @@ async function sanitizeNodeCandidate(store: GraphStore, value: unknown): Promise
   const name = sanitizeString(record.name);
   const confidence = isConfidence(record.confidence) ? record.confidence : "medium";
   const provenance = sanitizeProvenanceList(record.provenance, confidence);
+  const evidence = sanitizeEvidenceList(record.evidence, confidence);
   if (!candidateId || !label || !name || provenance.length === 0) return null;
   const externalIds = Object.fromEntries(
     Object.entries(sanitizeRecord(record.externalIds))
       .map(([key, rawValue]) => [key, sanitizeString(rawValue)])
       .filter(([, rawValue]) => rawValue)
   );
-  const canonicalKey = sanitizeString(record.canonicalKey) || deriveCanonicalKey(label, name, externalIds);
+  const normalizedLabels = normalizeCandidateLabels(
+    label,
+    Array.isArray(record.labels) ? record.labels.map((item) => sanitizeString(item)).filter(Boolean) : undefined
+  );
+  const canonicalKey =
+    sanitizeString(record.canonicalKey) || deriveCanonicalKey(normalizedLabels.label, name, externalIds);
   const matched = await matchNodeCandidate(store, {
     candidateId,
-    label,
+    label: normalizedLabels.label,
+    labels: normalizedLabels.labels,
     name,
     canonicalKey,
     properties: sanitizeRecord(record.properties),
@@ -317,13 +376,16 @@ async function sanitizeNodeCandidate(store: GraphStore, value: unknown): Promise
       : {}),
     confidence,
     provenance,
+    ...(evidence.length > 0 ? { evidence } : {}),
     matchStatus: "create_new",
     reviewStatus: "pending",
     ...(sanitizeString(record.notes) ? { notes: sanitizeString(record.notes) } : {}),
+    ...(sanitizeString(record.justification) ? { justification: sanitizeString(record.justification) } : {}),
   });
   return {
     candidateId,
-    label,
+    label: normalizedLabels.label,
+    labels: normalizedLabels.labels,
     name,
     canonicalKey,
     properties: sanitizeRecord(record.properties),
@@ -335,10 +397,12 @@ async function sanitizeNodeCandidate(store: GraphStore, value: unknown): Promise
       : {}),
     confidence,
     provenance,
+    ...(evidence.length > 0 ? { evidence } : {}),
     matchStatus: matched.matchStatus,
     ...(matched.matchedNodeId ? { matchedNodeId: matched.matchedNodeId } : {}),
     reviewStatus: isReviewDecision(record.reviewStatus) ? record.reviewStatus : "pending",
     ...(sanitizeString(record.notes) ? { notes: sanitizeString(record.notes) } : {}),
+    ...(sanitizeString(record.justification) ? { justification: sanitizeString(record.justification) } : {}),
   };
 }
 
@@ -354,6 +418,7 @@ async function sanitizeEdgeCandidate(
   const toRef = sanitizeCandidateNodeReference(record.toRef);
   const confidence = isConfidence(record.confidence) ? record.confidence : "medium";
   const provenance = sanitizeProvenanceList(record.provenance, confidence);
+  const evidence = sanitizeEvidenceList(record.evidence, confidence);
   if (!candidateId || !type || !fromRef || !toRef || provenance.length === 0) return null;
 
   const resolveImportedReference = (reference: CandidateNodeReference): string | null => {
@@ -381,10 +446,12 @@ async function sanitizeEdgeCandidate(
       : {}),
     confidence,
     provenance,
+    ...(evidence.length > 0 ? { evidence } : {}),
     matchStatus: matched.matchStatus,
     ...(matched.matchedEdgeId ? { matchedEdgeId: matched.matchedEdgeId } : {}),
     reviewStatus: isReviewDecision(record.reviewStatus) ? record.reviewStatus : "pending",
     ...(sanitizeString(record.notes) ? { notes: sanitizeString(record.notes) } : {}),
+    ...(sanitizeString(record.justification) ? { justification: sanitizeString(record.justification) } : {}),
   };
 }
 
@@ -462,15 +529,21 @@ function buildDerivedNodeCandidate(
     notes?: string;
   }
 ): CandidateNode {
+  const normalizedLabels = normalizeCandidateLabels(label);
   return {
     candidateId,
-    label,
+    label: normalizedLabels.label,
+    labels: normalizedLabels.labels,
     name,
-    canonicalKey: deriveCanonicalKey(label, name),
+    canonicalKey: deriveCanonicalKey(normalizedLabels.label, name),
     properties: {
-      ...(label === "Genre" || label === "Person" || label === "Equipment" || label === "Instrument" || label === "Venue"
+      ...(normalizedLabels.label === "Genre" ||
+      normalizedLabels.label === "Person" ||
+      normalizedLabels.label === "Equipment" ||
+      normalizedLabels.label === "Instrument" ||
+      normalizedLabels.label === "Venue"
         ? { name }
-        : label === "Performance"
+        : normalizedLabels.label === "Performance"
           ? { name }
           : {}),
       ...(extra?.properties ?? {}),
@@ -905,35 +978,94 @@ export async function getReviewSession(sessionId: string): Promise<EnrichmentRev
   return session;
 }
 
+export type TripletImportContext = {
+  relationship: string;
+  subjectTargetId: string;
+  objectTargetId: string;
+  objectLabel: string;
+};
+
+function inferWorkflowType(
+  importedFrom: string | undefined,
+  explicitWorkflowType?: EnrichmentWorkflowType
+): EnrichmentWorkflowType {
+  if (explicitWorkflowType) return explicitWorkflowType;
+  if (importedFrom === "triplet-exploration") return "triplet";
+  if (importedFrom === "llm-only") return "llm_only";
+  return "hybrid";
+}
+
 export async function importResearchBundle(
   store: GraphStore,
   sessionId: string,
   bundle: ResearchBundle,
-  importedFrom = "subagent"
+  importedFrom = "subagent",
+  tripletContext?: TripletImportContext,
+  workflowType?: EnrichmentWorkflowType
 ): Promise<EnrichmentReviewSession> {
   const existing = await getReviewSession(sessionId);
-  if (bundle.sessionId !== sessionId) {
-    throw new Error("Imported bundle sessionId does not match the target review session.");
-  }
+  const validatedBundle = validateResearchBundle(bundle, {
+    sessionId,
+    targets: existing.targets,
+    ontology: existing.researchPacket?.ontology ?? buildResearchOntologyContext(),
+  });
 
-  const targets = Array.isArray(bundle.targets)
-    ? bundle.targets.map((item) => sanitizeTargetEntity(item)).filter((item): item is ReviewTargetEntity => item !== null)
+  const targets = Array.isArray(validatedBundle.targets)
+    ? validatedBundle.targets
+        .map((item) => sanitizeTargetEntity(item))
+        .filter((item): item is ReviewTargetEntity => item !== null)
     : existing.targets;
-  const propertyChanges = Array.isArray(bundle.propertyChanges)
-    ? bundle.propertyChanges
+  const propertyChanges = Array.isArray(validatedBundle.propertyChanges)
+    ? validatedBundle.propertyChanges
         .map((item) => sanitizePropertyChange(item))
         .filter((item): item is CandidatePropertyChange => item !== null)
     : [];
-  const nodeCandidates = Array.isArray(bundle.nodeCandidates)
+  const nodeCandidates = Array.isArray(validatedBundle.nodeCandidates)
     ? (
-        await Promise.all(bundle.nodeCandidates.map((item) => sanitizeNodeCandidate(store, item)))
+        await Promise.all(validatedBundle.nodeCandidates.map((item) => sanitizeNodeCandidate(store, item)))
       ).filter((item): item is CandidateNode => item !== null)
     : [];
-  const edgeCandidates = Array.isArray(bundle.edgeCandidates)
+  let edgeCandidates = Array.isArray(validatedBundle.edgeCandidates)
     ? (
-        await Promise.all(bundle.edgeCandidates.map((item) => sanitizeEdgeCandidate(store, item, nodeCandidates)))
+        await Promise.all(validatedBundle.edgeCandidates.map((item) => sanitizeEdgeCandidate(store, item, nodeCandidates)))
       ).filter((item): item is CandidateEdge => item !== null)
     : [];
+
+  if (tripletContext && isRelationshipType(tripletContext.relationship)) {
+    const objectLabelLower = tripletContext.objectLabel.toLowerCase();
+    const matchingNodes = nodeCandidates.filter(
+      (n) => n.label?.toLowerCase() === objectLabelLower
+    );
+    const seenKeys = new Set(
+      edgeCandidates.map((e) => `${e.type}:${e.fromRef.kind}:${e.fromRef.id}:${e.toRef.kind}:${e.toRef.id}`)
+    );
+    const provenance: CandidateProvenance[] =
+      nodeCandidates[0]?.provenance ?? [
+        {
+          source_id: "gpt-5.4",
+          source_name: "GPT-5.4",
+          source_type: "api",
+          url: "https://openai.com/gpt-5.4",
+          retrieved_at: new Date().toISOString(),
+          confidence: "medium",
+        },
+      ];
+    for (const node of matchingNodes) {
+      const edgeKey = `${tripletContext.relationship}:target:${tripletContext.subjectTargetId}:candidate:${node.candidateId}`;
+      if (seenKeys.has(edgeKey)) continue;
+      seenKeys.add(edgeKey);
+      edgeCandidates = [
+        ...edgeCandidates,
+        buildDerivedEdgeCandidate(
+          `triplet-edge-${tripletContext.relationship}-${slugify(node.candidateId)}`,
+          tripletContext.relationship,
+          { kind: "target", id: tripletContext.subjectTargetId },
+          { kind: "candidate", id: node.candidateId },
+          provenance
+        ),
+      ];
+    }
+  }
 
   const propertyChangesWithPrevious = await Promise.all(
     propertyChanges.map(async (change) => {
@@ -958,7 +1090,7 @@ export async function importResearchBundle(
     status: "ready_for_review",
     updatedAt: nowIso(),
     importedAt: nowIso(),
-    summary: sanitizeString(bundle.summary) || summarizeSession({
+    summary: sanitizeString(validatedBundle.summary) || summarizeSession({
       propertyChanges: propertyChangesWithPrevious,
       nodeCandidates: [...nodeCandidates, ...derivedCandidates.nodeCandidates],
       edgeCandidates: [...edgeCandidates, ...derivedCandidates.edgeCandidates],
@@ -967,9 +1099,18 @@ export async function importResearchBundle(
     propertyChanges: propertyChangesWithPrevious,
     nodeCandidates: [...nodeCandidates, ...derivedCandidates.nodeCandidates],
     edgeCandidates: [...edgeCandidates, ...derivedCandidates.edgeCandidates],
+    researchPacket: existing.researchPacket,
     importMetadata: {
-      generatedAt: sanitizeString(bundle.generatedAt) || undefined,
+      generatedAt: sanitizeString(validatedBundle.generatedAt) || undefined,
       importedFrom,
+      workflowType: inferWorkflowType(importedFrom, workflowType),
+      generator: validatedBundle.metadata?.generator,
+      provider: validatedBundle.metadata?.provider,
+      model: validatedBundle.metadata?.model,
+      promptVersion: validatedBundle.metadata?.promptVersion,
+      evidenceRecordCount: validatedBundle.metadata?.evidenceRecordCount,
+      sourceCount: validatedBundle.metadata?.sourceCount,
+      notes: validatedBundle.metadata?.notes,
     },
   };
 
@@ -987,6 +1128,31 @@ function toCandidateProvenance(record: VerifiedEnrichmentRecord): CandidateProve
       retrieved_at: record.retrieved_at,
       ...(record.excerpt ? { excerpt: record.excerpt } : {}),
       confidence: record.confidence,
+    },
+  ];
+}
+
+function toCandidateEvidence(
+  record: VerifiedEnrichmentRecord,
+  evidenceId: string,
+  notes?: string
+): CandidateEvidence[] {
+  return [
+    {
+      evidenceId,
+      source_id: record.source_id,
+      source_name: record.source_name,
+      source_type: record.source_type,
+      url: record.url,
+      retrieved_at: record.retrieved_at,
+      ...(record.excerpt ? { excerpt: record.excerpt } : {}),
+      confidence: record.confidence,
+      ...(notes ? { notes } : {}),
+      structuredFacts: {
+        properties: record.properties,
+        relatedNodes: record.relatedNodes ?? [],
+        relatedEdges: record.relatedEdges ?? [],
+      },
     },
   ];
 }
@@ -1020,9 +1186,55 @@ function mergePropertyValue(existing: unknown, incoming: unknown, key: string): 
   return existing;
 }
 
+function buildEvidenceId(targetId: string, record: VerifiedEnrichmentRecord, recordIndex: number): string {
+  return `${slugify(targetId)}-${record.source_id}-${recordIndex}`;
+}
+
+function createResearchPacket(
+  session: EnrichmentReviewSession,
+  previewResults: EnrichmentPreviewResult[],
+  sourceReport?: SourceRunReport
+): ResearchPacket {
+  const applicableEntries = (sourceReport ?? session.sourceReport)?.entries.filter(
+    (entry) => entry.applicableTargetIds.length > 0
+  ) ?? [];
+  const curatorEntries = applicableEntries.filter((entry) => entry.status === "ready_for_curator");
+
+  return {
+    sessionId: session.id,
+    targets: session.targets,
+    instructions: [
+      "Act as a music knowledge-graph researcher and editor.",
+      "Read all verified evidence across all provided sources before proposing any candidate properties, nodes, or edges.",
+      "Only emit ontology-valid candidates with source-backed provenance and concise justification.",
+      "Treat every applicable source in sourcePlan as required coverage for this run before broadening beyond the catalog.",
+      "Use broad ontology reasoning across people, artists, groups, recordings, venues, labels, and equipment when the evidence supports it.",
+      curatorEntries.length > 0
+        ? `Explicitly check every curator-required source in sourcePlan: ${curatorEntries.map((entry) => entry.id).join(", ")}.`
+        : "All applicable catalog sources for this run were already available to the automated pipeline.",
+    ],
+    ...(sourceReport ?? session.sourceReport ? { sourcePlan: sourceReport ?? session.sourceReport } : {}),
+    ontology: buildResearchOntologyContext(),
+    evidence: previewResults.map((preview) => ({
+      target:
+        session.targets.find((target) => target.id === preview.nodeId) ?? {
+          id: preview.nodeId,
+          label: preview.entityType,
+          name: preview.displayName,
+        },
+      records: preview.verifiedRecords.map((record, recordIndex) => ({
+        ...record,
+        evidenceId: buildEvidenceId(preview.nodeId, record, recordIndex),
+        targetId: preview.nodeId,
+        sourceDisplayName: preview.displayName,
+      })),
+    })),
+  };
+}
+
 function toAutomatedBundle(
   session: EnrichmentReviewSession,
-  previewResults: Array<Awaited<ReturnType<typeof previewEnrichmentPipeline>>>
+  previewResults: EnrichmentPreviewResult[]
 ): ResearchBundle {
   const nodeCandidateIds = new Map<string, string>();
   const propertyChanges = new Map<string, CandidatePropertyChange>();
@@ -1032,6 +1244,8 @@ function toAutomatedBundle(
   for (const preview of previewResults) {
     for (const [recordIndex, record] of preview.verifiedRecords.entries()) {
       const provenance = toCandidateProvenance(record);
+      const evidenceId = buildEvidenceId(preview.nodeId, record, recordIndex);
+      const evidence = toCandidateEvidence(record, evidenceId, "Deterministic fallback derived from one verified evidence record.");
       for (const [key, value] of Object.entries(record.properties)) {
         const propertyKey = `${preview.nodeId}:${key}`;
         const existing = propertyChanges.get(propertyKey);
@@ -1046,27 +1260,35 @@ function toAutomatedBundle(
               ? "medium"
               : "low",
           provenance: dedupeProvenance([...(existing?.provenance ?? []), ...provenance]),
+          evidence: existing?.evidence ? [...existing.evidence, ...evidence] : evidence,
           matchStatus: "updates_existing_target",
           reviewStatus: "pending",
           notes: `Automatically gathered after subset approval from catalog sources.`,
+          justification: "Deterministic fallback combined verified source properties for the approved target.",
         });
       }
 
       for (const [nodeIndex, node] of (record.relatedNodes ?? []).entries()) {
-        const label = node.labels[0] ?? "Node";
+        const normalizedLabels = normalizeCandidateLabels(node.labels[0] ?? "Node", node.labels);
         const candidateId = `auto-node-${preview.nodeId}-${recordIndex}-${nodeIndex}-${slugify(node.id)}`;
         nodeCandidateIds.set(node.id, candidateId);
         nodeCandidates.push({
           candidateId,
-          label,
+          label: normalizedLabels.label,
+          labels: normalizedLabels.labels,
           name: getMutationDisplayName(node.properties, node.id),
-          canonicalKey: deriveCanonicalKey(label, getMutationDisplayName(node.properties, node.id)),
+          canonicalKey: deriveCanonicalKey(
+            normalizedLabels.label,
+            getMutationDisplayName(node.properties, node.id)
+          ),
           properties: node.properties,
           confidence: record.confidence,
           provenance,
+          evidence,
           matchStatus: "create_new",
           reviewStatus: "pending",
           notes: `Automatically gathered after subset approval from ${record.source_name}.`,
+          justification: `Deterministic fallback staged a related ${normalizedLabels.label} mentioned in verified source evidence.`,
         });
       }
 
@@ -1089,9 +1311,11 @@ function toAutomatedBundle(
           ...(edge.properties ? { properties: edge.properties } : {}),
           confidence: record.confidence,
           provenance,
+          evidence,
           matchStatus: "create_new",
           reviewStatus: "pending",
           notes: `Automatically gathered after subset approval from ${record.source_name}.`,
+          justification: `Deterministic fallback staged a ${edge.type} relationship from verified source evidence.`,
         });
       }
     }
@@ -1108,22 +1332,152 @@ function toAutomatedBundle(
     propertyChanges: [...propertyChanges.values()],
     nodeCandidates,
     edgeCandidates,
+    metadata: {
+      generator: "deterministic",
+      promptVersion: ENRICHMENT_PROMPT_VERSION,
+      evidenceRecordCount: previewResults.reduce((sum, preview) => sum + preview.verifiedRecords.length, 0),
+      sourceCount: new Set(previewResults.flatMap((preview) => preview.checkedSourceIds)).size,
+      notes: "Fallback path used because the enrichment LLM was not configured.",
+    },
   };
+}
+
+export interface StartAutomatedReviewSessionOptions {
+  /** When provided, use this instead of calling the pipeline (e.g. for tests using real captured evidence). */
+  previewResults?: EnrichmentPreviewResult[];
 }
 
 export async function startAutomatedReviewSession(
   store: GraphStore,
-  targetIds: string[]
+  targetIds: string[],
+  options?: StartAutomatedReviewSessionOptions
 ): Promise<EnrichmentReviewSession> {
+  // #region agent log
+  fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
+    body: JSON.stringify({
+      sessionId: "e8d527",
+      runId: "run1",
+      hypothesisId: "H2",
+      location: "review.ts:startAutomatedReviewSession:entry",
+      message: "session created, checking LLM config",
+      data: { targetCount: targetIds.length },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
   const session = await createReviewSession(store, targetIds);
-  const previewResults = await Promise.all(
-    session.targets.map((target) => previewEnrichmentPipeline(store, target.id))
-  );
-  const automatedBundle = toAutomatedBundle(session, previewResults);
-  const importedSession = await importResearchBundle(store, session.id, automatedBundle, "auto-preview");
+
+  if (useLlmOnlyPipeline() && isLlmOnlyPipelineConfigured()) {
+    const LLM_ONLY_LOG = "[llm-only]";
+    console.log(
+      `${LLM_ONLY_LOG} taking LLM-only path sessionId=${session.id} targets=${session.targets.length} targetNames=${session.targets.map((t) => t.name).join(", ")}`
+    );
+    const llmOnlyResult = await runLlmOnlyPipeline(session.id, session.targets);
+    console.log(
+      `${LLM_ONLY_LOG} pipeline done nodes=${llmOnlyResult.bundle.nodeCandidates?.length ?? 0} edges=${llmOnlyResult.bundle.edgeCandidates?.length ?? 0} propertyChanges=${llmOnlyResult.bundle.propertyChanges?.length ?? 0}`
+    );
+    const importedSession = await importResearchBundle(
+      store,
+      session.id,
+      llmOnlyResult.bundle,
+      "llm-only"
+    );
+    console.log(`${LLM_ONLY_LOG} bundle imported status=${importedSession.status}`);
+    const nextSession: EnrichmentReviewSession = {
+      ...importedSession,
+      sourceReport: undefined,
+      researchPacket: undefined,
+    };
+    await writeReviewSession(nextSession);
+    console.log(`${LLM_ONLY_LOG} session written, returning`);
+    return nextSession;
+  }
+
+  const previewResults =
+    options?.previewResults ??
+    (await Promise.all(session.targets.map((target) => previewEnrichmentPipeline(store, target.id))));
+  const sourceReport = buildSourceRunReport(session.targets, previewResults);
+  const researchPacket = createResearchPacket(session, previewResults, sourceReport);
+  await writeReviewSession({
+    ...session,
+    sourceReport,
+    researchPacket,
+  });
+
+  let automatedBundle: ResearchBundle;
+  let importedFrom = "auto-preview";
+  const llmConfigured = isEnrichmentLlmConfigured();
+  // #region agent log
+  fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
+    body: JSON.stringify({
+      sessionId: "e8d527",
+      runId: "run1",
+      hypothesisId: "H2",
+      location: "review.ts:startAutomatedReviewSession:branch",
+      message: "LLM configured? which path taken",
+      data: { sessionId: session.id, llmConfigured, path: llmConfigured ? "llm" : "deterministic" },
+      timestamp: Date.now(),
+    }),
+  }).catch(() => {});
+  // #endregion
+  if (llmConfigured) {
+    try {
+      const llmResult = await synthesizeResearchBundle(researchPacket);
+      automatedBundle = llmResult.bundle;
+      importedFrom = "llm-auto-preview";
+      // #region agent log
+      fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
+        body: JSON.stringify({
+          sessionId: "e8d527",
+          runId: "run1",
+          hypothesisId: "H3",
+          location: "review.ts:startAutomatedReviewSession:llm-success",
+          message: "LLM synthesis succeeded",
+          data: { model: llmResult.metadata?.model, importedFrom },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
+    } catch (error) {
+      // #region agent log
+      fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
+        body: JSON.stringify({
+          sessionId: "e8d527",
+          runId: "run1",
+          hypothesisId: "H3",
+          location: "review.ts:startAutomatedReviewSession:llm-catch",
+          message: "LLM synthesis failed, using deterministic fallback",
+          data: {
+            errorMessage: error instanceof Error ? error.message : String(error),
+            errorName: error instanceof Error ? error.name : undefined,
+          },
+          timestamp: Date.now(),
+        }),
+      }).catch(() => {});
+      // #endregion
+      automatedBundle = toAutomatedBundle(session, previewResults);
+      automatedBundle.metadata = {
+        ...(automatedBundle.metadata ?? { generator: "deterministic" }),
+        notes: `LLM synthesis failed and deterministic fallback was used instead. ${error instanceof Error ? error.message : ""}`.trim(),
+      };
+    }
+  } else {
+    automatedBundle = toAutomatedBundle(session, previewResults);
+  }
+
+  const importedSession = await importResearchBundle(store, session.id, automatedBundle, importedFrom);
   const nextSession: EnrichmentReviewSession = {
     ...importedSession,
-    sourceReport: buildSourceRunReport(session.targets, previewResults),
+    sourceReport,
+    researchPacket,
   };
   await writeReviewSession(nextSession);
   return nextSession;
@@ -1190,6 +1544,12 @@ function resolveReferenceId(
   return reference.id;
 }
 
+function getCandidateNodeLabels(candidate: CandidateNode, currentLabels?: string[]): string[] {
+  return coerceArtistPersonIdentity(
+    normalizeEntityLabels([...(currentLabels ?? []), ...(candidate.labels ?? []), candidate.label].filter(Boolean))
+  );
+}
+
 export async function applyReviewSession(
   store: GraphStore,
   sessionId: string
@@ -1238,7 +1598,7 @@ export async function applyReviewSession(
         const current = await store.getNode(resolvedNodeId);
         if (current) {
           await store.updateNode(resolvedNodeId, {
-            labels: [candidate.label],
+            labels: getCandidateNodeLabels(candidate, current.labels),
             properties: candidate.properties,
             meta: buildCandidateMeta(session.id, candidate.candidateId, candidate.provenance, current.meta),
           });
@@ -1248,7 +1608,7 @@ export async function applyReviewSession(
         const existingByGeneratedId = await store.getNode(resolvedNodeId);
         if (existingByGeneratedId) {
           await store.updateNode(resolvedNodeId, {
-            labels: [candidate.label],
+            labels: getCandidateNodeLabels(candidate, existingByGeneratedId.labels),
             properties: candidate.properties,
             meta: buildCandidateMeta(
               session.id,
@@ -1261,7 +1621,7 @@ export async function applyReviewSession(
           await store.createNode(
             new ReviewGraphNode(
               resolvedNodeId,
-              [candidate.label],
+              getCandidateNodeLabels(candidate),
               candidate.properties,
               buildCandidateMeta(session.id, candidate.candidateId, candidate.provenance)
             )
@@ -1329,6 +1689,9 @@ export async function applyReviewSession(
 }
 
 export function buildResearchPacket(session: EnrichmentReviewSession): ResearchPacket {
+  if (session.researchPacket) {
+    return session.researchPacket;
+  }
   const applicableEntries =
     session.sourceReport?.entries.filter((entry) => entry.applicableTargetIds.length > 0) ?? [];
   const curatorEntries = applicableEntries.filter((entry) => entry.status === "ready_for_curator");
@@ -1349,5 +1712,7 @@ export function buildResearchPacket(session: EnrichmentReviewSession): ResearchP
       "Return one JSON bundle for this session with propertyChanges, nodeCandidates, and edgeCandidates.",
     ],
     ...(session.sourceReport ? { sourcePlan: session.sourceReport } : {}),
+    ontology: buildResearchOntologyContext(),
+    evidence: [],
   };
 }

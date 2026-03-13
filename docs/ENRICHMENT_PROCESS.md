@@ -90,16 +90,6 @@ Data is verified before loading so we can attach a confidence or verification fl
 - **Idempotency**: Same source + URL + entity can be applied multiple times; last write wins. Existing nodes/edges are updated; new ones are created.
 - **Store**: Production uses Neo4j Aura; writes persist immediately.
 
-### 3.4 Review before load
-
-For curator-led enrichment, GrooveGraph stages data before loading:
-
-- **Session creation**: The UI creates a review session from an approved subset of target entities.
-- **Candidate import**: The subagent's JSON bundle is imported as candidate property changes, node candidates, and edge candidates.
-- **Provenance review**: Each staged candidate keeps source URL, retrieval time, optional excerpt, and confidence.
-- **Human rejection**: The reviewer can reject bad items in the web UI before apply.
-- **Deduped apply**: Only non-rejected candidates are applied, with node and relationship matching against existing graph data before creating anything new.
-
 ### 3.3 Provenance storage
 
 Provenance is stored in node/edge `meta` or in dedicated properties:
@@ -109,6 +99,33 @@ Provenance is stored in node/edge `meta` or in dedicated properties:
 - `enrichment_date` (ISO)
 - `enrichment_excerpt` or `citation`
 - `enrichment_confidence`
+
+### 3.4 Review before load
+
+For curator-led enrichment, GrooveGraph stages data before loading:
+
+- **Session creation**: The UI creates a review session from an approved subset of target entities.
+- **Candidate import**: The subagent's JSON bundle is imported as candidate property changes, node candidates, and edge candidates.
+- **Workflow metadata**: Imported bundles persist `workflowType` metadata (`triplet`, `span_mention`, `llm_only`, `hybrid`) for routing and UI clarity.
+- **Provenance review**: Each staged candidate keeps source URL, retrieval time, optional excerpt, and confidence.
+- **Human rejection**: The reviewer can reject bad items in the web UI before apply.
+- **Deduped apply**: Only non-rejected candidates are applied, with node and relationship matching against existing graph data before creating anything new.
+
+### 3.5 Triplet exploration (specialized staged path)
+
+GrooveGraph also supports triplet-driven enrichment in the `/enrichment` workspace:
+
+- Request shape: `subjectType:subjectName RELATIONSHIP objectType:objectName`
+  - Example: `artist:Paul Weller PLAYED_INSTRUMENT instrument:guitar`
+- `any` placeholders are supported for subject and/or object.
+- When `any` is used, a scope is required (for example `artist:Paul Weller`).
+- The triplet route creates/uses a review session, runs an LLM triplet pipeline, validates the resulting bundle, then imports candidates for review.
+- Candidates still go through the same review/apply gate as other enrichment paths.
+
+Operational notes:
+
+- Triplet requests can be long-running for broad scoped exploration.
+- Timeout controls are configurable via `TRIPLET_LLM_TIMEOUT_MS` or `ENRICHMENT_LLM_TIMEOUT_MS`.
 
 ---
 
@@ -128,3 +145,12 @@ Provenance is stored in node/edge `meta` or in dedicated properties:
 4. **Import**: Paste the subagent JSON bundle into the review session.
 5. **Review**: Reject bad items and explicitly approve ambiguous ones when needed.
 6. **Apply**: Persist the remaining deduped properties, nodes, and relationships to Neo4j with provenance and review-session metadata.
+
+### Triplet exploration workflow
+
+1. **Submit triplet**: Provide triplet spec (and scope when using `any`) from `/enrichment`.
+2. **Session bootstrap**: Resolve/create target stubs and create a review session.
+3. **LLM exploration**: Generate triplet-constrained candidates via the triplet pipeline.
+4. **Validate and import**: Enforce ontology/schema constraints and import staged candidates.
+5. **Review**: Accept/reject candidate properties, nodes, and edges.
+6. **Apply**: Persist approved candidates to Neo4j using the same apply path as other sessions.

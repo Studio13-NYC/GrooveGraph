@@ -2,17 +2,22 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Loader2, Search, X } from "lucide-react";
+import { Loader2, Search, X, Zap } from "lucide-react";
 import { EntitySearchControls } from "./entity-search-controls";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
 import type { QueryResultPayload } from "@/lib/exploration-types";
 import {
+  ENTITY_LABELS,
   getEntityDisplayName,
   type EntityLabel,
 } from "@/lib/entity-config";
+import { RELATIONSHIP_TYPES, type RelationshipType } from "@/lib/relationship-config";
+import { isAnyPlaceholder, normalizeAnyPlaceholder } from "@/enrichment/triplet";
 import type {
   CandidateEdge,
+  CandidateEvidence,
   CandidateNode,
   CandidatePropertyChange,
   EnrichmentReviewSession,
@@ -143,6 +148,40 @@ function ProvenanceList({
   );
 }
 
+function EvidenceList({
+  items,
+}: {
+  items: CandidateEvidence[];
+}) {
+  return (
+    <div className="space-y-2">
+      {items.map((item, index) => (
+        <div
+          key={`${item.evidenceId ?? index}:${item.source_id}:${item.url}`}
+          className="rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--muted))/0.35] p-2"
+        >
+          <div className="flex flex-wrap items-center gap-2 text-xs">
+            <span className="font-medium text-[hsl(var(--foreground))]">{item.source_name}</span>
+            <ConfidenceBadge value={item.confidence} />
+            <a
+              href={item.url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-[hsl(var(--primary))] underline underline-offset-2"
+            >
+              evidence
+            </a>
+          </div>
+          {item.excerpt && (
+            <p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">{item.excerpt}</p>
+          )}
+          {item.notes && <p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">{item.notes}</p>}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function EnrichmentReviewWorkspace() {
   const router = useRouter();
   const pathname = usePathname();
@@ -164,6 +203,14 @@ export function EnrichmentReviewWorkspace() {
   const [session, setSession] = useState<EnrichmentReviewSession | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [working, setWorking] = useState(false);
+  const [tripletSubjectLabel, setTripletSubjectLabel] = useState<EntityLabel>("Artist");
+  const [tripletSubjectName, setTripletSubjectName] = useState("");
+  const [tripletRelationship, setTripletRelationship] = useState<RelationshipType>("PLAYED_INSTRUMENT");
+  const [tripletObjectLabel, setTripletObjectLabel] = useState<EntityLabel>("Instrument");
+  const [tripletObjectName, setTripletObjectName] = useState("");
+  const [tripletScopeLabel, setTripletScopeLabel] = useState<EntityLabel>("Artist");
+  const [tripletScopeName, setTripletScopeName] = useState("");
+  const [tripletWorking, setTripletWorking] = useState(false);
 
   const syncUrl = useCallback(
     (nextSessionId?: string) => {
@@ -322,6 +369,50 @@ export function EnrichmentReviewWorkspace() {
     }
   }
 
+  function buildTripletSpec(): string {
+    const sub = normalizeAnyPlaceholder(tripletSubjectName);
+    const obj = normalizeAnyPlaceholder(tripletObjectName);
+    if (!sub || !obj) return "";
+    return `${tripletSubjectLabel}:${sub} ${tripletRelationship} ${tripletObjectLabel}:${obj}`;
+  }
+
+  async function createTripletSession() {
+    const sub = normalizeAnyPlaceholder(tripletSubjectName);
+    const obj = normalizeAnyPlaceholder(tripletObjectName);
+    if (!sub || !obj) {
+      setMessage("Enter subject and object names for the triplet (or use \"any\" for expansion).");
+      return;
+    }
+    const needsScope = isAnyPlaceholder(tripletSubjectName) || isAnyPlaceholder(tripletObjectName);
+    if (needsScope && !tripletScopeName.trim()) {
+      setMessage("When using \"any\" for subject or object, scope is required (e.g. Paul Weller).");
+      return;
+    }
+    const spec = buildTripletSpec();
+    const scope = needsScope ? `${tripletScopeLabel}:${tripletScopeName.trim()}` : undefined;
+    setTripletWorking(true);
+    setMessage(null);
+    try {
+      const response = await fetch("/api/enrich/explore-triplet", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ triplet: spec, ...(scope ? { scope } : {}) }),
+      });
+      const data = (await response.json()) as SessionResponse & { error?: string; triplet?: unknown };
+      if (!response.ok) {
+        throw new Error(data.error || "Triplet exploration failed");
+      }
+      setSession(data.session);
+      setSubset(data.session.targets);
+      setMessage("Triplet exploration complete. Review the candidates and apply to the graph.");
+      syncUrl(data.session.id);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Triplet exploration failed");
+    } finally {
+      setTripletWorking(false);
+    }
+  }
+
   async function updateDecision(decision: ReviewDecision) {
     if (!session) return;
     setWorking(true);
@@ -373,6 +464,24 @@ export function EnrichmentReviewWorkspace() {
       (session?.nodeCandidates.filter((item) => item.reviewStatus === "rejected").length ?? 0) +
       (session?.edgeCandidates.filter((item) => item.reviewStatus === "rejected").length ?? 0);
     return { propertyCount, nodeCount, edgeCount, rejectedCount };
+  }, [session]);
+
+  const synthesisSummary = useMemo(() => {
+    if (!session) return null;
+    const evidenceRecordCount =
+      session.importMetadata?.evidenceRecordCount ??
+      session.researchPacket?.evidence.reduce((sum, target) => sum + target.records.length, 0) ??
+      0;
+    return {
+      workflowType: session.importMetadata?.workflowType ?? "hybrid",
+      generator: session.importMetadata?.generator ?? "manual",
+      provider: session.importMetadata?.provider ?? null,
+      model: session.importMetadata?.model ?? null,
+      promptVersion: session.importMetadata?.promptVersion ?? null,
+      evidenceRecordCount,
+      sourceCount: session.importMetadata?.sourceCount ?? null,
+      notes: session.importMetadata?.notes ?? null,
+    };
   }, [session]);
 
   function renderDecisionButtons(
@@ -434,12 +543,23 @@ export function EnrichmentReviewWorkspace() {
             )}
             <p className="text-sm">{String(change.value)}</p>
             {change.notes && <p className="text-xs text-[hsl(var(--muted-foreground))]">{change.notes}</p>}
+            {change.justification && (
+              <p className="text-xs text-[hsl(var(--muted-foreground))]">Why: {change.justification}</p>
+            )}
           </div>
           {renderDecisionButtons("property", change.candidateId, change.reviewStatus)}
         </div>
         <div className="mt-3">
           <ProvenanceList items={change.provenance} />
         </div>
+        {change.evidence && change.evidence.length > 0 && (
+          <div className="mt-3 space-y-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
+              Supporting evidence
+            </p>
+            <EvidenceList items={change.evidence} />
+          </div>
+        )}
       </div>
     );
   }
@@ -465,12 +585,23 @@ export function EnrichmentReviewWorkspace() {
               {JSON.stringify(candidate.properties, null, 2)}
             </pre>
             {candidate.notes && <p className="text-xs text-[hsl(var(--muted-foreground))]">{candidate.notes}</p>}
+            {candidate.justification && (
+              <p className="text-xs text-[hsl(var(--muted-foreground))]">Why: {candidate.justification}</p>
+            )}
           </div>
           {renderDecisionButtons("node", candidate.candidateId, candidate.reviewStatus, candidate.matchStatus)}
         </div>
         <div className="mt-3">
           <ProvenanceList items={candidate.provenance} />
         </div>
+        {candidate.evidence && candidate.evidence.length > 0 && (
+          <div className="mt-3 space-y-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
+              Supporting evidence
+            </p>
+            <EvidenceList items={candidate.evidence} />
+          </div>
+        )}
       </div>
     );
   }
@@ -500,12 +631,23 @@ export function EnrichmentReviewWorkspace() {
               </pre>
             )}
             {candidate.notes && <p className="text-xs text-[hsl(var(--muted-foreground))]">{candidate.notes}</p>}
+            {candidate.justification && (
+              <p className="text-xs text-[hsl(var(--muted-foreground))]">Why: {candidate.justification}</p>
+            )}
           </div>
           {renderDecisionButtons("edge", candidate.candidateId, candidate.reviewStatus, candidate.matchStatus)}
         </div>
         <div className="mt-3">
           <ProvenanceList items={candidate.provenance} />
         </div>
+        {candidate.evidence && candidate.evidence.length > 0 && (
+          <div className="mt-3 space-y-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
+              Supporting evidence
+            </p>
+            <EvidenceList items={candidate.evidence} />
+          </div>
+        )}
       </div>
     );
   }
@@ -580,6 +722,99 @@ export function EnrichmentReviewWorkspace() {
               </CardContent>
             </Card>
           )}
+
+          <div className="mt-6 border-t border-[hsl(var(--border))] pt-6">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[hsl(var(--muted-foreground))]">
+              Explore by triplet
+            </p>
+            <p className="mb-3 max-w-2xl text-sm text-[hsl(var(--muted-foreground))]">
+              Choose subject and object entity types, relationship, and names. The LLM will return all information that
+              fits (e.g. guitars Paul Weller plays).
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                value={tripletSubjectLabel}
+                onChange={(e) => setTripletSubjectLabel(e.target.value as EntityLabel)}
+                className="flex h-10 min-w-[8rem] rounded-md border border-[hsl(var(--border))] bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
+                aria-label="Subject entity type"
+              >
+                {ENTITY_LABELS.map((label) => (
+                  <option key={label} value={label}>
+                    {getEntityDisplayName(label)}
+                  </option>
+                ))}
+              </select>
+              <Input
+                placeholder="e.g. Paul Weller, any"
+                value={tripletSubjectName}
+                onChange={(e) => setTripletSubjectName(e.target.value)}
+                className="min-w-[10rem] max-w-[14rem]"
+                onKeyDown={(e) => e.key === "Enter" && void createTripletSession()}
+              />
+              <select
+                value={tripletRelationship}
+                onChange={(e) => setTripletRelationship(e.target.value as RelationshipType)}
+                className="flex h-10 min-w-[11rem] rounded-md border border-[hsl(var(--border))] bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
+                aria-label="Relationship type"
+              >
+                {RELATIONSHIP_TYPES.map((type) => (
+                  <option key={type} value={type}>
+                    {type}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={tripletObjectLabel}
+                onChange={(e) => setTripletObjectLabel(e.target.value as EntityLabel)}
+                className="flex h-10 min-w-[8rem] rounded-md border border-[hsl(var(--border))] bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
+                aria-label="Object entity type"
+              >
+                {ENTITY_LABELS.map((label) => (
+                  <option key={label} value={label}>
+                    {getEntityDisplayName(label)}
+                  </option>
+                ))}
+              </select>
+              <Input
+                placeholder="e.g. guitar, any"
+                value={tripletObjectName}
+                onChange={(e) => setTripletObjectName(e.target.value)}
+                className="min-w-[10rem] max-w-[14rem]"
+                onKeyDown={(e) => e.key === "Enter" && void createTripletSession()}
+              />
+              <select
+                value={tripletScopeLabel}
+                onChange={(e) => setTripletScopeLabel(e.target.value as EntityLabel)}
+                className="flex h-10 min-w-[8rem] rounded-md border border-[hsl(var(--border))] bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
+                aria-label="Scope entity type"
+              >
+                {ENTITY_LABELS.map((label) => (
+                  <option key={label} value={label}>
+                    {getEntityDisplayName(label)}
+                  </option>
+                ))}
+              </select>
+              <Input
+                placeholder="e.g. Paul Weller"
+                value={tripletScopeName}
+                onChange={(e) => setTripletScopeName(e.target.value)}
+                className="min-w-[10rem] max-w-[14rem]"
+                onKeyDown={(e) => e.key === "Enter" && void createTripletSession()}
+              />
+              <Button
+                onClick={() => void createTripletSession()}
+                disabled={
+                  tripletWorking ||
+                  !tripletSubjectName.trim() ||
+                  !tripletObjectName.trim() ||
+                  ((isAnyPlaceholder(tripletSubjectName) || isAnyPlaceholder(tripletObjectName)) && !tripletScopeName.trim())
+                }
+              >
+                {tripletWorking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
+                Explore triplet
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -614,10 +849,17 @@ export function EnrichmentReviewWorkspace() {
                 ))}
               </ul>
             )}
-            <Button onClick={createSession} disabled={subset.length === 0 || working}>
-              {working ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-              Approve subset and create session
-            </Button>
+            {(session?.importMetadata?.workflowType ?? null) === "triplet" ||
+            session?.importMetadata?.importedFrom === "triplet-exploration" ? (
+              <p className="text-sm text-[hsl(var(--muted-foreground))]">
+                Triplet session is ready. Review staged candidates below and apply when satisfied.
+              </p>
+            ) : (
+              <Button onClick={createSession} disabled={subset.length === 0 || working}>
+                {working ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Approve subset and create session
+              </Button>
+            )}
           </CardContent>
         </Card>
 
@@ -651,6 +893,50 @@ export function EnrichmentReviewWorkspace() {
                     <p className="mt-2 font-semibold">{reviewStats.rejectedCount}</p>
                   </div>
                 </div>
+
+                {synthesisSummary && (
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="rounded-lg border border-[hsl(var(--border))] p-3">
+                      <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Workflow</p>
+                      <p className="mt-2 font-semibold">{synthesisSummary.workflowType.replace(/_/g, " ")}</p>
+                    </div>
+                    <div className="rounded-lg border border-[hsl(var(--border))] p-3">
+                      <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Synthesis</p>
+                      <p className="mt-2 font-semibold">{synthesisSummary.generator.replace(/_/g, " ")}</p>
+                    </div>
+                    <div className="rounded-lg border border-[hsl(var(--border))] p-3">
+                      <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Evidence</p>
+                      <p className="mt-2 font-semibold">{synthesisSummary.evidenceRecordCount}</p>
+                    </div>
+                    <div className="rounded-lg border border-[hsl(var(--border))] p-3">
+                      <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Provider</p>
+                      <p className="mt-2 font-semibold">{synthesisSummary.provider ?? "not configured"}</p>
+                    </div>
+                    <div className="rounded-lg border border-[hsl(var(--border))] p-3 sm:col-span-2 lg:col-span-1">
+                      <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Model</p>
+                      <p className="mt-2 font-semibold">{synthesisSummary.model ?? "fallback"}</p>
+                    </div>
+                  </div>
+                )}
+
+                {synthesisSummary?.notes && (
+                  <div className="rounded-lg border border-[hsl(var(--border))] bg-[hsl(var(--muted))/0.35] p-3">
+                    <p className="text-xs uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
+                      Synthesis notes
+                    </p>
+                    <p className="mt-2 text-sm text-[hsl(var(--muted-foreground))]">{synthesisSummary.notes}</p>
+                    {synthesisSummary.promptVersion && (
+                      <p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">
+                        Prompt version: {synthesisSummary.promptVersion}
+                      </p>
+                    )}
+                    {typeof synthesisSummary.sourceCount === "number" && (
+                      <p className="mt-1 text-xs text-[hsl(var(--muted-foreground))]">
+                        In-scope sources considered: {synthesisSummary.sourceCount}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {session.sourceReport && (
                   <div className="space-y-3">

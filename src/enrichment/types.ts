@@ -100,6 +100,13 @@ export interface CandidateProvenance extends SourceMetadata {
   notes?: string;
 }
 
+export interface CandidateEvidence extends SourceMetadata {
+  evidenceId?: string;
+  confidence: ConfidenceLevel;
+  notes?: string;
+  structuredFacts?: Record<string, unknown>;
+}
+
 export interface ReviewTargetEntity {
   id: string;
   label: string;
@@ -114,14 +121,17 @@ export interface CandidatePropertyChange {
   previousValue?: unknown;
   confidence: ConfidenceLevel;
   provenance: CandidateProvenance[];
+  evidence?: CandidateEvidence[];
   matchStatus: "updates_existing_target";
   reviewStatus: ReviewDecisionStatus;
   notes?: string;
+  justification?: string;
 }
 
 export interface CandidateNode {
   candidateId: string;
   label: string;
+  labels?: string[];
   name: string;
   canonicalKey: string;
   properties: Record<string, unknown>;
@@ -129,10 +139,12 @@ export interface CandidateNode {
   aliases?: string[];
   confidence: ConfidenceLevel;
   provenance: CandidateProvenance[];
+  evidence?: CandidateEvidence[];
   matchStatus: CandidateMatchStatus;
   matchedNodeId?: string;
   reviewStatus: ReviewDecisionStatus;
   notes?: string;
+  justification?: string;
 }
 
 export interface CandidateNodeReference {
@@ -150,10 +162,58 @@ export interface CandidateEdge {
   properties?: Record<string, unknown>;
   confidence: ConfidenceLevel;
   provenance: CandidateProvenance[];
+  evidence?: CandidateEvidence[];
   matchStatus: Exclude<CandidateMatchStatus, "updates_existing_target">;
   matchedEdgeId?: string;
   reviewStatus: ReviewDecisionStatus;
   notes?: string;
+  justification?: string;
+}
+
+export interface ResearchBundleMetadata {
+  generator: "llm" | "deterministic" | "manual";
+  provider?: string;
+  model?: string;
+  promptVersion?: string;
+  evidenceRecordCount?: number;
+  sourceCount?: number;
+  notes?: string;
+}
+
+export interface ResearchEvidenceRecord extends VerifiedEnrichmentRecord {
+  evidenceId: string;
+  targetId: string;
+  sourceDisplayName?: string;
+}
+
+export interface ResearchEvidenceTarget {
+  target: ReviewTargetEntity;
+  records: ResearchEvidenceRecord[];
+}
+
+export interface ResearchOntologyEntity {
+  label: string;
+  displayName: string;
+  descriptionNoun: string;
+  displayPropertyKeys: string[];
+}
+
+export interface ResearchOntologyRelationship {
+  type: string;
+  description: string;
+}
+
+export interface ResearchOntologyContext {
+  allowedEntityLabels: string[];
+  allowedRelationshipTypes: string[];
+  syntheticLabels: string[];
+  syntheticRelationshipTypes: string[];
+  dualIdentityRules: Array<{
+    labels: string[];
+    note: string;
+  }>;
+  entityDefinitions: ResearchOntologyEntity[];
+  relationshipDefinitions: ResearchOntologyRelationship[];
 }
 
 export interface ResearchBundle {
@@ -164,6 +224,7 @@ export interface ResearchBundle {
   propertyChanges: CandidatePropertyChange[];
   nodeCandidates: CandidateNode[];
   edgeCandidates: CandidateEdge[];
+  metadata?: ResearchBundleMetadata;
 }
 
 export type SourceExecutionMode = "automated" | "curator";
@@ -204,7 +265,11 @@ export interface ResearchPacket {
   targets: ReviewTargetEntity[];
   instructions: string[];
   sourcePlan?: SourceRunReport;
+  ontology: ResearchOntologyContext;
+  evidence: ResearchEvidenceTarget[];
 }
+
+export type EnrichmentWorkflowType = "triplet" | "span_mention" | "llm_only" | "hybrid";
 
 export interface EnrichmentReviewSession {
   id: string;
@@ -220,9 +285,18 @@ export interface EnrichmentReviewSession {
   nodeCandidates: CandidateNode[];
   edgeCandidates: CandidateEdge[];
   sourceReport?: SourceRunReport;
+  researchPacket?: ResearchPacket;
   importMetadata?: {
     generatedAt?: string;
     importedFrom?: string;
+    workflowType?: EnrichmentWorkflowType;
+    generator?: ResearchBundleMetadata["generator"];
+    provider?: string;
+    model?: string;
+    promptVersion?: string;
+    evidenceRecordCount?: number;
+    sourceCount?: number;
+    notes?: string;
   };
 }
 
