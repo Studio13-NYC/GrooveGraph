@@ -12,11 +12,14 @@ function runPortGuard() {
 
 function runNextDevOnce() {
   return new Promise((resolve) => {
-    const npxBin = process.platform === "win32" ? "npx.cmd" : "npx";
-    const child = spawn(npxBin, ["next", "dev", "-p", TARGET_PORT], {
-      stdio: ["inherit", "pipe", "pipe"],
-      shell: process.platform === "win32",
-    });
+    const child =
+      process.platform === "win32"
+        ? spawn(process.env.ComSpec || "cmd.exe", ["/d", "/s", "/c", `npx next dev -p ${TARGET_PORT}`], {
+            stdio: ["inherit", "pipe", "pipe"],
+          })
+        : spawn("npx", ["next", "dev", "-p", TARGET_PORT], {
+            stdio: ["inherit", "pipe", "pipe"],
+          });
 
     let combined = "";
     child.stdout.on("data", (chunk) => {
