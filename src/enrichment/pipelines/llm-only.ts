@@ -1,30 +1,27 @@
 /**
- * Triplet exploration pipeline: subject —[relationship]—> object.
- * Single GPT-5.4 call returns all information that fits the pattern (e.g. guitars Paul Weller plays).
+ * GPT-5.4–only enrichment pipeline. No external sources (Wikipedia, MusicBrainz, etc.).
+ * Uses a single LLM call with schema + explanation prompt to produce a ResearchBundle.
+ * Swap in via ENRICHMENT_PIPELINE=llm-only.
  */
 
-import { Agent, fetch as undiciFetch } from "undici";
+import type { GraphStore } from "../../store/types";
+import type { TripletSpec } from "../triplet";
 import type {
   ResearchBundle,
   ResearchBundleMetadata,
   ResearchOntologyContext,
   ReviewTargetEntity,
 } from "../types";
-import type { TripletSpec } from "../triplet";
 import { buildResearchOntologyContext } from "../llm/ontology-context";
 import { validateResearchBundle } from "../llm/validate-bundle";
-import {
-  buildTripletExplorationPrompt,
-  TRIPLET_EXPLORATION_PROMPT_VERSION,
-} from "./triplet-exploration-schema";
-import { getLlmOnlyProvenance } from "./llm-only-schema";
+import { buildLlmOnlyPrompt, getLlmOnlyProvenance, LLM_ONLY_PROMPT_VERSION } from "./llm-only-schema";
 
-const LOG_PREFIX = "[triplet-pipeline]";
+const LOG_PREFIX = "[llm-only-pipeline]";
 
 function getApiKey(): string {
-  return (
-    process.env.OPENAI_API_KEY?.trim() || process.env.ENRICHMENT_LLM_API_KEY?.trim() || ""
-  );
+  const key =
+    process.env.OPENAI_API_KEY?.trim() || process.env.ENRICHMENT_LLM_API_KEY?.trim() || "";
+  return key;
 }
 
 function getBaseUrl(): string {
@@ -35,12 +32,11 @@ function getBaseUrl(): string {
   );
 }
 
-/** Model for triplet exploration; default gpt-5-nano for low-cost end-to-end runs. */
+/** Model for LLM-only pipeline; default gpt-5-nano for low-cost end-to-end runs. */
 function getModel(): string {
   return (
     process.env.OPENAI_MODEL?.trim() ||
     process.env.ENRICHMENT_LLM_MODEL?.trim() ||
-    process.env.TRIPLET_LLM_MODEL?.trim() ||
     "gpt-5-nano"
   );
 }
@@ -55,7 +51,7 @@ function extractJson(text: string): unknown {
     if (firstBrace >= 0 && lastBrace > firstBrace) {
       return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1));
     }
-    throw new Error("Triplet exploration: response was not valid JSON.");
+    throw new Error("LLM-only pipeline: response was not valid JSON.");
   }
 }
 
@@ -64,7 +60,10 @@ function attachProvenance(raw: unknown): unknown {
   const bundle = { ...(raw as Record<string, unknown>) };
   const provenance = [getLlmOnlyProvenance()];
 
-  const withProvenance = <T extends Record<string, unknown>>(item: T): T => {
+  const withProvenance = <T extends Record<string, unknown>>(
+    item: T,
+    key: string
+  ): T => {
     if (!item || typeof item !== "object" || Array.isArray(item)) return item;
     const candidate = { ...(item as Record<string, unknown>) };
     const existing = candidate.provenance;
@@ -75,57 +74,44 @@ function attachProvenance(raw: unknown): unknown {
   };
 
   bundle.propertyChanges = Array.isArray(bundle.propertyChanges)
-    ? bundle.propertyChanges.map((item) => withProvenance(item as Record<string, unknown>))
+    ? bundle.propertyChanges.map((item) => withProvenance(item as Record<string, unknown>, "propertyChanges"))
     : bundle.propertyChanges;
   bundle.nodeCandidates = Array.isArray(bundle.nodeCandidates)
-    ? bundle.nodeCandidates.map((item) => withProvenance(item as Record<string, unknown>))
+    ? bundle.nodeCandidates.map((item) => withProvenance(item as Record<string, unknown>, "nodeCandidates"))
     : bundle.nodeCandidates;
   bundle.edgeCandidates = Array.isArray(bundle.edgeCandidates)
-    ? bundle.edgeCandidates.map((item) => withProvenance(item as Record<string, unknown>))
+    ? bundle.edgeCandidates.map((item) => withProvenance(item as Record<string, unknown>, "edgeCandidates"))
     : bundle.edgeCandidates;
 
   return bundle;
 }
 
-export interface TripletExplorationResult {
+export interface LlmOnlyPipelineResult {
   bundle: ResearchBundle;
   metadata: ResearchBundleMetadata;
 }
 
 /**
- * Run triplet exploration: prompt GPT-5.4 with subject—relationship—object, return validated bundle.
- * Targets must be [subjectTarget, objectTarget] with ids matching the stubs used in the session.
+ * Run the LLM-only pipeline: prompt with schema and targets, return a validated ResearchBundle.
+ * When triplet is provided (e.g. from extract UI), instructions ask for relationship-specific
+ * node and edge candidates (e.g. guitars Paul Weller plays).
  */
-export type TripletPipelineOptions = {
-  ontology?: ResearchOntologyContext;
-  scopeTarget?: ReviewTargetEntity;
-  hasAnySubject?: boolean;
-  hasAnyObject?: boolean;
-};
-
-export async function runTripletExplorationPipeline(
+export async function runLlmOnlyPipeline(
   sessionId: string,
-  triplet: TripletSpec,
   targets: ReviewTargetEntity[],
-  options?: TripletPipelineOptions
-): Promise<TripletExplorationResult> {
+  options?: { ontology?: ResearchOntologyContext; triplet?: TripletSpec }
+): Promise<LlmOnlyPipelineResult> {
   console.log(
-    `${LOG_PREFIX} start sessionId=${sessionId} triplet=${triplet.subject.label}:${triplet.subject.name} — ${triplet.relationship} — ${triplet.object.label}:${triplet.object.name} targets=${targets.length}`
+    `${LOG_PREFIX} start sessionId=${sessionId} targets=${targets.length} targetNames=${targets.map((t) => t.name).join(", ")}${options?.triplet ? ` triplet=${options.triplet.relationship}` : ""}`
   );
   const apiKey = getApiKey();
   if (!apiKey) {
     console.error(`${LOG_PREFIX} missing API key`);
-    throw new Error(
-      "Triplet exploration requires OPENAI_API_KEY or ENRICHMENT_LLM_API_KEY."
-    );
+    throw new Error("LLM-only pipeline requires OPENAI_API_KEY or ENRICHMENT_LLM_API_KEY.");
   }
 
   const ontology = options?.ontology ?? buildResearchOntologyContext();
-  const { system, user } = buildTripletExplorationPrompt(sessionId, triplet, targets, ontology, {
-    scopeTarget: options?.scopeTarget,
-    hasAnySubject: options?.hasAnySubject,
-    hasAnyObject: options?.hasAnyObject,
-  });
+  const { system, user } = buildLlmOnlyPrompt(sessionId, targets, ontology, options?.triplet);
   const model = getModel();
   const baseUrl = getBaseUrl().replace(/\/$/, "");
   const url = `${baseUrl}/chat/completions`;
@@ -133,59 +119,28 @@ export async function runTripletExplorationPipeline(
     `${LOG_PREFIX} LLM request url=${url} model=${model} systemLen=${system.length} userLen=${user.length}`
   );
 
-  const requestBody = {
-    model,
-    response_format: { type: "json_object" },
-    messages: [
-      { role: "system", content: String(system) },
-      { role: "user", content: String(user) },
-    ],
-  };
-  let bodyString: string;
-  try {
-    bodyString = JSON.stringify(requestBody);
-  } catch (serializeErr) {
-    console.error(`${LOG_PREFIX} Failed to serialize request body:`, serializeErr);
-    throw new Error("Triplet exploration: failed to build request body for OpenAI.");
-  }
-
-  const timeoutMs =
-    Number(process.env.TRIPLET_LLM_TIMEOUT_MS) || Number(process.env.ENRICHMENT_LLM_TIMEOUT_MS) || 600_000;
-  const dispatcher = new Agent({
-    headersTimeout: timeoutMs,
-    bodyTimeout: timeoutMs,
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model,
+      response_format: { type: "json_object" },
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+    }),
   });
-  let response: Awaited<ReturnType<typeof undiciFetch>>;
-  try {
-    response = await undiciFetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: bodyString,
-      dispatcher,
-    });
-  } catch (fetchErr) {
-    const cause = fetchErr instanceof Error ? fetchErr.cause : undefined;
-    const isAbort = fetchErr instanceof Error && fetchErr.name === "AbortError";
-    const isTimeout =
-      isAbort ||
-      (cause instanceof Error && (cause as { code?: string }).code === "UND_ERR_HEADERS_TIMEOUT");
-    if (isTimeout) {
-      throw new Error(
-        `Triplet exploration timed out after ${timeoutMs / 1000}s waiting for LLM response. Set TRIPLET_LLM_TIMEOUT_MS or ENRICHMENT_LLM_TIMEOUT_MS (ms) to increase.`
-      );
-    }
-    throw fetchErr;
-  }
 
   console.log(`${LOG_PREFIX} LLM response status=${response.status}`);
   if (!response.ok) {
     const errorText = await response.text();
     console.error(`${LOG_PREFIX} LLM error body:`, errorText.slice(0, 500));
     throw new Error(
-      `Triplet exploration request failed with ${response.status}.${errorText ? ` ${errorText}` : ""}`
+      `LLM-only pipeline request failed with ${response.status}.${errorText ? ` ${errorText}` : ""}`
     );
   }
 
@@ -198,7 +153,7 @@ export async function runTripletExplorationPipeline(
       : "";
   if (!rawText) {
     console.error(`${LOG_PREFIX} LLM returned empty content; payload keys:`, Object.keys(payload ?? {}));
-    throw new Error("Triplet exploration returned an empty response.");
+    throw new Error("LLM-only pipeline returned an empty response.");
   }
   console.log(`${LOG_PREFIX} LLM raw response length=${rawText.length} first200=${rawText.slice(0, 200)}`);
 
@@ -231,10 +186,10 @@ export async function runTripletExplorationPipeline(
     generator: "llm",
     provider: "OpenAI",
     model,
-    promptVersion: TRIPLET_EXPLORATION_PROMPT_VERSION,
+    promptVersion: LLM_ONLY_PROMPT_VERSION,
     evidenceRecordCount: 0,
     sourceCount: 1,
-    notes: `Triplet exploration: ${triplet.subject.label}:${triplet.subject.name} — ${triplet.relationship} — ${triplet.object.label}:${triplet.object.name}.`,
+    notes: "Enrichment from LLM-only pipeline; no external sources.",
   };
 
   const mergedBundle: ResearchBundle = {
@@ -245,10 +200,20 @@ export async function runTripletExplorationPipeline(
       generator: "llm",
       provider: "OpenAI",
       model,
-      promptVersion: TRIPLET_EXPLORATION_PROMPT_VERSION,
+      promptVersion: LLM_ONLY_PROMPT_VERSION,
     },
   };
 
   console.log(`${LOG_PREFIX} done returning bundle`);
   return { bundle: mergedBundle, metadata };
+}
+
+export function isLlmOnlyPipelineConfigured(): boolean {
+  return Boolean(getApiKey());
+}
+
+/** Check whether to use the LLM-only pipeline (swap). */
+export function useLlmOnlyPipeline(): boolean {
+  const v = process.env.ENRICHMENT_PIPELINE?.trim().toLowerCase();
+  return v === "llm-only" || v === "llm_only";
 }

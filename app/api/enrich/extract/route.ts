@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
       const session = await createReviewSession(store, targets.map((t) => t.id));
       console.log(`${LOG_PREFIX} llm_only session created: id=${session.id} targets=${session.targets.length}`);
 
-      const result = await runLlmOnlyPipeline(session.id, session.targets);
+      const result = await runLlmOnlyPipeline(session.id, session.targets, { triplet });
       console.log(
         `${LOG_PREFIX} llm_only pipeline done: nodes=${result.bundle.nodeCandidates?.length ?? 0} edges=${result.bundle.edgeCandidates?.length ?? 0}`
       );

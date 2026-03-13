@@ -133,6 +133,8 @@ API notes:
 
 Operational notes:
 
+- **LLM required**: Set `OPENAI_API_KEY` or `ENRICHMENT_LLM_API_KEY` for triplet and llm_only extraction to run. Copy `.env.example` to `.env.local`, set one of these keys. Start the dev server from the **project root** (`npm run dev`) so Next.js loads `.env.local`; then **restart** after any env change.
+- **Default model**: Both pipelines default to `gpt-5-nano` for low-cost end-to-end runs. Override with `OPENAI_MODEL`, `ENRICHMENT_LLM_MODEL`, or (triplet only) `TRIPLET_LLM_MODEL`.
 - Triplet requests can be long-running for broad scoped exploration.
 - Timeout controls are configurable via `TRIPLET_LLM_TIMEOUT_MS` or `ENRICHMENT_LLM_TIMEOUT_MS`.
 
