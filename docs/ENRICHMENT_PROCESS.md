@@ -122,6 +122,11 @@ GrooveGraph also supports triplet-driven enrichment in the `/enrichment` workspa
 - The triplet route creates/uses a review session, runs an LLM triplet pipeline, validates the resulting bundle, then imports candidates for review.
 - Candidates still go through the same review/apply gate as other enrichment paths.
 
+API notes:
+
+- Generic extraction entrypoint: `POST /api/enrich/extract`
+- Current supported mode: `workflowType: "triplet"` (delegates to triplet exploration route)
+
 Operational notes:
 
 - Triplet requests can be long-running for broad scoped exploration.

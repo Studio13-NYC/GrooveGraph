@@ -393,10 +393,10 @@ export function EnrichmentReviewWorkspace() {
     setTripletWorking(true);
     setMessage(null);
     try {
-      const response = await fetch("/api/enrich/explore-triplet", {
+      const response = await fetch("/api/enrich/extract", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ triplet: spec, ...(scope ? { scope } : {}) }),
+        body: JSON.stringify({ workflowType: "triplet", triplet: spec, ...(scope ? { scope } : {}) }),
       });
       const data = (await response.json()) as SessionResponse & { error?: string; triplet?: unknown };
       if (!response.ok) {
