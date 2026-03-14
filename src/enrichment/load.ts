@@ -2,15 +2,15 @@
  * Load step: apply verified enrichment to the graph with provenance in meta.
  */
 
-import type { GraphStore } from "../store/index.js";
+import type { GraphStore } from "../store/index";
 import type {
   PersistedEdgeChange,
   PersistedNodeChange,
   PersistedPropertyChange,
   VerifiedEnrichmentRecord,
-} from "./types.js";
-import { GraphNode } from "../domain/GraphNode.js";
-import { GraphEdge } from "../domain/GraphEdge.js";
+} from "./types";
+import { GraphNode } from "../domain/GraphNode";
+import { GraphEdge } from "../domain/GraphEdge";
 
 class EnrichedNode extends GraphNode {
   constructor(

@@ -1,0 +1,286 @@
+{
+  "id": "61800110-810a-4446-9a25-974a00b5a4b0",
+  "status": "ready_for_review",
+  "createdAt": "2026-03-12T15:14:10.534Z",
+  "updatedAt": "2026-03-12T15:14:44.886Z",
+  "approvedAt": "2026-03-12T15:14:10.534Z",
+  "summary": "Limited graph-compatible candidates for effects associated with Paul Weller as a performer. Publicly documented effect usage is sparse and often anecdotal rather than exhaustively sourced; the candidates below reflect commonly associated guitar/vocal effects with moderate-to-low confidence.",
+  "targets": [
+    {
+      "id": "triplet-subject-artist-paul-weller-n8zi64ah",
+      "label": "Artist",
+      "name": "Paul Weller"
+    },
+    {
+      "id": "triplet-object-effect-any-n8zi64ah",
+      "label": "Effect",
+      "name": "any"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [
+    {
+      "candidateId": "candidate-effect-overdrive-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Overdrive",
+      "canonicalKey": "effect:overdrive",
+      "properties": {
+        "name": "Overdrive"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-effect-distortion-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Distortion",
+      "canonicalKey": "effect:distortion",
+      "properties": {
+        "name": "Distortion"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-effect-compression-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Compression",
+      "canonicalKey": "effect:compression",
+      "properties": {
+        "name": "Compression"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-effect-phaser-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Phaser",
+      "canonicalKey": "effect:phaser",
+      "properties": {
+        "name": "Phaser"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-effect-wah-wah-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Wah-wah",
+      "canonicalKey": "effect:wah-wah",
+      "properties": {
+        "name": "Wah-wah"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-effect-delay-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Delay",
+      "canonicalKey": "effect:delay",
+      "properties": {
+        "name": "Delay"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-effect-reverb-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Reverb",
+      "canonicalKey": "effect:reverb",
+      "properties": {
+        "name": "Reverb"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-effect-tremolo-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Tremolo",
+      "canonicalKey": "effect:tremolo",
+      "properties": {
+        "name": "Tremolo"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-effect-chorus-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Chorus",
+      "canonicalKey": "effect:chorus",
+      "properties": {
+        "name": "Chorus"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-effect-fuzz-paulweller",
+      "label": "Effect",
+      "labels": [
+        "Effect"
+      ],
+      "name": "Fuzz",
+      "canonicalKey": "effect:fuzz",
+      "properties": {
+        "name": "Fuzz"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:14:10.536Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "edgeCandidates": [],
+  "importedAt": "2026-03-12T15:14:44.886Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-12T15:14:10.536Z",
+    "importedFrom": "triplet-exploration",
+    "generator": "llm",
+    "provider": "OpenAI",
+    "model": "gpt-5.4",
+    "promptVersion": "2026-03-12.0",
+    "evidenceRecordCount": 0,
+    "sourceCount": 1,
+    "notes": "Triplet exploration: Artist:Paul Weller — USES_EFFECT — Effect:any."
+  }
+}

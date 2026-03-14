@@ -1,6 +1,9 @@
 /**
  * Schema and prompt for triplet exploration: subject —[relationship]—> object.
  * Asks the LLM to return all information that fits the pattern (e.g. guitars Paul Weller plays).
+ * By design, the prompt also invites related context (e.g. albums, bands) that fits the graph
+ * schema, so you may see Artist/Album nodeCandidates alongside the primary object type—this is
+ * intentional enrichment, not a misconfiguration.
  */
 
 import type { ResearchOntologyContext, ReviewTargetEntity } from "../types";
@@ -11,7 +14,7 @@ import {
   type RelationshipType,
 } from "../../lib/relationship-config";
 
-const PROMPT_VERSION = "2026-03-12.0";
+const PROMPT_VERSION = "2026-03-14.0";
 
 function buildSchemaBlock(ontology: ResearchOntologyContext): string {
   const entityList = ontology.entityDefinitions
@@ -83,9 +86,21 @@ export function buildTripletExplorationPrompt(
           : `Object "${triplet.object.label}" with name "any" means all entities of that type linked via ${triplet.relationship}. Use kind "candidate" for proposed nodes. Use candidateId format: label slug + "-" + name slug. Edge fromRef/toRef.id must match node candidateIds exactly.`
     );
   }
+  if (triplet.relationship === "CONTAINS" && triplet.subject.label === "Album" && triplet.object.label === "Track") {
+    instructions.push(
+      "TASK: Look up the song/track list for each album. For each Album (related to the scope if scope is given), search for that album's track listing and return: (1) the Album as a nodeCandidate, (2) each Track (song) on that album as a nodeCandidate, (3) one CONTAINS edgeCandidate per Track with fromRef = that Album's candidateId and toRef = that Track's candidateId. Every track must belong to an album via a CONTAINS edge; do not return tracks without linking them to an album."
+    );
+  }
   instructions.push(
     `Explore the conjunction: (${triplet.subject.label}: ${triplet.subject.name}) —[${triplet.relationship}]—> (${triplet.object.label}: ${triplet.object.name}).`,
-    `Return all information that fits this pattern. Create nodeCandidates for specific instances (e.g. specific guitar models, albums, bands) and edgeCandidates linking them. Use the subject target id for the subject entity and the object target id for the object entity in fromRef/toRef where appropriate.`,
+    `Return all information that fits this pattern. Create nodeCandidates for specific instances (e.g. specific guitar models, albums, bands) and edgeCandidates linking them. Use the subject target id for the subject entity and the object target id for the object entity in fromRef/toRef where appropriate.`
+  );
+  if (triplet.relationship === "CONTAINS" && triplet.subject.label === "Album" && triplet.object.label === "Track") {
+    instructions.push(
+      "CRITICAL: Every Track in nodeCandidates MUST have at least one CONTAINS edge from an Album. Add edgeCandidates with type \"CONTAINS\", fromRef: { kind: \"candidate\", id: <album candidateId> }, toRef: { kind: \"candidate\", id: <track candidateId> }. Use the exact candidateIds from your nodeCandidates (e.g. album-wild-wood, track-sunflower)."
+    );
+  }
+  instructions.push(
     "Include property changes, related nodes, and edges. Use only the allowed entity labels and relationship types. Every candidate needs provenance with source_id 'gpt-5.4', source_name 'GPT-5.4', source_type 'api', url 'https://openai.com/gpt-5.4', retrieved_at (ISO), and confidence."
   );
 

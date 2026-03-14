@@ -1,0 +1,2646 @@
+{
+  "id": "cc77978f-b730-4983-bf91-401d761fb87b",
+  "status": "applied",
+  "createdAt": "2026-03-12T01:54:25.344Z",
+  "updatedAt": "2026-03-12T02:00:14.948Z",
+  "approvedAt": "2026-03-12T01:54:25.344Z",
+  "summary": "Approved enrichment candidates were applied to the graph.",
+  "targets": [
+    {
+      "id": "artist-tom-tom-club",
+      "label": "Artist",
+      "name": "Tom Tom Club"
+    },
+    {
+      "id": "person-person-chris-frantz",
+      "label": "Person",
+      "name": "Chris Frantz"
+    },
+    {
+      "id": "person-person-tina-weymouth",
+      "label": "Person",
+      "name": "Tina Weymouth"
+    },
+    {
+      "id": "artist-talking-heads",
+      "label": "Artist",
+      "name": "Talking Heads"
+    },
+    {
+      "id": "artist-brian-eno",
+      "label": "Artist",
+      "name": "Brian Eno"
+    },
+    {
+      "id": "artist-adrian-belew",
+      "label": "Artist",
+      "name": "Adrian Belew"
+    },
+    {
+      "id": "artist-david-bowie",
+      "label": "Artist",
+      "name": "David Bowie"
+    }
+  ],
+  "propertyChanges": [
+    {
+      "candidateId": "prop-artist-tom-tom-club-biography",
+      "targetId": "artist-tom-tom-club",
+      "key": "biography",
+      "value": "American new wave and dance-funk band formed in 1981 by Talking Heads members Chris Frantz and Tina Weymouth, known for blending post-disco, funk, and pop on tracks such as \"Genius of Love.\"",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "Tom Tom Club is an American new wave band founded in 1981 by husband-and-wife team Chris Frantz and Tina Weymouth as a side project from Talking Heads. Their best known songs include the UK top 10 hit \"Wordy Rappinghood\" and the US top 40 hit \"Genius of Love\", both from their 1981 debut album, and a cover of The Drifters' \"Under the Boardwalk\" that reached the UK top 30.\n\nAmerican band"
+    },
+    {
+      "candidateId": "prop-artist-tom-tom-club-country",
+      "targetId": "artist-tom-tom-club",
+      "key": "country",
+      "value": "United States",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "United States"
+    },
+    {
+      "candidateId": "prop-artist-tom-tom-club-active-years",
+      "targetId": "artist-tom-tom-club",
+      "key": "active_years",
+      "value": [
+        "1981-present"
+      ],
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "1981-present"
+    },
+    {
+      "candidateId": "prop-person-person-chris-frantz-biography",
+      "targetId": "person-person-chris-frantz",
+      "key": "biography",
+      "value": "American drummer, songwriter, and co-founder of Talking Heads and Tom Tom Club.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "Charton Christopher Frantz is an American musician and record producer. He is the drummer for both Talking Heads and Tom Tom Club, both of which he co-founded with wife and Talking Heads bassist, Tina Weymouth. In 2002, Frantz was inducted into the Rock and Roll Hall of Fame as a member of Talking Heads.\n\nAmerican musician"
+    },
+    {
+      "candidateId": "prop-person-person-chris-frantz-country",
+      "targetId": "person-person-chris-frantz",
+      "key": "country",
+      "value": "United States",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-person-person-chris-frantz-active-years",
+      "targetId": "person-person-chris-frantz",
+      "key": "active_years",
+      "value": [
+        "1970s-present"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "1951-05-08-present"
+    },
+    {
+      "candidateId": "prop-person-person-tina-weymouth-biography",
+      "targetId": "person-person-tina-weymouth",
+      "key": "biography",
+      "value": "American bassist, songwriter, and co-founder of Talking Heads and Tom Tom Club, widely noted for her melodic and influential bass playing.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "Martina Michèle Weymouth is an American musician, singer, songwriter, and a founding member and bassist of the new wave group Talking Heads and its side project Tom Tom Club, which she co-founded with her husband, Talking Heads drummer Chris Frantz. In 2002, Weymouth was inducted into the Rock and Roll Hall of Fame as a member of Talking Heads.\n\nAmerican musician"
+    },
+    {
+      "candidateId": "prop-person-person-tina-weymouth-country",
+      "targetId": "person-person-tina-weymouth",
+      "key": "country",
+      "value": "United States",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-person-person-tina-weymouth-active-years",
+      "targetId": "person-person-tina-weymouth",
+      "key": "active_years",
+      "value": [
+        "1970s-present"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "1950-11-22-present"
+    },
+    {
+      "candidateId": "prop-artist-talking-heads-biography",
+      "targetId": "artist-talking-heads",
+      "key": "biography",
+      "value": "American new wave and art rock band formed in New York in 1975 by David Byrne, Chris Frantz, Tina Weymouth, and later Jerry Harrison.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "Talking Heads were an American rock band formed in New York City in 1975. It consisted of vocalist-guitarist David Byrne, drummer Chris Frantz, bassist Tina Weymouth, and guitarist-keyboardist Jerry Harrison. Described as one of the most acclaimed groups of the 1980s, Talking Heads helped to pioneer new wave music by combining elements of punk, art rock, funk, and world music with \"an anxious yet clean-cut image\".\n\nAmerican band"
+    },
+    {
+      "candidateId": "prop-artist-talking-heads-country",
+      "targetId": "artist-talking-heads",
+      "key": "country",
+      "value": "United States",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "United States"
+    },
+    {
+      "candidateId": "prop-artist-talking-heads-active-years",
+      "targetId": "artist-talking-heads",
+      "key": "active_years",
+      "value": [
+        "1975-1991"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "1975-present"
+    },
+    {
+      "candidateId": "prop-artist-brian-eno-biography",
+      "targetId": "artist-brian-eno",
+      "key": "biography",
+      "value": "English musician, producer, songwriter, and ambient music pioneer, known for solo work, Roxy Music, and landmark production collaborations with Talking Heads, David Bowie, and others.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "Brian Peter George Eno is an English musician, songwriter, record producer, visual artist, sound designer, author and political activist. He is best known for his pioneering contributions to ambient music and electronica, and for producing, recording, and writing works in rock and pop music. A self-described \"non-musician\", Eno has helped introduce unconventional concepts and approaches to contemporary music. He has been described as one of popular music's most influential and innovative figures. In 2019, he was inducted into the Rock and Roll Hall of Fame as a member of Roxy Music.\n\nBritish musician, music producer, music theorist and visual artist (born 1948)"
+    },
+    {
+      "candidateId": "prop-artist-brian-eno-country",
+      "targetId": "artist-brian-eno",
+      "key": "country",
+      "value": "United Kingdom",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "GB"
+    },
+    {
+      "candidateId": "prop-artist-brian-eno-active-years",
+      "targetId": "artist-brian-eno",
+      "key": "active_years",
+      "value": [
+        "1970s-present"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "1948-05-15-present"
+    },
+    {
+      "candidateId": "prop-artist-adrian-belew-biography",
+      "targetId": "artist-adrian-belew",
+      "key": "biography",
+      "value": "American guitarist, singer, and songwriter known for his solo work and performances with King Crimson, Talking Heads, Frank Zappa, and David Bowie.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "Adrian Belew is an American guitarist, singer, songwriter, and record producer known for his distinctive experimental guitar work and solo career, as well as for performances and collaborations with King Crimson, Frank Zappa, David Bowie, Talking Heads, and Nine Inch Nails."
+    },
+    {
+      "candidateId": "prop-artist-adrian-belew-country",
+      "targetId": "artist-adrian-belew",
+      "key": "country",
+      "value": "United States",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "United States"
+    },
+    {
+      "candidateId": "prop-artist-adrian-belew-active-years",
+      "targetId": "artist-adrian-belew",
+      "key": "active_years",
+      "value": [
+        "1970s-present"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": [
+        "1970s",
+        "1980s",
+        "1990s",
+        "2000s",
+        "2010s",
+        "2020s"
+      ]
+    },
+    {
+      "candidateId": "prop-artist-david-bowie-biography",
+      "targetId": "artist-david-bowie",
+      "key": "biography",
+      "value": "English singer, songwriter, musician, and actor whose innovations in rock, art pop, and persona-driven performance made him one of the most influential artists in modern music.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-david-bowie-country",
+      "targetId": "artist-david-bowie",
+      "key": "country",
+      "value": "United Kingdom",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-david-bowie-active-years",
+      "targetId": "artist-david-bowie",
+      "key": "active_years",
+      "value": [
+        "1960s-2016"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    }
+  ],
+  "nodeCandidates": [
+    {
+      "candidateId": "node-david-byrne",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "David Byrne",
+      "canonicalKey": "artist:david-byrne",
+      "properties": {
+        "name": "David Byrne"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-david-byrne",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-jerry-harrison",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Jerry Harrison",
+      "canonicalKey": "artist:jerry-harrison",
+      "properties": {
+        "name": "Jerry Harrison"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-jerry-harrison",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-roxy-music",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Roxy Music",
+      "canonicalKey": "artist:roxy-music",
+      "properties": {
+        "name": "Roxy Music"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-roxy-music",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-king-crimson",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "King Crimson",
+      "canonicalKey": "artist:king-crimson",
+      "properties": {
+        "name": "King Crimson"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-king-crimson",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-frank-zappa",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Frank Zappa",
+      "canonicalKey": "artist:frank-zappa",
+      "properties": {
+        "name": "Frank Zappa"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-frank-zappa",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-parliament-funkadelic",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Parliament-Funkadelic",
+      "canonicalKey": "artist:parliament-funkadelic",
+      "properties": {
+        "name": "Parliament-Funkadelic"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-new-wave",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "New Wave",
+      "canonicalKey": "genre:new-wave",
+      "properties": {
+        "name": "New Wave"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-new-wave",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-art-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Art Rock",
+      "canonicalKey": "genre:art-rock",
+      "properties": {
+        "name": "Art Rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-art-rock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-post-punk",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Post-Punk",
+      "canonicalKey": "genre:post-punk",
+      "properties": {
+        "name": "Post-Punk"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-post-punk",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-dance-punk",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Dance-Punk",
+      "canonicalKey": "genre:dance-punk",
+      "properties": {
+        "name": "Dance-Punk"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-dance-funk",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Dance-Funk",
+      "canonicalKey": "genre:dance-funk",
+      "properties": {
+        "name": "Dance-Funk"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-post-disco",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Post-Disco",
+      "canonicalKey": "genre:post-disco",
+      "properties": {
+        "name": "Post-Disco"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-ambient",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Ambient",
+      "canonicalKey": "genre:ambient",
+      "properties": {
+        "name": "Ambient"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-ambient",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-art-pop",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Art Pop",
+      "canonicalKey": "genre:art-pop",
+      "properties": {
+        "name": "Art Pop"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-art-pop",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-glam-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Glam Rock",
+      "canonicalKey": "genre:glam-rock",
+      "properties": {
+        "name": "Glam Rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-electronic",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Electronic",
+      "canonicalKey": "genre:electronic",
+      "properties": {
+        "name": "Electronic"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-electronic",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-funk-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Funk Rock",
+      "canonicalKey": "genre:funk-rock",
+      "properties": {
+        "name": "Funk Rock"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-funk-rock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-sire-records",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "Sire Records",
+      "canonicalKey": "label:sire-records",
+      "properties": {
+        "name": "Sire Records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-emi",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "EMI",
+      "canonicalKey": "label:emi",
+      "properties": {
+        "name": "EMI"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-eg-records",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "E.G. Records",
+      "canonicalKey": "label:eg-records",
+      "properties": {
+        "name": "E.G. Records"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-remain-in-light",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Remain in Light",
+      "canonicalKey": "album:remain-in-light",
+      "properties": {
+        "name": "Remain in Light",
+        "title": "Remain in Light"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-talking-heads-remain-in-light",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-fear-of-music",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Fear of Music",
+      "canonicalKey": "album:fear-of-music",
+      "properties": {
+        "name": "Fear of Music",
+        "title": "Fear of Music"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-talking-heads-fear-of-music",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-lodger",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Lodger",
+      "canonicalKey": "album:lodger",
+      "properties": {
+        "name": "Lodger",
+        "title": "Lodger"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-scary-monsters-and-super-creeps",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Scary Monsters (and Super Creeps)",
+      "canonicalKey": "album:scary-monsters-and-super-creeps",
+      "properties": {
+        "name": "Scary Monsters (and Super Creeps)",
+        "title": "Scary Monsters (and Super Creeps)"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-tom-tom-club-album",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Tom Tom Club",
+      "canonicalKey": "album:tom-tom-club",
+      "properties": {
+        "name": "Tom Tom Club",
+        "title": "Tom Tom Club"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-tom-tom-club-tom-tom-club",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-genius-of-love",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Genius of Love",
+      "canonicalKey": "song:genius-of-love",
+      "properties": {
+        "name": "Genius of Love",
+        "title": "Genius of Love"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-person-talking-heads",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Talking Heads",
+      "canonicalKey": "artist:talking heads",
+      "properties": {
+        "name": "Talking Heads",
+        "roles": [
+          "founder"
+        ]
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-talking-heads",
+      "reviewStatus": "pending",
+      "notes": "Derived from biography founder narrative text."
+    },
+    {
+      "candidateId": "derived-person-chris-frantz",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Chris Frantz",
+      "canonicalKey": "artist:chris frantz",
+      "properties": {
+        "name": "Chris Frantz",
+        "roles": [
+          "founder"
+        ]
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "person-person-chris-frantz",
+      "reviewStatus": "pending",
+      "notes": "Derived from biography founder narrative text."
+    },
+    {
+      "candidateId": "derived-person-tina-weymouth",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Tina Weymouth",
+      "canonicalKey": "artist:tina weymouth",
+      "properties": {
+        "name": "Tina Weymouth",
+        "roles": [
+          "founder"
+        ]
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "person-person-tina-weymouth",
+      "reviewStatus": "pending",
+      "notes": "Derived from biography founder narrative text."
+    },
+    {
+      "candidateId": "derived-genre-art-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "art rock",
+      "canonicalKey": "genre:art rock",
+      "properties": {
+        "name": "art rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-art-rock",
+      "reviewStatus": "pending",
+      "notes": "Derived from biography narrative text."
+    },
+    {
+      "candidateId": "derived-genre-mod",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "mod",
+      "canonicalKey": "genre:mod",
+      "properties": {
+        "name": "mod"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-mod",
+      "reviewStatus": "pending",
+      "notes": "Derived from biography narrative text."
+    }
+  ],
+  "edgeCandidates": [
+    {
+      "candidateId": "edge-member-of-person-person-chris-frantz-artist-tom-tom-club",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "person-person-chris-frantz"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "member_of-884232cc2378",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member-of-person-person-chris-frantz-artist-talking-heads",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "person-person-chris-frantz"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "member_of-bb148087b527",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member-of-person-person-tina-weymouth-artist-tom-tom-club",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "person-person-tina-weymouth"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "member_of-e333cd6ac8a1",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member-of-person-person-tina-weymouth-artist-talking-heads",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "person-person-tina-weymouth"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "member_of-2768bb5e9ade",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member-of-candidate-david-byrne-artist-talking-heads",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-david-byrne"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member-of-candidate-jerry-harrison-artist-talking-heads",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-jerry-harrison"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member-of-artist-brian-eno-roxy-music",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-brian-eno"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-roxy-music"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member-of-artist-adrian-belew-king-crimson",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-king-crimson"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "member_of-75a6bf9d93fc",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collab-tom-tom-club-chris-frantz",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "person-person-chris-frantz"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collab-tom-tom-club-tina-weymouth",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "person-person-tina-weymouth"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collab-talking-heads-brian-eno",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-brian-eno"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collab-david-bowie-brian-eno",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-david-bowie"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-brian-eno"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collab-david-bowie-adrian-belew",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-david-bowie"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collab-talking-heads-adrian-belew",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collab-adrian-belew-frank-zappa",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-frank-zappa"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "collaborated_with-b3a90161a293",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-influenced-tom-tom-club-parliament-funkadelic",
+      "type": "INFLUENCED_BY",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-parliament-funkadelic"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-tom-tom-club-new-wave",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-new-wave"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-ec1a4dc56f8f",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-tom-tom-club-dance-funk",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-dance-funk"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-tom-tom-club-post-disco",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-post-disco"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-talking-heads-new-wave",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-new-wave"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-a157382cae2f",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-talking-heads-art-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-art-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-8e95b36be9c1",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-talking-heads-post-punk",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-post-punk"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-785353d6eeaa",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-talking-heads-dance-punk",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-dance-punk"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-brian-eno-ambient",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-brian-eno"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-ambient"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-4cf20234aee8",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-brian-eno-art-pop",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-brian-eno"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-art-pop"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-63b061575a20",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-brian-eno-electronic",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-brian-eno"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-electronic"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-f34c65f00db7",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-david-bowie-art-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-david-bowie"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-art-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-david-bowie-art-pop",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-david-bowie"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-art-pop"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-david-bowie-glam-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-david-bowie"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-glam-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-adrian-belew-art-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-art-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-6b34b33371e0",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-adrian-belew-new-wave",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-new-wave"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-5c5d1ae68dd0",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-genre-adrian-belew-funk-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-funk-rock"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released-by-talking-heads-sire",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-talking-heads"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-sire-records"
+      },
+      "confidence": "low",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "low"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released-by-david-bowie-emi",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-david-bowie"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-emi"
+      },
+      "confidence": "low",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "low"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-produced-remain-in-light-by-eno",
+      "type": "PRODUCED_BY",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-remain-in-light"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-brian-eno"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-produced-fear-of-music-by-eno",
+      "type": "PRODUCED_BY",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-fear-of-music"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-brian-eno"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-produced-lodger-by-eno",
+      "type": "PRODUCED_BY",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-lodger"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-brian-eno"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-played-on-scary-monsters-belew",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-scary-monsters-and-super-creeps"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-played-on-remain-in-light-belew",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-remain-in-light"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released-by-remain-in-light-sire",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-remain-in-light"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-sire-records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released-by-fear-of-music-sire",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-fear-of-music"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-sire-records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released-by-scary-monsters-emi",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-scary-monsters-and-super-creeps"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-emi"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released-by-tom-tom-club-album-sire",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-tom-tom-club-album"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-sire-records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-contains-tom-tom-club-album-genius-of-love",
+      "type": "CONTAINS",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-tom-tom-club-album"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genius-of-love"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-performed-by-genius-of-love-tom-tom-club",
+      "type": "PERFORMED_BY",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-genius-of-love"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released-on-genius-of-love-tom-tom-club-album",
+      "type": "RELEASED_ON",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-genius-of-love"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-tom-tom-club-album"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-member-of-talking-heads-tom-tom-club",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "derived-person-talking-heads",
+        "label": "Person",
+        "name": "Talking Heads"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club",
+        "label": "Artist",
+        "name": "Tom Tom Club"
+      },
+      "properties": {
+        "role": "founder"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-member-of-chris-frantz-tom-tom-club",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "derived-person-chris-frantz",
+        "label": "Person",
+        "name": "Chris Frantz"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club",
+        "label": "Artist",
+        "name": "Tom Tom Club"
+      },
+      "properties": {
+        "role": "founder"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "member_of-884232cc2378",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-member-of-tina-weymouth-tom-tom-club",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "derived-person-tina-weymouth",
+        "label": "Person",
+        "name": "Tina Weymouth"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-tom-tom-club",
+        "label": "Artist",
+        "name": "Tom Tom Club"
+      },
+      "properties": {
+        "role": "founder"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "member_of-e333cd6ac8a1",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-part-of-genre-talking-heads-art-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-talking-heads",
+        "label": "Artist",
+        "name": "Talking Heads"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "derived-genre-art-rock",
+        "label": "Genre",
+        "name": "art rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-8e95b36be9c1",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-part-of-genre-david-bowie-mod",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-david-bowie",
+        "label": "Artist",
+        "name": "David Bowie"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "derived-genre-mod",
+        "label": "Genre",
+        "name": "mod"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:54:25.346Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "importedAt": "2026-03-12T01:57:46.662Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-12T01:54:25.346Z",
+    "importedFrom": "llm-only",
+    "generator": "llm",
+    "provider": "OpenAI",
+    "model": "gpt-5.4",
+    "promptVersion": "2026-03-12.0",
+    "evidenceRecordCount": 0,
+    "sourceCount": 1,
+    "notes": "Enrichment from GPT-5.4–only pipeline; no external sources."
+  },
+  "appliedAt": "2026-03-12T02:00:14.948Z"
+}

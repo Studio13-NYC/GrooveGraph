@@ -1,4 +1,4 @@
-import { GraphNode } from "../GraphNode.js";
+import { GraphNode } from "../GraphNode";
 
 const LABEL = "Track";
 

@@ -1,0 +1,23 @@
+{
+  "id": "6a6fa62c-4f84-4172-b896-f592f70f859a",
+  "status": "ready_for_import",
+  "createdAt": "2026-03-14T01:42:44.159Z",
+  "updatedAt": "2026-03-14T01:42:44.159Z",
+  "approvedAt": "2026-03-14T01:42:44.159Z",
+  "summary": "Subset approved. Import curator results to begin review.",
+  "targets": [
+    {
+      "id": "artist-paul-weller",
+      "label": "Artist",
+      "name": "Paul Weller"
+    },
+    {
+      "id": "instrument-instrument-guitar",
+      "label": "Instrument",
+      "name": "Guitar"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [],
+  "edgeCandidates": []
+}

@@ -3,7 +3,7 @@
  * Uses Opensearch to resolve display name to page title, then page summary.
  */
 
-import type { RawEnrichmentPayload, SourceMetadata } from "../types.js";
+import type { RawEnrichmentPayload, SourceMetadata } from "../types";
 
 const OPENSEARCH_URL = "https://en.wikipedia.org/w/api.php";
 const REST_SUMMARY_URL = "https://en.wikipedia.org/api/rest_v1/page/summary/";

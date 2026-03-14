@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import Link from "next/link";
+import { getAuthSession, isAdmin } from "@/lib/auth";
+import { AppNav } from "./components/app-nav";
 
 const fontSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -13,11 +16,16 @@ export const metadata: Metadata = {
   description: "Unified graph-first exploration for recorded music relationships",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const isStaticExport = process.env.NEXT_STATIC_EXPORT === "1";
+  const cookieStore = isStaticExport ? { get: () => undefined } : await cookies();
+  const session = getAuthSession(cookieStore);
+  const admin = isStaticExport ? false : isAdmin(session);
+
   return (
     <html lang="en" className={fontSans.variable}>
       <body className="min-h-screen font-sans antialiased">
@@ -26,20 +34,7 @@ export default function RootLayout({
             <Link href="/" className="text-lg font-semibold">
               GrooveGraph
             </Link>
-            <nav className="flex items-center gap-6">
-              <Link
-                href="/"
-                className="text-sm text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
-              >
-                Explore
-              </Link>
-              <Link
-                href="/enrichment"
-                className="text-sm text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
-              >
-                Enrichment
-              </Link>
-            </nav>
+            <AppNav isAdmin={admin} />
           </div>
         </header>
         <main className="mx-auto max-w-6xl px-4 pt-4 pb-8">{children}</main>

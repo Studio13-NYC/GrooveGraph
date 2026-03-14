@@ -15,7 +15,7 @@ User acceptance testing for the current dynamic GrooveGraph application backed b
 - Unified explore page shell
 - Type-aware search and guided examples
 - Query/graph view toggle behavior
-- Artist enrichment flow
+- Enrichment workspace flow
 - Non-artist discovery flow
 - Error handling and empty states
 
@@ -33,7 +33,7 @@ The core flows now work on one page:
 - graph view is the default mode
 - query and graph modes preserve context while switching
 - entity-type dropdown works across multiple labels
-- artist enrichment succeeds and persists
+- enrichment workflow is available through `/enrichment` and persists after review/apply
 - shared entities such as `classic rock` connect multiple artists
 - dragged nodes stay pinned where they are dropped
 - `Reset layout` restores both nodes and relationships to the current structured layout
@@ -52,7 +52,7 @@ The remaining gaps are now mostly polish:
 | UAT-02 | Verify entity dropdown placement and options | Pass | Dropdown rendered to the left of the search input and exposed the legend entity taxonomy. |
 | UAT-03 | Run guided example for artist `The Who` | Pass | URL updated to `?view=graph&entityType=Artist&query=The+Who`; graph and summary metrics loaded together. |
 | UAT-04 | Switch from graph view to query view | Pass | Query mode opened without losing the active entity type or search term. |
-| UAT-05 | Enrich known artist from unified page | Pass | `POST /api/enrich` succeeded and UI showed source badges plus deduped entity/relationship feedback. |
+| UAT-05 | Start enrichment from enrichment workspace | Pass | Enrichment is initiated from `/enrichment` review workflow; direct `POST /api/enrich` is intentionally disabled. |
 | UAT-06 | Run non-artist search for `Genre -> classic rock` | Pass | Query summary showed `The Who` and `The Rolling Stones` as shared connections to the same genre node. |
 | UAT-07 | Switch `Genre -> classic rock` back to graph view | Pass | URL updated to `?view=graph&entityType=Genre&query=classic+rock` and context remained intact. |
 | UAT-08 | Drag and pin graph nodes | Pass | Dropped nodes remained pinned instead of snapping back into the simulation. |
@@ -86,9 +86,9 @@ The remaining gaps are now mostly polish:
 
 ### Enrichment flow
 
-- Enrichment succeeded from the unified page in query mode.
-- Browser-visible feedback now shows source badges plus deduped entity and relationship results after persistence, rather than only raw property counts.
-- In the tested `The Who` run, the UI reported matched existing genre entities and `PART_OF_GENRE` relationships, which correctly reflects deduped shared-node behavior.
+- Enrichment is now routed through the staged `/enrichment` workspace flow.
+- Candidates are reviewed in-session (with provenance) before apply to Neo4j.
+- Direct `POST /api/enrich` writes are disabled to prevent bypassing review gates.
 
 ### Empty and error states
 

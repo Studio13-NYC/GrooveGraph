@@ -1,0 +1,55 @@
+{
+  "id": "18ede943-a9ec-4d9e-aa6b-25a9c1785d08",
+  "status": "applied",
+  "createdAt": "2026-03-11T22:59:34.457Z",
+  "updatedAt": "2026-03-11T22:59:34.467Z",
+  "approvedAt": "2026-03-11T22:59:34.457Z",
+  "summary": "Approved enrichment candidates were applied to the graph.",
+  "targets": [
+    {
+      "id": "artist-tom-tom-club",
+      "label": "Artist",
+      "name": "Tom Tom Club"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [
+    {
+      "candidateId": "node-adrian-belew",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Adrian Belew",
+      "canonicalKey": "person:adrian belew",
+      "properties": {
+        "name": "Adrian Belew",
+        "country": "United States"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "wikidata",
+          "source_name": "Wikidata",
+          "source_type": "api",
+          "url": "https://www.wikidata.org/wiki/Q52985",
+          "retrieved_at": "2026-03-11T22:59:34.463Z",
+          "excerpt": "Adrian Belew is an American musician.",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "adrian-belew",
+      "reviewStatus": "pending"
+    }
+  ],
+  "edgeCandidates": [],
+  "importedAt": "2026-03-11T22:59:34.466Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-11T22:59:34.463Z",
+    "importedFrom": "test",
+    "generator": "manual"
+  },
+  "appliedAt": "2026-03-11T22:59:34.467Z"
+}

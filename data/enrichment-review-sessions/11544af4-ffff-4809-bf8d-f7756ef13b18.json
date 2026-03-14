@@ -1,0 +1,4807 @@
+{
+  "id": "11544af4-ffff-4809-bf8d-f7756ef13b18",
+  "status": "ready_for_review",
+  "createdAt": "2026-03-13T00:20:50.121Z",
+  "updatedAt": "2026-03-13T00:26:56.503Z",
+  "approvedAt": "2026-03-13T00:20:50.121Z",
+  "summary": "Album-to-track containment candidates for albums by Paul Weller, including principal studio, live, and notable collaborative albums commonly associated with the scope artist.",
+  "targets": [
+    {
+      "id": "artist-paul-weller",
+      "label": "Artist",
+      "name": "Paul Weller"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [
+    {
+      "candidateId": "album-paul-weller-1992",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Paul Weller",
+      "canonicalKey": "album:paul weller",
+      "properties": {
+        "title": "Paul Weller",
+        "name": "Paul Weller"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-paul-weller",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-uh-huh-oh-yeh",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Uh Huh Oh Yeh",
+      "canonicalKey": "track:uh huh oh yeh",
+      "properties": {
+        "title": "Uh Huh Oh Yeh",
+        "name": "Uh Huh Oh Yeh"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-i-did-a-bad-thing",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "I Didn't Mean to Hurt You",
+      "canonicalKey": "track:i didn't mean to hurt you",
+      "properties": {
+        "title": "I Didn't Mean to Hurt You",
+        "name": "I Didn't Mean to Hurt You"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-bull-rush",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Bull-Rush",
+      "canonicalKey": "track:bull-rush",
+      "properties": {
+        "title": "Bull-Rush",
+        "name": "Bull-Rush"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-round-and-round",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Round and Round",
+      "canonicalKey": "track:round and round",
+      "properties": {
+        "title": "Round and Round",
+        "name": "Round and Round"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-clues",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Clues",
+      "canonicalKey": "track:clues",
+      "properties": {
+        "title": "Clues",
+        "name": "Clues"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-into-tomorrow",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Into Tomorrow",
+      "canonicalKey": "track:into tomorrow",
+      "properties": {
+        "title": "Into Tomorrow",
+        "name": "Into Tomorrow"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-bitterness-rising",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Bitterness Rising",
+      "canonicalKey": "track:bitterness rising",
+      "properties": {
+        "title": "Bitterness Rising",
+        "name": "Bitterness Rising"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-heres-a-new-thing",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Here's a New Thing",
+      "canonicalKey": "track:here's a new thing",
+      "properties": {
+        "title": "Here's a New Thing",
+        "name": "Here's a New Thing"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-below-the-storm",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Below the Storm",
+      "canonicalKey": "track:below the storm",
+      "properties": {
+        "title": "Below the Storm",
+        "name": "Below the Storm"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-sunflower",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Sunflower",
+      "canonicalKey": "track:sunflower",
+      "properties": {
+        "title": "Sunflower",
+        "name": "Sunflower"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-wild-wood",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Wild Wood",
+      "canonicalKey": "album:wild wood",
+      "properties": {
+        "title": "Wild Wood",
+        "name": "Wild Wood"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-wild-wood",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-weaver",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Weaver",
+      "canonicalKey": "track:the weaver",
+      "properties": {
+        "title": "The Weaver",
+        "name": "The Weaver"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-wild-wood",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Wild Wood",
+      "canonicalKey": "track:wild wood",
+      "properties": {
+        "title": "Wild Wood",
+        "name": "Wild Wood"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-instrumental-one",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Instrumental (Part 1)",
+      "canonicalKey": "track:instrumental (part 1)",
+      "properties": {
+        "title": "Instrumental (Part 1)",
+        "name": "Instrumental (Part 1)"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-all-the-pictures-on-the-wall",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "All the Pictures on the Wall",
+      "canonicalKey": "track:all the pictures on the wall",
+      "properties": {
+        "title": "All the Pictures on the Wall",
+        "name": "All the Pictures on the Wall"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-has-my-fire-really-gone-out",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Has My Fire Really Gone Out?",
+      "canonicalKey": "track:has my fire really gone out?",
+      "properties": {
+        "title": "Has My Fire Really Gone Out?",
+        "name": "Has My Fire Really Gone Out?"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-country",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Country",
+      "canonicalKey": "track:country",
+      "properties": {
+        "title": "Country",
+        "name": "Country"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-5th-season",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "5th Season",
+      "canonicalKey": "track:5th season",
+      "properties": {
+        "title": "5th Season",
+        "name": "5th Season"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-wardrobe",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Wardrobe",
+      "canonicalKey": "track:the wardrobe",
+      "properties": {
+        "title": "The Wardrobe",
+        "name": "The Wardrobe"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-foot-of-the-mountain",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Foot of the Mountain",
+      "canonicalKey": "track:foot of the mountain",
+      "properties": {
+        "title": "Foot of the Mountain",
+        "name": "Foot of the Mountain"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-shadow-of-the-sun",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Shadow of the Sun",
+      "canonicalKey": "track:shadow of the sun",
+      "properties": {
+        "title": "Shadow of the Sun",
+        "name": "Shadow of the Sun"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-holy-man",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Holy Man",
+      "canonicalKey": "track:holy man",
+      "properties": {
+        "title": "Holy Man",
+        "name": "Holy Man"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-moon-on-your-pyjamas",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Moon on Your Pyjamas",
+      "canonicalKey": "track:moon on your pyjamas",
+      "properties": {
+        "title": "Moon on Your Pyjamas",
+        "name": "Moon on Your Pyjamas"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-stanley-road",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Stanley Road",
+      "canonicalKey": "album:stanley road",
+      "properties": {
+        "title": "Stanley Road",
+        "name": "Stanley Road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-stanley-road",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-changingman",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Changingman",
+      "canonicalKey": "track:the changingman",
+      "properties": {
+        "title": "The Changingman",
+        "name": "The Changingman"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-porcelain-gods",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Porcelain Gods",
+      "canonicalKey": "track:porcelain gods",
+      "properties": {
+        "title": "Porcelain Gods",
+        "name": "Porcelain Gods"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-i-walk-on-gilded-splinters",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "I Walk on Gilded Splinters",
+      "canonicalKey": "track:i walk on gilded splinters",
+      "properties": {
+        "title": "I Walk on Gilded Splinters",
+        "name": "I Walk on Gilded Splinters"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-you-do-something-to-me",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "You Do Something to Me",
+      "canonicalKey": "track:you do something to me",
+      "properties": {
+        "title": "You Do Something to Me",
+        "name": "You Do Something to Me"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-woodcutters-son",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Woodcutter's Son",
+      "canonicalKey": "track:woodcutter's son",
+      "properties": {
+        "title": "Woodcutter's Son",
+        "name": "Woodcutter's Son"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-time-passes",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Time Passes...",
+      "canonicalKey": "track:time passes...",
+      "properties": {
+        "title": "Time Passes...",
+        "name": "Time Passes..."
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-stanley-road",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Stanley Road",
+      "canonicalKey": "track:stanley road",
+      "properties": {
+        "title": "Stanley Road",
+        "name": "Stanley Road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-broken-stones",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Broken Stones",
+      "canonicalKey": "track:broken stones",
+      "properties": {
+        "title": "Broken Stones",
+        "name": "Broken Stones"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-out-of-the-sinking",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Out of the Sinking",
+      "canonicalKey": "track:out of the sinking",
+      "properties": {
+        "title": "Out of the Sinking",
+        "name": "Out of the Sinking"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-pink-on-white-walls",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Pink on White Walls",
+      "canonicalKey": "track:pink on white walls",
+      "properties": {
+        "title": "Pink on White Walls",
+        "name": "Pink on White Walls"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-whirlpools-end",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Whirlpools' End",
+      "canonicalKey": "track:whirlpools' end",
+      "properties": {
+        "title": "Whirlpools' End",
+        "name": "Whirlpools' End"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-heavy-soul",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Heavy Soul",
+      "canonicalKey": "album:heavy soul",
+      "properties": {
+        "title": "Heavy Soul",
+        "name": "Heavy Soul"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-heavy-soul",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-heavy-soul",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Heavy Soul",
+      "canonicalKey": "track:heavy soul",
+      "properties": {
+        "title": "Heavy Soul",
+        "name": "Heavy Soul"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-peacock-suit",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Peacock Suit",
+      "canonicalKey": "track:peacock suit",
+      "properties": {
+        "title": "Peacock Suit",
+        "name": "Peacock Suit"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-up-in-su-zes-room",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Up in Suzes' Room",
+      "canonicalKey": "track:up in suzes' room",
+      "properties": {
+        "title": "Up in Suzes' Room",
+        "name": "Up in Suzes' Room"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-driving-nowhere",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Driving Nowhere",
+      "canonicalKey": "track:driving nowhere",
+      "properties": {
+        "title": "Driving Nowhere",
+        "name": "Driving Nowhere"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-i-should-have-been-there-to-inspire-you",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "I Should Have Been There to Inspire You",
+      "canonicalKey": "track:i should have been there to inspire you",
+      "properties": {
+        "title": "I Should Have Been There to Inspire You",
+        "name": "I Should Have Been There to Inspire You"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-friday-street",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Friday Street",
+      "canonicalKey": "track:friday street",
+      "properties": {
+        "title": "Friday Street",
+        "name": "Friday Street"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-science",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Science",
+      "canonicalKey": "track:science",
+      "properties": {
+        "title": "Science",
+        "name": "Science"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-golden-sands",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Golden Sands",
+      "canonicalKey": "track:golden sands",
+      "properties": {
+        "title": "Golden Sands",
+        "name": "Golden Sands"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-as-you-lean-into-the-light",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "As You Lean Into the Light",
+      "canonicalKey": "track:as you lean into the light",
+      "properties": {
+        "title": "As You Lean Into the Light",
+        "name": "As You Lean Into the Light"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-mermaids",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Mermaids",
+      "canonicalKey": "track:mermaids",
+      "properties": {
+        "title": "Mermaids",
+        "name": "Mermaids"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-heliocentric",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Heliocentric",
+      "canonicalKey": "album:heliocentric",
+      "properties": {
+        "title": "Heliocentric",
+        "name": "Heliocentric"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-heliocentric",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-heliocentric",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Heliocentric",
+      "canonicalKey": "track:heliocentric",
+      "properties": {
+        "title": "Heliocentric",
+        "name": "Heliocentric"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-theres-no-drinking-after-youre-dead",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "There's No Drinking After You're Dead",
+      "canonicalKey": "track:there's no drinking after you're dead",
+      "properties": {
+        "title": "There's No Drinking After You're Dead",
+        "name": "There's No Drinking After You're Dead"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-sweet-pea-my-sweet-pea",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Sweet Pea, My Sweet Pea",
+      "canonicalKey": "track:sweet pea, my sweet pea",
+      "properties": {
+        "title": "Sweet Pea, My Sweet Pea",
+        "name": "Sweet Pea, My Sweet Pea"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-whirlpool-end",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Whirlpool's End",
+      "canonicalKey": "track:whirlpool's end",
+      "properties": {
+        "title": "Whirlpool's End",
+        "name": "Whirlpool's End"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-back-in-the-fire",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Back in the Fire",
+      "canonicalKey": "track:back in the fire",
+      "properties": {
+        "title": "Back in the Fire",
+        "name": "Back in the Fire"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-frightened",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Frightened",
+      "canonicalKey": "track:frightened",
+      "properties": {
+        "title": "Frightened",
+        "name": "Frightened"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-dust-and-rocks",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Dust and Rocks",
+      "canonicalKey": "track:dust and rocks",
+      "properties": {
+        "title": "Dust and Rocks",
+        "name": "Dust and Rocks"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-with-time-and-temperance",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "With Time & Temperance",
+      "canonicalKey": "track:with time & temperance",
+      "properties": {
+        "title": "With Time & Temperance",
+        "name": "With Time & Temperance"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-picking-up-sticks",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Picking Up Sticks",
+      "canonicalKey": "track:picking up sticks",
+      "properties": {
+        "title": "Picking Up Sticks",
+        "name": "Picking Up Sticks"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-illumination",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Illumination",
+      "canonicalKey": "album:illumination",
+      "properties": {
+        "title": "Illumination",
+        "name": "Illumination"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-illumination",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-going-places",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Going Places",
+      "canonicalKey": "track:going places",
+      "properties": {
+        "title": "Going Places",
+        "name": "Going Places"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-a-bullet-for-everyone",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "A Bullet for Everyone",
+      "canonicalKey": "track:a bullet for everyone",
+      "properties": {
+        "title": "A Bullet for Everyone",
+        "name": "A Bullet for Everyone"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-leafs",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Leafy Mysteries",
+      "canonicalKey": "track:leafy mysteries",
+      "properties": {
+        "title": "Leafy Mysteries",
+        "name": "Leafy Mysteries"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-its-written-in-the-stars",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "It's Written in the Stars",
+      "canonicalKey": "track:it's written in the stars",
+      "properties": {
+        "title": "It's Written in the Stars",
+        "name": "It's Written in the Stars"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-who-brings-joy",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Who Brings Joy",
+      "canonicalKey": "track:who brings joy",
+      "properties": {
+        "title": "Who Brings Joy",
+        "name": "Who Brings Joy"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-now-the-night-is-here",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Now the Night Is Here",
+      "canonicalKey": "track:now the night is here",
+      "properties": {
+        "title": "Now the Night Is Here",
+        "name": "Now the Night Is Here"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-nada-nada",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Nada Nada",
+      "canonicalKey": "track:nada nada",
+      "properties": {
+        "title": "Nada Nada",
+        "name": "Nada Nada"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-rolling-sea",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Rolling Sea",
+      "canonicalKey": "track:rolling sea",
+      "properties": {
+        "title": "Rolling Sea",
+        "name": "Rolling Sea"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-one-x-one",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "One X One",
+      "canonicalKey": "track:one x one",
+      "properties": {
+        "title": "One X One",
+        "name": "One X One"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-bag-man",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Bag Man",
+      "canonicalKey": "track:bag man",
+      "properties": {
+        "title": "Bag Man",
+        "name": "Bag Man"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-studio-150",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Studio 150",
+      "canonicalKey": "album:studio 150",
+      "properties": {
+        "title": "Studio 150",
+        "name": "Studio 150"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-studio-150",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-if-i-could-only-be-sure",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "If I Could Only Be Sure",
+      "canonicalKey": "track:if i could only be sure",
+      "properties": {
+        "title": "If I Could Only Be Sure",
+        "name": "If I Could Only Be Sure"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-wishing-on-a-star",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Wishing on a Star",
+      "canonicalKey": "track:wishing on a star",
+      "properties": {
+        "title": "Wishing on a Star",
+        "name": "Wishing on a Star"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-dont-make-promises",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Don't Make Promises",
+      "canonicalKey": "track:don't make promises",
+      "properties": {
+        "title": "Don't Make Promises",
+        "name": "Don't Make Promises"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-bottle",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Bottle",
+      "canonicalKey": "track:the bottle",
+      "properties": {
+        "title": "The Bottle",
+        "name": "The Bottle"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-black-is-the-colour",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Black Is the Colour",
+      "canonicalKey": "track:black is the colour",
+      "properties": {
+        "title": "Black Is the Colour",
+        "name": "Black Is the Colour"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "track-luka-bloom-turf-black-is-the-colour",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-close-to-you",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Close to You",
+      "canonicalKey": "track:close to you",
+      "properties": {
+        "title": "Close to You",
+        "name": "Close to You"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "track-dayglow-harmony-house-close-to-you",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-early-morning-rain",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Early Morning Rain",
+      "canonicalKey": "track:early morning rain",
+      "properties": {
+        "title": "Early Morning Rain",
+        "name": "Early Morning Rain"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-one-way-road",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "One Way Road",
+      "canonicalKey": "track:one way road",
+      "properties": {
+        "title": "One Way Road",
+        "name": "One Way Road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-hermans-hermits-tribute",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Hercules",
+      "canonicalKey": "track:hercules",
+      "properties": {
+        "title": "Hercules",
+        "name": "Hercules"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-as-is-now",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "As Is Now",
+      "canonicalKey": "album:as is now",
+      "properties": {
+        "title": "As Is Now",
+        "name": "As Is Now"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-as-is-now",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-blink-and-youll-miss-it",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Blink and You'll Miss It",
+      "canonicalKey": "track:blink and you'll miss it",
+      "properties": {
+        "title": "Blink and You'll Miss It",
+        "name": "Blink and You'll Miss It"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-paper-smile",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Paper Smile",
+      "canonicalKey": "track:paper smile",
+      "properties": {
+        "title": "Paper Smile",
+        "name": "Paper Smile"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-come-on-lets-go",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Come On/Let's Go",
+      "canonicalKey": "track:come on/let's go",
+      "properties": {
+        "title": "Come On/Let's Go",
+        "name": "Come On/Let's Go"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-heres-the-good-news",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Here's the Good News",
+      "canonicalKey": "track:here's the good news",
+      "properties": {
+        "title": "Here's the Good News",
+        "name": "Here's the Good News"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-roll-along-summer",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Roll Along Summer",
+      "canonicalKey": "track:roll along summer",
+      "properties": {
+        "title": "Roll Along Summer",
+        "name": "Roll Along Summer"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-start-of-forever",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Start of Forever",
+      "canonicalKey": "track:the start of forever",
+      "properties": {
+        "title": "The Start of Forever",
+        "name": "The Start of Forever"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-pan",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Pan",
+      "canonicalKey": "track:pan",
+      "properties": {
+        "title": "Pan",
+        "name": "Pan"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-heres-the-good-news-three",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "All on a Misty Morning",
+      "canonicalKey": "track:all on a misty morning",
+      "properties": {
+        "title": "All on a Misty Morning",
+        "name": "All on a Misty Morning"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-from-the-floorboards-up",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "From the Floorboards Up",
+      "canonicalKey": "track:from the floorboards up",
+      "properties": {
+        "title": "From the Floorboards Up",
+        "name": "From the Floorboards Up"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-22-dreams",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "22 Dreams",
+      "canonicalKey": "album:22 dreams",
+      "properties": {
+        "title": "22 Dreams",
+        "name": "22 Dreams"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-22-dreams",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-light-nights",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Light Nights",
+      "canonicalKey": "track:light nights",
+      "properties": {
+        "title": "Light Nights",
+        "name": "Light Nights"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-22-dreams",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "22 Dreams",
+      "canonicalKey": "track:22 dreams",
+      "properties": {
+        "title": "22 Dreams",
+        "name": "22 Dreams"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-all-i-wanna-do",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "All I Wanna Do (Is Be with You)",
+      "canonicalKey": "track:all i wanna do (is be with you)",
+      "properties": {
+        "title": "All I Wanna Do (Is Be with You)",
+        "name": "All I Wanna Do (Is Be with You)"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-have-you-made-up-your-mind",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Have You Made Up Your Mind",
+      "canonicalKey": "track:have you made up your mind",
+      "properties": {
+        "title": "Have You Made Up Your Mind",
+        "name": "Have You Made Up Your Mind"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-empty-ring",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Empty Ring",
+      "canonicalKey": "track:empty ring",
+      "properties": {
+        "title": "Empty Ring",
+        "name": "Empty Ring"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-invisible",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Invisible",
+      "canonicalKey": "track:invisible",
+      "properties": {
+        "title": "Invisible",
+        "name": "Invisible"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-song-for-alice",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Song for Alice",
+      "canonicalKey": "track:song for alice",
+      "properties": {
+        "title": "Song for Alice",
+        "name": "Song for Alice"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-cold-moments",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Cold Moments",
+      "canonicalKey": "track:cold moments",
+      "properties": {
+        "title": "Cold Moments",
+        "name": "Cold Moments"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-dark-pages-of-september-lead-to-the-new-leaves-of-spring",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Dark Pages of September Lead to the New Leaves of Spring",
+      "canonicalKey": "track:the dark pages of september lead to the new leaves of spring",
+      "properties": {
+        "title": "The Dark Pages of September Lead to the New Leaves of Spring",
+        "name": "The Dark Pages of September Lead to the New Leaves of Spring"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-black-river",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Black River",
+      "canonicalKey": "track:black river",
+      "properties": {
+        "title": "Black River",
+        "name": "Black River"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-why-walk-when-you-can-run",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Why Walk When You Can Run",
+      "canonicalKey": "track:why walk when you can run",
+      "properties": {
+        "title": "Why Walk When You Can Run",
+        "name": "Why Walk When You Can Run"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-push-it-along",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Push It Along",
+      "canonicalKey": "track:push it along",
+      "properties": {
+        "title": "Push It Along",
+        "name": "Push It Along"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-a-dream-reprise",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "A Dream Reprise",
+      "canonicalKey": "track:a dream reprise",
+      "properties": {
+        "title": "A Dream Reprise",
+        "name": "A Dream Reprise"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-wake-up-the-nation",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Wake Up the Nation",
+      "canonicalKey": "album:wake up the nation",
+      "properties": {
+        "title": "Wake Up the Nation",
+        "name": "Wake Up the Nation"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-wake-up-the-nation",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-moonshine",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Moonshine",
+      "canonicalKey": "track:moonshine",
+      "properties": {
+        "title": "Moonshine",
+        "name": "Moonshine"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-wake-up-the-nation",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Wake Up the Nation",
+      "canonicalKey": "track:wake up the nation",
+      "properties": {
+        "title": "Wake Up the Nation",
+        "name": "Wake Up the Nation"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-no-tears-to-cry",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "No Tears to Cry",
+      "canonicalKey": "track:no tears to cry",
+      "properties": {
+        "title": "No Tears to Cry",
+        "name": "No Tears to Cry"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-fast-car-slow-traffic",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Fast Car/Slow Traffic",
+      "canonicalKey": "track:fast car/slow traffic",
+      "properties": {
+        "title": "Fast Car/Slow Traffic",
+        "name": "Fast Car/Slow Traffic"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-andromeda",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Andromeda",
+      "canonicalKey": "track:andromeda",
+      "properties": {
+        "title": "Andromeda",
+        "name": "Andromeda"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-in-amsterdam",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "In Amsterdam",
+      "canonicalKey": "track:in amsterdam",
+      "properties": {
+        "title": "In Amsterdam",
+        "name": "In Amsterdam"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-she-speaks",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "She Speaks",
+      "canonicalKey": "track:she speaks",
+      "properties": {
+        "title": "She Speaks",
+        "name": "She Speaks"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-find-the-torch-burn-the-plans",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Find the Torch, Burn the Plans",
+      "canonicalKey": "track:find the torch, burn the plans",
+      "properties": {
+        "title": "Find the Torch, Burn the Plans",
+        "name": "Find the Torch, Burn the Plans"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-aim-high",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Aim High",
+      "canonicalKey": "track:aim high",
+      "properties": {
+        "title": "Aim High",
+        "name": "Aim High"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-trees",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Trees",
+      "canonicalKey": "track:trees",
+      "properties": {
+        "title": "Trees",
+        "name": "Trees"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-grasp-and-still-connect",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Grasp & Still Connect",
+      "canonicalKey": "track:grasp & still connect",
+      "properties": {
+        "title": "Grasp & Still Connect",
+        "name": "Grasp & Still Connect"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-sonik-kicks",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Sonik Kicks",
+      "canonicalKey": "album:sonik kicks",
+      "properties": {
+        "title": "Sonik Kicks",
+        "name": "Sonik Kicks"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-sonik-kicks",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-green",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Green",
+      "canonicalKey": "track:green",
+      "properties": {
+        "title": "Green",
+        "name": "Green"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-attic",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Attic",
+      "canonicalKey": "track:the attic",
+      "properties": {
+        "title": "The Attic",
+        "name": "The Attic"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-kling-i-klang",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Kling I Klang",
+      "canonicalKey": "track:kling i klang",
+      "properties": {
+        "title": "Kling I Klang",
+        "name": "Kling I Klang"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-sleep-of-the-serene",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Sleep of the Serene",
+      "canonicalKey": "track:sleep of the serene",
+      "properties": {
+        "title": "Sleep of the Serene",
+        "name": "Sleep of the Serene"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-by-the-waters",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "By the Waters",
+      "canonicalKey": "track:by the waters",
+      "properties": {
+        "title": "By the Waters",
+        "name": "By the Waters"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-that-dangerous-age",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "That Dangerous Age",
+      "canonicalKey": "track:that dangerous age",
+      "properties": {
+        "title": "That Dangerous Age",
+        "name": "That Dangerous Age"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-study-in-blue",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Study in Blue",
+      "canonicalKey": "track:study in blue",
+      "properties": {
+        "title": "Study in Blue",
+        "name": "Study in Blue"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-drifters",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Drifters",
+      "canonicalKey": "track:drifters",
+      "properties": {
+        "title": "Drifters",
+        "name": "Drifters"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-paperchase",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Paperchase",
+      "canonicalKey": "track:paperchase",
+      "properties": {
+        "title": "Paperchase",
+        "name": "Paperchase"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-be-happy-children",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Be Happy Children",
+      "canonicalKey": "track:be happy children",
+      "properties": {
+        "title": "Be Happy Children",
+        "name": "Be Happy Children"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-when-your-garden-is-overgrown",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "When Your Garden's Overgrown",
+      "canonicalKey": "track:when your garden's overgrown",
+      "properties": {
+        "title": "When Your Garden's Overgrown",
+        "name": "When Your Garden's Overgrown"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-saturns-pattern",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Saturns Pattern",
+      "canonicalKey": "album:saturns pattern",
+      "properties": {
+        "title": "Saturns Pattern",
+        "name": "Saturns Pattern"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-saturns-pattern",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-white-sky",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "White Sky",
+      "canonicalKey": "track:white sky",
+      "properties": {
+        "title": "White Sky",
+        "name": "White Sky"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-saturns-pattern",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Saturns Pattern",
+      "canonicalKey": "track:saturns pattern",
+      "properties": {
+        "title": "Saturns Pattern",
+        "name": "Saturns Pattern"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-going-my-way",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Going My Way",
+      "canonicalKey": "track:going my way",
+      "properties": {
+        "title": "Going My Way",
+        "name": "Going My Way"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-long-time",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Long Time",
+      "canonicalKey": "track:long time",
+      "properties": {
+        "title": "Long Time",
+        "name": "Long Time"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-pick-it-up",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Pick It Up",
+      "canonicalKey": "track:pick it up",
+      "properties": {
+        "title": "Pick It Up",
+        "name": "Pick It Up"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-im-where-i-should-be",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "I'm Where I Should Be",
+      "canonicalKey": "track:i'm where i should be",
+      "properties": {
+        "title": "I'm Where I Should Be",
+        "name": "I'm Where I Should Be"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-these-city-streets",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "These City Streets",
+      "canonicalKey": "track:these city streets",
+      "properties": {
+        "title": "These City Streets",
+        "name": "These City Streets"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-in-the-car",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "In the Car...",
+      "canonicalKey": "track:in the car...",
+      "properties": {
+        "title": "In the Car...",
+        "name": "In the Car..."
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-going-my-way-two",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Cranes Are Back",
+      "canonicalKey": "track:the cranes are back",
+      "properties": {
+        "title": "The Cranes Are Back",
+        "name": "The Cranes Are Back"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-glad-times",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Glad Times",
+      "canonicalKey": "track:glad times",
+      "properties": {
+        "title": "Glad Times",
+        "name": "Glad Times"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-a-kind-revolution",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "A Kind Revolution",
+      "canonicalKey": "album:a kind revolution",
+      "properties": {
+        "title": "A Kind Revolution",
+        "name": "A Kind Revolution"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-a-kind-revolution",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-woo-se-ma-ma",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Woo Sé Mama",
+      "canonicalKey": "track:woo sé mama",
+      "properties": {
+        "title": "Woo Sé Mama",
+        "name": "Woo Sé Mama"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-nova",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Nova",
+      "canonicalKey": "track:nova",
+      "properties": {
+        "title": "Nova",
+        "name": "Nova"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-long-long-road",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Long Long Road",
+      "canonicalKey": "track:long long road",
+      "properties": {
+        "title": "Long Long Road",
+        "name": "Long Long Road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-she-moves-with-the-fayre",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "She Moves with the Fayre",
+      "canonicalKey": "track:she moves with the fayre",
+      "properties": {
+        "title": "She Moves with the Fayre",
+        "name": "She Moves with the Fayre"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-cranes-are-back",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Cranes Are Back",
+      "canonicalKey": "track:the cranes are back",
+      "properties": {
+        "title": "The Cranes Are Back",
+        "name": "The Cranes Are Back"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-hopper",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Hopper",
+      "canonicalKey": "track:hopper",
+      "properties": {
+        "title": "Hopper",
+        "name": "Hopper"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-new-york",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "New York",
+      "canonicalKey": "track:new york",
+      "properties": {
+        "title": "New York",
+        "name": "New York"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-one-tear",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "One Tear",
+      "canonicalKey": "track:one tear",
+      "properties": {
+        "title": "One Tear",
+        "name": "One Tear"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-satellite-kid",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Satellite Kid",
+      "canonicalKey": "track:satellite kid",
+      "properties": {
+        "title": "Satellite Kid",
+        "name": "Satellite Kid"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-impossible-idea",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Impossible Idea",
+      "canonicalKey": "track:the impossible idea",
+      "properties": {
+        "title": "The Impossible Idea",
+        "name": "The Impossible Idea"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-true-meanings",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "True Meanings",
+      "canonicalKey": "album:true meanings",
+      "properties": {
+        "title": "True Meanings",
+        "name": "True Meanings"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-true-meanings",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-soul-wandering",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Soul Wandering",
+      "canonicalKey": "track:soul wandering",
+      "properties": {
+        "title": "Soul Wandering",
+        "name": "Soul Wandering"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-may-love-travel-with-you",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "May Love Travel with You",
+      "canonicalKey": "track:may love travel with you",
+      "properties": {
+        "title": "May Love Travel with You",
+        "name": "May Love Travel with You"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-gravity",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Gravity",
+      "canonicalKey": "track:gravity",
+      "properties": {
+        "title": "Gravity",
+        "name": "Gravity"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-old-castles",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Old Castles",
+      "canonicalKey": "track:old castles",
+      "properties": {
+        "title": "Old Castles",
+        "name": "Old Castles"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-what-would-he-have-done",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "What Would He Have Done?",
+      "canonicalKey": "track:what would he have done?",
+      "properties": {
+        "title": "What Would He Have Done?",
+        "name": "What Would He Have Done?"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-glide",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Glide",
+      "canonicalKey": "track:glide",
+      "properties": {
+        "title": "Glide",
+        "name": "Glide"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-carry-on",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Carry On",
+      "canonicalKey": "track:carry on",
+      "properties": {
+        "title": "Carry On",
+        "name": "Carry On"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-the-soul-searchers",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Soul Searchers",
+      "canonicalKey": "track:the soul searchers",
+      "properties": {
+        "title": "The Soul Searchers",
+        "name": "The Soul Searchers"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-come-along",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Come Along",
+      "canonicalKey": "track:come along",
+      "properties": {
+        "title": "Come Along",
+        "name": "Come Along"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-books",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Books",
+      "canonicalKey": "track:books",
+      "properties": {
+        "title": "Books",
+        "name": "Books"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-on-sunset",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "On Sunset",
+      "canonicalKey": "album:on sunset",
+      "properties": {
+        "title": "On Sunset",
+        "name": "On Sunset"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-on-sunset",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-mirror-ball",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Mirror Ball",
+      "canonicalKey": "track:mirror ball",
+      "properties": {
+        "title": "Mirror Ball",
+        "name": "Mirror Ball"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-baptiste",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Baptiste",
+      "canonicalKey": "track:baptiste",
+      "properties": {
+        "title": "Baptiste",
+        "name": "Baptiste"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-old-father-tyme",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Old Father Tyme",
+      "canonicalKey": "track:old father tyme",
+      "properties": {
+        "title": "Old Father Tyme",
+        "name": "Old Father Tyme"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-village",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Village",
+      "canonicalKey": "track:village",
+      "properties": {
+        "title": "Village",
+        "name": "Village"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-more",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "More",
+      "canonicalKey": "track:more",
+      "properties": {
+        "title": "More",
+        "name": "More"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-on-sunset",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "On Sunset",
+      "canonicalKey": "track:on sunset",
+      "properties": {
+        "title": "On Sunset",
+        "name": "On Sunset"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-equanimity",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Equanimity",
+      "canonicalKey": "track:equanimity",
+      "properties": {
+        "title": "Equanimity",
+        "name": "Equanimity"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-walkin",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Walkin'",
+      "canonicalKey": "track:walkin'",
+      "properties": {
+        "title": "Walkin'",
+        "name": "Walkin'"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-earth-beat",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Earth Beat",
+      "canonicalKey": "track:earth beat",
+      "properties": {
+        "title": "Earth Beat",
+        "name": "Earth Beat"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-rocks",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Rockets",
+      "canonicalKey": "track:rockets",
+      "properties": {
+        "title": "Rockets",
+        "name": "Rockets"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "album-fat-pop-volume-1",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Fat Pop (Volume 1)",
+      "canonicalKey": "album:fat pop (volume 1)",
+      "properties": {
+        "title": "Fat Pop (Volume 1)",
+        "name": "Fat Pop (Volume 1)"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-album-fat-pop-volume-1",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-cosmic-fringes",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Cosmic Fringes",
+      "canonicalKey": "track:cosmic fringes",
+      "properties": {
+        "title": "Cosmic Fringes",
+        "name": "Cosmic Fringes"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-true",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "True",
+      "canonicalKey": "track:true",
+      "properties": {
+        "title": "True",
+        "name": "True"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-fat-pop",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Fat Pop",
+      "canonicalKey": "track:fat pop",
+      "properties": {
+        "title": "Fat Pop",
+        "name": "Fat Pop"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-shades-of-blue",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Shades of Blue",
+      "canonicalKey": "track:shades of blue",
+      "properties": {
+        "title": "Shades of Blue",
+        "name": "Shades of Blue"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-glad-times-two",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Glad Times",
+      "canonicalKey": "track:glad times",
+      "properties": {
+        "title": "Glad Times",
+        "name": "Glad Times"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-cobweb-connections",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Cobweb/Connections",
+      "canonicalKey": "track:cobweb/connections",
+      "properties": {
+        "title": "Cobweb/Connections",
+        "name": "Cobweb/Connections"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-testify",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Testify",
+      "canonicalKey": "track:testify",
+      "properties": {
+        "title": "Testify",
+        "name": "Testify"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-that-pleasure",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "That Pleasure",
+      "canonicalKey": "track:that pleasure",
+      "properties": {
+        "title": "That Pleasure",
+        "name": "That Pleasure"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-failed",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Failed",
+      "canonicalKey": "track:failed",
+      "properties": {
+        "title": "Failed",
+        "name": "Failed"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-moving-canvas",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Moving Canvas",
+      "canonicalKey": "track:moving canvas",
+      "properties": {
+        "title": "Moving Canvas",
+        "name": "Moving Canvas"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-in-better-times",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "In Better Times",
+      "canonicalKey": "track:in better times",
+      "properties": {
+        "title": "In Better Times",
+        "name": "In Better Times"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "track-still-glides-the-stream",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Still Glides the Stream",
+      "canonicalKey": "track:still glides the stream",
+      "properties": {
+        "title": "Still Glides the Stream",
+        "name": "Still Glides the Stream"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T00:20:50.123Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "edgeCandidates": [],
+  "importedAt": "2026-03-13T00:26:56.503Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-13T00:20:50.123Z",
+    "importedFrom": "triplet-exploration",
+    "generator": "llm",
+    "provider": "OpenAI",
+    "model": "gpt-5.4",
+    "promptVersion": "2026-03-12.0",
+    "evidenceRecordCount": 0,
+    "sourceCount": 1,
+    "notes": "Triplet exploration: Album:any — CONTAINS — Track:any."
+  }
+}

@@ -9,7 +9,7 @@ import type {
   RawEnrichmentPayload,
   VerifiedEnrichmentRecord,
   ConfidenceLevel,
-} from "./types.js";
+} from "./types";
 
 function normalizeForMatch(s: string): string {
   return s

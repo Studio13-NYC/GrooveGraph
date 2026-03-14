@@ -2,10 +2,10 @@
  * In-memory implementation of GraphStore. See docs/STORAGE_ABSTRACTION.md §4.
  * O(1) ID lookups; label index and adjacency for traversal.
  */
-import { GraphNode } from "../domain/GraphNode.js";
-import { GraphEdge } from "../domain/GraphEdge.js";
-import { normalizeEntityLabels } from "../lib/entity-identity.js";
-import { isTypeHubNodeLabels, reconcileTypeHubLinksForNode } from "../lib/type-hubs.js";
+import { GraphNode } from "../domain/GraphNode";
+import { GraphEdge } from "../domain/GraphEdge";
+import { normalizeEntityLabels } from "../lib/entity-identity";
+import { isTypeHubNodeLabels, reconcileTypeHubLinksForNode } from "../lib/type-hubs";
 import type {
   GraphStore,
   NodePatch,
@@ -14,7 +14,7 @@ import type {
   EdgeQuery,
   Direction,
   DeleteNodeOptions,
-} from "./types.js";
+} from "./types";
 
 type NodeRecord = {
   id: string;

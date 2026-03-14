@@ -1,7 +1,6 @@
-import { isEntityLabel, type EntityLabel } from "./entity-config.js";
+import { isEntityLabel, type EntityLabel } from "./entity-config";
 
 const RESERVED_GRAPH_LABELS = new Set(["GraphEntity", "EntityType"]);
-const DUAL_IDENTITY_LABELS = new Set<EntityLabel>(["Artist", "Person"]);
 
 export function getSearchLabelsForEntityType(entityType: string): string[] {
   if (entityType === "Artist" || entityType === "Person") {
@@ -27,10 +26,6 @@ export function getPrimaryEntityLabel(labels: string[]): string {
   if (firstKnown) return firstKnown;
 
   return normalized[0] ?? "Node";
-}
-
-export function isDualIdentityLabel(label: string): label is EntityLabel {
-  return DUAL_IDENTITY_LABELS.has(label as EntityLabel);
 }
 
 export function coerceArtistPersonIdentity(labels: string[]): string[] {

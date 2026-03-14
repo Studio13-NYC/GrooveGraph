@@ -16,12 +16,15 @@
     "dev:port-guard": "node scripts/ensure-port-3000.mjs",
     "dev": "node scripts/dev-with-port-guard.mjs",
     "build:web": "next build",
+    "build:static": "cross-env NEXT_STATIC_EXPORT=1 next build",
+    "build:static:swa": "node scripts/static-export-without-api.mjs",
     "start": "next start",
     "test": "node --test dist/**/*.test.js"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "compromise": "^14.15.0",
     "lucide-react": "^0.400.0",
     "neo4j-driver": "^6.0.1",
     "next": "^14.2.0",
@@ -33,6 +36,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "cross-env": "^7.0.3",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "autoprefixer": "^10.4.0",

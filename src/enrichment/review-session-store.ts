@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { EnrichmentReviewSession } from "./types.js";
+import type { EnrichmentReviewSession } from "./types";
 
 const REVIEW_SESSION_DIR = join(process.cwd(), "data", "enrichment-review-sessions");
 

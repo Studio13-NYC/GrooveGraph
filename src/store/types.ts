@@ -1,8 +1,8 @@
 /**
  * Types for the GraphStore port (see docs/STORAGE_ABSTRACTION.md).
  */
-import type { GraphNode } from "../domain/GraphNode.js";
-import type { GraphEdge } from "../domain/GraphEdge.js";
+import type { GraphNode } from "../domain/GraphNode";
+import type { GraphEdge } from "../domain/GraphEdge";
 
 export type Direction = "inbound" | "outbound" | "both";
 

@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { GraphEdge } from "../domain/GraphEdge.js";
-import { GraphNode } from "../domain/GraphNode.js";
-import { InMemoryGraphStore } from "../store/InMemoryGraphStore.js";
-import { buildQueryResultPayload, resolveEntityNode } from "./exploration.js";
+import { GraphEdge } from "../domain/GraphEdge";
+import { GraphNode } from "../domain/GraphNode";
+import { InMemoryGraphStore } from "../store/InMemoryGraphStore";
+import { buildQueryResultPayload, resolveEntityNode } from "./exploration";
 
 class TestNode extends GraphNode {}
 class TestEdge extends GraphEdge {}

@@ -3,7 +3,7 @@ export {
   runEnrichmentPipeline,
   type EnrichmentPreviewResult,
   type EnrichmentResult,
-} from "./pipeline.js";
+} from "./pipeline";
 export type {
   RawEnrichmentPayload,
   VerifiedEnrichmentRecord,
@@ -16,17 +16,26 @@ export type {
   CandidateProvenance,
   CandidateMatchStatus,
   EnrichmentReviewSession,
+  EnrichmentWorkflowType,
+  EvidenceMention,
+  ExtractionAssertion,
+  ExtractionIR,
+  ExtractionMention,
+  ExtractionRelation,
+  RelationAssertion,
   ResearchPacket,
   ResearchBundle,
   ReviewDecision,
   ReviewDecisionStatus,
   ReviewSessionStatus,
   ReviewTargetEntity,
+  SourceChunk,
+  SourceDocument,
   SourceExecutionMode,
   SourceRunEntry,
   SourceRunReport,
   SourceRunStatus,
-} from "./types.js";
+} from "./types";
 export {
   applyReviewSession,
   buildResearchPacket,
@@ -35,12 +44,64 @@ export {
   importResearchBundle,
   startAutomatedReviewSession,
   updateReviewDecisions,
-} from "./review.js";
+} from "./review";
+export type { StartAutomatedReviewSessionOptions } from "./review";
 export {
   getAllSources,
   getSourceExecutionMode,
   getSourcesForEntityType,
   IMPLEMENTED_ADAPTER_IDS,
   isSourceAutomated,
-} from "./sources/registry.js";
-export type { SourceDefinition, CollectionMethod } from "./sources/registry.js";
+} from "./sources/registry";
+export type { SourceDefinition, CollectionMethod } from "./sources/registry";
+export {
+  isLlmOnlyPipelineConfigured,
+  runLlmOnlyPipeline,
+  useLlmOnlyPipeline,
+} from "./pipelines/llm-only";
+export {
+  runTripletExplorationPipeline,
+} from "./pipelines/triplet-exploration";
+export {
+  formatTripletSpec,
+  isAnyPlaceholder,
+  parseScopeSpec,
+  parseTripletSpec,
+  TRIPLET_EXAMPLES,
+} from "./triplet";
+export type { TripletSpec, TripletEntity } from "./triplet";
+export {
+  bundleToIR,
+  deriveExtractionComplexity,
+  getModelForExtractionComplexity,
+  getModelForTask,
+  irToResearchBundle,
+  mergeExtractionIR,
+  normalizeExtractionIR,
+  runExtraction,
+} from "./extraction";
+export type { ExtractionComplexity, ExtractionTaskType } from "./extraction";
+export type { RunExtractionOptions, RunExtractionResult } from "./extraction";
+export { hasExtractionMetadata } from "./extraction";
+export type {
+  ExtractionAdapter,
+  ExtractionInput,
+  ExtractionResult,
+  ExtractionResultWithMetadata,
+  ExtractionRunMetadata,
+  SpanMentionExtractionInput,
+  TripletExtractionInput,
+} from "./extraction";
+export {
+  spanMentionExtractionAdapter,
+  SPAN_MENTION_EXTRACTION_ADAPTER_NAME,
+} from "./adapters/span-mention-extraction-adapter";
+export {
+  spanMentionCompromiseAdapter,
+  SPAN_MENTION_COMPROMISE_ADAPTER_NAME,
+} from "./adapters/span-mention-compromise-adapter";
+export {
+  tripletExtractionAdapter,
+  TRIPLET_EXTRACTION_ADAPTER_NAME,
+} from "./adapters/triplet-extraction-adapter";
+export { buildResearchOntologyContext } from "./llm/ontology-context";

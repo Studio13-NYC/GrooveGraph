@@ -1,9 +1,9 @@
 import { randomUUID } from "node:crypto";
 
-import { GraphNode } from "../domain/GraphNode.js";
-import type { GraphStore } from "../store/types.js";
-import { getEntityDisplayPropertyKeys } from "./entity-config.js";
-import { coerceArtistPersonIdentity, normalizeEntityLabels } from "./entity-identity.js";
+import { GraphNode } from "../domain/GraphNode";
+import type { GraphStore } from "../store/types";
+import { getEntityDisplayPropertyKeys } from "./entity-config";
+import { coerceArtistPersonIdentity, normalizeEntityLabels } from "./entity-identity";
 
 class MutableGraphNode extends GraphNode {}
 

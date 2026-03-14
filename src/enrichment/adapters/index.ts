@@ -1,8 +1,8 @@
-import type { RawEnrichmentPayload } from "../types.js";
-import type { SourceRuntimeRoute } from "../types.js";
-import type { SourceDefinition } from "../sources/registry.js";
-import { fetchGenericSourceByName } from "./generic-source.js";
-import { fetchArtistByName } from "./musicbrainz.js";
+import type { RawEnrichmentPayload } from "../types";
+import type { SourceRuntimeRoute } from "../types";
+import type { SourceDefinition } from "../sources/registry";
+import { fetchGenericSourceByName } from "./generic-source";
+import { fetchArtistByName } from "./musicbrainz";
 import {
   fetchDiscogsByApi,
   fetchGeniusByApi,
@@ -11,10 +11,10 @@ import {
   fetchSetlistFmByApi,
   fetchSoundCloudByApi,
   fetchSpotifyByApi,
-} from "./official-api.js";
-import { getEffectiveSourceRoute } from "./source-access.js";
-import { fetchSummaryByName } from "./wikipedia.js";
-import { fetchWikidataByName } from "./wikidata.js";
+} from "./official-api";
+import { getEffectiveSourceRoute } from "./source-access";
+import { fetchSummaryByName } from "./wikipedia";
+import { fetchWikidataByName } from "./wikidata";
 
 export interface AdapterExecutionContext {
   source: SourceDefinition;

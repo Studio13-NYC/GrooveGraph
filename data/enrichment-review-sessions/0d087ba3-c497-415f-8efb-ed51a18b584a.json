@@ -1,0 +1,616 @@
+{
+  "id": "0d087ba3-c497-415f-8efb-ed51a18b584a",
+  "status": "ready_for_review",
+  "createdAt": "2026-03-13T20:44:43.523Z",
+  "updatedAt": "2026-03-13T20:45:56.891Z",
+  "approvedAt": "2026-03-13T20:44:43.523Z",
+  "summary": "Proposed instrument-specific nodes for Paul Weller, along with related bands, collaborators, and genres, plus edges linking the artist to these nodes and to guitar-related instruments.",
+  "targets": [
+    {
+      "id": "artist-paul-weller",
+      "label": "Artist",
+      "name": "Paul Weller"
+    },
+    {
+      "id": "instrument-instrument-guitar",
+      "label": "Instrument",
+      "name": "Guitar"
+    }
+  ],
+  "propertyChanges": [
+    {
+      "candidateId": "prop-artist-paul-weller-biography",
+      "targetId": "artist-paul-weller",
+      "key": "biography",
+      "value": "Paul Weller is an English singer-songwriter and guitarist, central figure in the mod revival with The Jam (1972–1982) and The Style Council (1983–1989), renowned for his melodic songwriting and influential solo career since 1990.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-paul-weller-country",
+      "targetId": "artist-paul-weller",
+      "key": "country",
+      "value": "United Kingdom",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-paul-weller-active_years",
+      "targetId": "artist-paul-weller",
+      "key": "active_years",
+      "value": "1972–present",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    }
+  ],
+  "nodeCandidates": [
+    {
+      "candidateId": "node-the-jam",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "The Jam",
+      "canonicalKey": "artist:the-jam",
+      "properties": {
+        "name": "The Jam"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-the-jam",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-the-style-council",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "The Style Council",
+      "canonicalKey": "artist:the-style-council",
+      "properties": {
+        "name": "The Style Council"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-the-style-council",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-mick-talbot",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Mick Talbot",
+      "canonicalKey": "artist:mick-talbot",
+      "properties": {
+        "name": "Mick Talbot"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-steve-white",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Steve White",
+      "canonicalKey": "artist:steve-white",
+      "properties": {
+        "name": "Steve White"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-bruce-foxton",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Bruce Foxton",
+      "canonicalKey": "artist:bruce-foxton",
+      "properties": {
+        "name": "Bruce Foxton"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-bruce-foxton",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "genre-mod-revival",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Mod revival",
+      "canonicalKey": "genre:mod-revival",
+      "properties": {
+        "name": "Mod revival"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-mod-revival",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "instr-telecaster",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Fender Telecaster",
+      "canonicalKey": "instrument:fender-telecaster",
+      "properties": {
+        "name": "Fender Telecaster"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "instrument-instrument-fender-telecaster",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "instr-stratocaster",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Fender Stratocaster",
+      "canonicalKey": "instrument:fender-stratocaster",
+      "properties": {
+        "name": "Fender Stratocaster"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "instrument-instrument-fender-stratocaster",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "instr-lespaul",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Gibson Les Paul",
+      "canonicalKey": "instrument:gibson-les-paul",
+      "properties": {
+        "name": "Gibson Les Paul"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-genre-mod",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "mod",
+      "canonicalKey": "genre:mod",
+      "properties": {
+        "name": "mod"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-mod",
+      "reviewStatus": "pending",
+      "notes": "Derived from biography narrative text."
+    }
+  ],
+  "edgeCandidates": [
+    {
+      "candidateId": "edge-member-of-paul-weller-the-jam",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-the-jam"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:15:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "member_of-280eb4c5ed06",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member-of-paul-weller-the-style-council",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-the-style-council"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:15:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "member_of-cc447a891949",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated-with-paul-weller-mick-talbot",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-mick-talbot"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:15:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated-with-paul-weller-steve-white",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-steve-white"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:15:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated-with-paul-weller-bruce-foxton",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-bruce-foxton"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:15:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part-of-genre-paul-weller-mod-revival",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "genre-mod-revival"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:15:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-played-instrument-paul-weller-telecaster",
+      "type": "PLAYED_INSTRUMENT",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "instr-telecaster"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:15:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "played_instrument-27a05058bd69",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-played-instrument-paul-weller-stratocaster",
+      "type": "PLAYED_INSTRUMENT",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "instr-stratocaster"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:15:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-played-instrument-paul-weller-lespaul",
+      "type": "PLAYED_INSTRUMENT",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "instr-lespaul"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:15:00Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-part-of-genre-paul-weller-mod",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller",
+        "label": "Artist",
+        "name": "Paul Weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "derived-genre-mod",
+        "label": "Genre",
+        "name": "mod"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-13T21:14:00Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "importedAt": "2026-03-13T20:45:56.891Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-13T21:15:00Z",
+    "importedFrom": "llm-only",
+    "workflowType": "llm_only",
+    "generator": "llm",
+    "provider": "OpenAI",
+    "model": "gpt-5-nano",
+    "promptVersion": "2026-03-12.0",
+    "evidenceRecordCount": 0,
+    "sourceCount": 1,
+    "notes": "Enrichment from LLM-only pipeline; no external sources."
+  }
+}

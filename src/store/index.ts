@@ -1,6 +1,6 @@
-export { InMemoryGraphStore } from "./InMemoryGraphStore.js";
-export { Neo4jGraphStore } from "./Neo4jGraphStore.js";
-export type { GraphStoreSnapshot } from "./InMemoryGraphStore.js";
+export { InMemoryGraphStore } from "./InMemoryGraphStore";
+export { Neo4jGraphStore } from "./Neo4jGraphStore";
+export type { GraphStoreSnapshot } from "./InMemoryGraphStore";
 export type {
   GraphStore,
   Direction,
@@ -9,4 +9,4 @@ export type {
   NodeQuery,
   EdgeQuery,
   DeleteNodeOptions,
-} from "./types.js";
+} from "./types";

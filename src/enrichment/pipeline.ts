@@ -2,15 +2,15 @@
  * Enrichment pipeline: resolve entity → collect (adapters) → verify → load.
  */
 
-import type { GraphStore } from "../store/index.js";
+import type { GraphStore } from "../store/index";
 import {
   getGraphEntityLabels,
   getPrimaryEntityLabel,
   getSearchLabelsForEntityType,
-} from "../lib/entity-identity.js";
-import { getSourcesForEntityType } from "./sources/registry.js";
-import type { SourceDefinition } from "./sources/registry.js";
-import { executeSourceAdapter } from "./adapters/index.js";
+} from "../lib/entity-identity";
+import { getSourcesForEntityType } from "./sources/registry";
+import type { SourceDefinition } from "./sources/registry";
+import { executeSourceAdapter } from "./adapters/index";
 import type {
   PersistedEdgeChange,
   PersistedNodeChange,
@@ -18,9 +18,9 @@ import type {
   RawEnrichmentPayload,
   SourceRuntimeRoute,
   VerifiedEnrichmentRecord,
-} from "./types.js";
-import { verifyPayload } from "./verify.js";
-import { loadVerifiedRecord } from "./load.js";
+} from "./types";
+import { verifyPayload } from "./verify";
+import { loadVerifiedRecord } from "./load";
 
 function getNodeDisplayName(node: {
   labels: string[];

@@ -1,5 +1,5 @@
-import type { RawEnrichmentPayload, SourceMetadata } from "../types.js";
-import type { SourceDefinition } from "../sources/registry.js";
+import type { RawEnrichmentPayload, SourceMetadata } from "../types";
+import type { SourceDefinition } from "../sources/registry";
 
 export const USER_AGENT = "GrooveGraph/1.0 (https://github.com/Studio13-NYC/GrooveGraph)";
 const SEARCH_URL = "https://html.duckduckgo.com/html/";

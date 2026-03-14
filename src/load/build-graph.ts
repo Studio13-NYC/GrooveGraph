@@ -4,15 +4,15 @@
  */
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { Artist } from "../domain/entities/Artist.js";
-import { Album } from "../domain/entities/Album.js";
-import { Track } from "../domain/entities/Track.js";
-import { ReleasedOn } from "../domain/relationships/ReleasedOn.js";
-import { Contains } from "../domain/relationships/Contains.js";
-import { PerformedBy } from "../domain/relationships/PerformedBy.js";
-import type { GraphStore } from "../store/index.js";
-import { InMemoryGraphStore } from "../store/index.js";
-import { seedAdditionalEntities } from "./seed-additional-entities.js";
+import { Artist } from "../domain/entities/Artist";
+import { Album } from "../domain/entities/Album";
+import { Track } from "../domain/entities/Track";
+import { ReleasedOn } from "../domain/relationships/ReleasedOn";
+import { Contains } from "../domain/relationships/Contains";
+import { PerformedBy } from "../domain/relationships/PerformedBy";
+import type { GraphStore } from "../store/index";
+import { InMemoryGraphStore } from "../store/index";
+import { seedAdditionalEntities } from "./seed-additional-entities";
 
 const DEFAULT_CSV_PATH = join(process.cwd(), "data", "bobdobbsnyc.csv");
 

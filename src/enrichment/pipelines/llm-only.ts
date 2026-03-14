@@ -15,6 +15,11 @@ import type {
 import { buildResearchOntologyContext } from "../llm/ontology-context";
 import { validateResearchBundle } from "../llm/validate-bundle";
 import { buildLlmOnlyPrompt, getLlmOnlyProvenance, LLM_ONLY_PROMPT_VERSION } from "./llm-only-schema";
+import {
+  deriveExtractionComplexity,
+  getModelForTask,
+} from "../extraction/complexity";
+import { fetchWithRetry } from "../llm/fetch-with-retry";
 
 const LOG_PREFIX = "[llm-only-pipeline]";
 
@@ -32,13 +37,17 @@ function getBaseUrl(): string {
   );
 }
 
-/** Model for LLM-only pipeline; default gpt-5-nano for low-cost end-to-end runs. */
-function getModel(): string {
-  return (
-    process.env.OPENAI_MODEL?.trim() ||
-    process.env.ENRICHMENT_LLM_MODEL?.trim() ||
-    "gpt-5-nano"
-  );
+/** Model for LLM-only pipeline; uses task-level routing (synthesis) then complexity. */
+function getModel(targets: ReviewTargetEntity[]): string {
+  const explicit =
+    process.env.OPENAI_MODEL?.trim() || process.env.ENRICHMENT_LLM_MODEL?.trim();
+  if (explicit) return explicit;
+  const ir = {
+    mentions: targets.map((t) => ({ id: t.id, text: t.name, label: t.label })),
+    relations: [] as Array<{ id: string; type: string; fromMentionId: string; toMentionId: string }>,
+  };
+  const complexity = deriveExtractionComplexity(ir);
+  return getModelForTask("synthesis", complexity);
 }
 
 function extractJson(text: string): unknown {
@@ -112,28 +121,32 @@ export async function runLlmOnlyPipeline(
 
   const ontology = options?.ontology ?? buildResearchOntologyContext();
   const { system, user } = buildLlmOnlyPrompt(sessionId, targets, ontology, options?.triplet);
-  const model = getModel();
+  const model = getModel(targets);
   const baseUrl = getBaseUrl().replace(/\/$/, "");
   const url = `${baseUrl}/chat/completions`;
   console.log(
     `${LOG_PREFIX} LLM request url=${url} model=${model} systemLen=${system.length} userLen=${user.length}`
   );
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model,
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-    }),
-  });
+  const response = await fetchWithRetry(
+    () =>
+      fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: system },
+            { role: "user", content: user },
+          ],
+        }),
+      }),
+    { logPrefix: LOG_PREFIX }
+  );
 
   console.log(`${LOG_PREFIX} LLM response status=${response.status}`);
   if (!response.ok) {

@@ -1,5 +1,5 @@
 // DOMAIN_MODEL §3.3
-import { GraphEdge } from "../GraphEdge.js";
+import { GraphEdge } from "../GraphEdge";
 
 const TYPE = "USES_EFFECT";
 

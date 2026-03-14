@@ -1,17 +1,21 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { applyReviewSession } from "@/enrichment";
+import { requireAdminResponse } from "@/lib/auth";
 import { getGraphStore, persistGraphStore } from "@/load/persist-graph";
 
-export const dynamic = "force-dynamic";
+export const dynamic = process.env.NEXT_STATIC_EXPORT === "1" ? undefined : "force-dynamic";
 export const maxDuration = 60;
+export function generateStaticParams() {
+  return [];
+}
 
-type RouteContext = {
-  params: {
-    id: string;
-  };
-};
+type RouteContext = { params: { id: string } };
 
 export async function POST(_: Request, context: RouteContext) {
+  const cookieStore = await cookies();
+  const unauth = requireAdminResponse(cookieStore);
+  if (unauth) return unauth;
   try {
     const store = await getGraphStore();
     const session = await applyReviewSession(store, context.params.id);

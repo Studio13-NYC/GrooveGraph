@@ -7,6 +7,7 @@ import { EntitySearchControls } from "./entity-search-controls";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
+import { getApiBase } from "@/lib/api-base";
 import type { QueryResultPayload } from "@/lib/exploration-types";
 import {
   ENTITY_LABELS,
@@ -213,7 +214,11 @@ export function EnrichmentReviewWorkspace() {
   const [tripletScopeName, setTripletScopeName] = useState("");
   const [extractWorkflowType, setExtractWorkflowType] = useState<EnrichmentWorkflowType>("triplet");
   const [tripletWorking, setTripletWorking] = useState(false);
+  const [spanMentionText, setSpanMentionText] = useState("");
+  const [runthroughResult, setRunthroughResult] = useState<{ ok: boolean; message: string; detail?: string } | null>(null);
+  const [runthroughLoading, setRunthroughLoading] = useState(false);
   const isTripletWorkflow = extractWorkflowType === "triplet";
+  const isSpanMentionWorkflow = extractWorkflowType === "span_mention";
 
   const syncUrl = useCallback(
     (nextSessionId?: string) => {
@@ -233,7 +238,7 @@ export function EnrichmentReviewWorkspace() {
   const loadSession = useCallback(async (sessionId: string) => {
     setWorking(true);
     try {
-      const response = await fetch(`/api/enrich/review-session/${sessionId}`);
+      const response = await fetch(`${getApiBase()}/api/enrich/review-session/${sessionId}`);
       const data = (await response.json()) as SessionResponse & { error?: string };
       if (!response.ok) {
         throw new Error(data.error || "Failed to load review session");
@@ -277,7 +282,7 @@ export function EnrichmentReviewWorkspace() {
     setMissingTarget(null);
     setMessage(null);
     try {
-      const response = await fetch("/api/query-artist", {
+      const response = await fetch(`${getApiBase()}/api/query-artist`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ entityType, query }),
@@ -342,7 +347,7 @@ export function EnrichmentReviewWorkspace() {
     setWorking(true);
     setMessage(null);
     try {
-      const response = await fetch("/api/enrich/review-session", {
+      const response = await fetch(`${getApiBase()}/api/enrich/review-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -380,11 +385,45 @@ export function EnrichmentReviewWorkspace() {
   }
 
   async function createTripletSession() {
-    const implementedWorkflows: EnrichmentWorkflowType[] = ["triplet", "llm_only"];
+    const implementedWorkflows: EnrichmentWorkflowType[] = ["triplet", "llm_only", "span_mention"];
     if (!implementedWorkflows.includes(extractWorkflowType)) {
       setMessage(
-        `workflowType '${extractWorkflowType}' is not implemented yet. Use workflowType: 'triplet' or 'llm_only'.`
+        `workflowType '${extractWorkflowType}' is not implemented yet. Use triplet, llm_only, or span_mention.`
       );
+      return;
+    }
+    if (extractWorkflowType === "span_mention") {
+      const text = spanMentionText.trim();
+      if (!text) {
+        setMessage("Enter or paste document text for span/mention extraction.");
+        return;
+      }
+      setTripletWorking(true);
+      setMessage(null);
+      try {
+        const response = await fetch(`${getApiBase()}/api/enrich/extract`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ workflowType: "span_mention", text }),
+        });
+        const data = (await response.json()) as SessionResponse & { error?: string; runMetadata?: { mentionCount?: number; relationCount?: number } };
+        if (!response.ok) {
+          throw new Error(data.error || "Span extraction failed");
+        }
+        setSession(data.session);
+        setSubset(data.session.targets);
+        const meta = data.runMetadata;
+        setMessage(
+          meta
+            ? `Span extraction complete: ${meta.mentionCount ?? 0} mentions, ${meta.relationCount ?? 0} relations. Review the candidates below.`
+            : "Span extraction complete. Review the candidates and apply to the graph."
+        );
+        syncUrl(data.session.id);
+      } catch (error) {
+        setMessage(error instanceof Error ? error.message : "Span extraction failed");
+      } finally {
+        setTripletWorking(false);
+      }
       return;
     }
     const sub = normalizeAnyPlaceholder(tripletSubjectName);
@@ -403,7 +442,7 @@ export function EnrichmentReviewWorkspace() {
     setTripletWorking(true);
     setMessage(null);
     try {
-      const response = await fetch("/api/enrich/extract", {
+      const response = await fetch(`${getApiBase()}/api/enrich/extract`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ workflowType: extractWorkflowType, triplet: spec, ...(scope ? { scope } : {}) }),
@@ -423,11 +462,53 @@ export function EnrichmentReviewWorkspace() {
     }
   }
 
+  async function runQuickRunthrough() {
+    setRunthroughLoading(true);
+    setRunthroughResult(null);
+    try {
+      const response = await fetch(`${getApiBase()}/api/enrich/extract`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workflowType: "span_mention",
+          text: "Paul Weller and The Jam released In the City in 1977.",
+        }),
+      });
+      const data = (await response.json()) as {
+        session?: { id: string; nodeCandidates?: unknown[] };
+        runMetadata?: { mentionCount?: number; relationCount?: number };
+        error?: string;
+      };
+      if (!response.ok) {
+        setRunthroughResult({
+          ok: false,
+          message: data.error ?? "Extract failed",
+          detail: String(response.status),
+        });
+        return;
+      }
+      const meta = data.runMetadata;
+      const count = data.session?.nodeCandidates?.length ?? meta?.mentionCount ?? 0;
+      setRunthroughResult({
+        ok: true,
+        message: "Pipeline OK",
+        detail: `Session ${data.session?.id ?? "—"}; ${count} node candidate(s).`,
+      });
+    } catch (err) {
+      setRunthroughResult({
+        ok: false,
+        message: err instanceof Error ? err.message : "Request failed",
+      });
+    } finally {
+      setRunthroughLoading(false);
+    }
+  }
+
   async function updateDecision(decision: ReviewDecision) {
     if (!session) return;
     setWorking(true);
     try {
-      const response = await fetch(`/api/enrich/review-session/${session.id}/decisions`, {
+      const response = await fetch(`${getApiBase()}/api/enrich/review-session/${session.id}/decisions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ decisions: [decision] }),
@@ -449,7 +530,7 @@ export function EnrichmentReviewWorkspace() {
     setWorking(true);
     setMessage(null);
     try {
-      const response = await fetch(`/api/enrich/review-session/${session.id}/apply`, {
+      const response = await fetch(`${getApiBase()}/api/enrich/review-session/${session.id}/apply`, {
         method: "POST",
       });
       const data = (await response.json()) as { session: EnrichmentReviewSession; error?: string };
@@ -680,6 +761,41 @@ export function EnrichmentReviewWorkspace() {
             </p>
           </div>
 
+          <Card className="border-dashed border-[hsl(var(--muted-foreground))]/30">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Quick runthrough</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <p className="text-sm text-[hsl(var(--muted-foreground))]">
+                Run a single span_mention extraction to verify the pipeline (no graph or session required).
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => void runQuickRunthrough()}
+                  disabled={runthroughLoading}
+                >
+                  {runthroughLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Run pipeline test
+                </Button>
+                {runthroughResult && (
+                  <span
+                    className={
+                      runthroughResult.ok
+                        ? "text-sm text-emerald-600 dark:text-emerald-400"
+                        : "text-sm text-red-600 dark:text-red-400"
+                    }
+                  >
+                    {runthroughResult.ok ? "✓ " : "✗ "}
+                    {runthroughResult.message}
+                    {runthroughResult.detail ? ` — ${runthroughResult.detail}` : ""}
+                  </span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
           <EntitySearchControls
             entityType={entityType}
             query={query}
@@ -747,7 +863,9 @@ export function EnrichmentReviewWorkspace() {
                 ? "Choose subject and object entity types, relationship, and names. The LLM will return all information that fits (e.g. guitars Paul Weller plays)."
                 : extractWorkflowType === "llm_only"
                   ? "Same subject, object, and scope as triplet. Runs the LLM-only pipeline (no external sources like Wikipedia or MusicBrainz)."
-                  : `Workflow '${extractWorkflowType}' is not implemented yet. Use triplet or llm_only.`}
+                  : isSpanMentionWorkflow
+                    ? "Paste document or excerpt text. Rule-based and optional NER (compromise) extract mentions; relations can be empty. Review and apply candidates below."
+                    : `Workflow '${extractWorkflowType}' is not implemented yet. Use triplet, llm_only, or span_mention.`}
             </p>
             <div className="flex flex-wrap items-center gap-2">
               <select
@@ -761,6 +879,25 @@ export function EnrichmentReviewWorkspace() {
                 <option value="llm_only">llm_only</option>
                 <option value="hybrid">hybrid</option>
               </select>
+              {isSpanMentionWorkflow ? (
+                <>
+                  <textarea
+                    placeholder="e.g. Paul Weller formed The Jam in 1972. He later played guitar in The Style Council."
+                    value={spanMentionText}
+                    onChange={(e) => setSpanMentionText(e.target.value)}
+                    className="min-h-[6rem] min-w-[20rem] flex-1 rounded-md border border-[hsl(var(--border))] bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
+                    rows={3}
+                  />
+                  <Button
+                    onClick={() => void createTripletSession()}
+                    disabled={tripletWorking || !spanMentionText.trim()}
+                  >
+                    {tripletWorking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
+                    Run span extraction
+                  </Button>
+                </>
+              ) : (
+                <>
               <select
                 value={tripletSubjectLabel}
                 onChange={(e) => setTripletSubjectLabel(e.target.value as EntityLabel)}
@@ -842,6 +979,8 @@ export function EnrichmentReviewWorkspace() {
                 {tripletWorking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Zap className="mr-2 h-4 w-4" />}
                 {isTripletWorkflow ? "Explore triplet" : "Run extraction"}
               </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

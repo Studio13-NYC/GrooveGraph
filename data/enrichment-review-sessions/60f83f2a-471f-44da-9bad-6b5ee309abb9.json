@@ -1,0 +1,23 @@
+{
+  "id": "60f83f2a-471f-44da-9bad-6b5ee309abb9",
+  "status": "ready_for_import",
+  "createdAt": "2026-03-12T14:17:23.399Z",
+  "updatedAt": "2026-03-12T14:17:23.399Z",
+  "approvedAt": "2026-03-12T14:17:23.399Z",
+  "summary": "Subset approved. Import curator results to begin review.",
+  "targets": [
+    {
+      "id": "triplet-subject-artist-paul-weller-g5b5jrgg",
+      "label": "Artist",
+      "name": "Paul Weller"
+    },
+    {
+      "id": "triplet-object-instrument-guitar-g5b5jrgg",
+      "label": "Instrument",
+      "name": "guitar"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [],
+  "edgeCandidates": []
+}

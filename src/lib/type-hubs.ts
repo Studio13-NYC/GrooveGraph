@@ -1,8 +1,8 @@
-import { GraphEdge } from "../domain/GraphEdge.js";
-import { GraphNode } from "../domain/GraphNode.js";
-import type { GraphStore } from "../store/types.js";
-import { getEntityDisplayName, isEntityLabel } from "./entity-config.js";
-import { getGraphEntityLabels } from "./entity-identity.js";
+import { GraphEdge } from "../domain/GraphEdge";
+import { GraphNode } from "../domain/GraphNode";
+import type { GraphStore } from "../store/types";
+import { getEntityDisplayName, isEntityLabel } from "./entity-config";
+import { getGraphEntityLabels } from "./entity-identity";
 
 export const ENTITY_TYPE_NODE_LABEL = "EntityType";
 export const IS_A_RELATIONSHIP_TYPE = "IS_A";
@@ -15,10 +15,6 @@ function slugify(value: string): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
-}
-
-export function isTypeHubLabel(label: string): boolean {
-  return label === ENTITY_TYPE_NODE_LABEL;
 }
 
 export function isTypeHubNodeLabels(labels: string[]): boolean {

@@ -1,9 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { GraphNode } from "../domain/GraphNode.js";
-import { InMemoryGraphStore } from "../store/InMemoryGraphStore.js";
-import { previewEnrichmentPipeline } from "./pipeline.js";
-import { getSourcesForEntityType } from "./sources/registry.js";
+import { GraphNode } from "../domain/GraphNode";
+import { InMemoryGraphStore } from "../store/InMemoryGraphStore";
+import { previewEnrichmentPipeline } from "./pipeline";
+import { getSourcesForEntityType } from "./sources/registry";
 
 class TestNode extends GraphNode {}
 

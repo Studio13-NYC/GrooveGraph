@@ -3,20 +3,20 @@
  * nodes and link them to existing Artist/Album/Track nodes so the graph
  * visualization can show all entity and relationship types.
  */
-import type { GraphStore } from "../store/index.js";
-import { Studio } from "../domain/entities/Studio.js";
-import { Label } from "../domain/entities/Label.js";
-import { Person } from "../domain/entities/Person.js";
-import { Genre } from "../domain/entities/Genre.js";
-import { Session } from "../domain/entities/Session.js";
-import { Release } from "../domain/entities/Release.js";
-import { RecordedAt } from "../domain/relationships/RecordedAt.js";
-import { ReleasedBy } from "../domain/relationships/ReleasedBy.js";
-import { WrittenBy } from "../domain/relationships/WrittenBy.js";
-import { ProducedBy } from "../domain/relationships/ProducedBy.js";
-import { PartOfGenre } from "../domain/relationships/PartOfGenre.js";
-import { RecordedInSession } from "../domain/relationships/RecordedInSession.js";
-import { MemberOf } from "../domain/relationships/MemberOf.js";
+import type { GraphStore } from "../store/index";
+import { Studio } from "../domain/entities/Studio";
+import { Label } from "../domain/entities/Label";
+import { Person } from "../domain/entities/Person";
+import { Genre } from "../domain/entities/Genre";
+import { Session } from "../domain/entities/Session";
+import { Release } from "../domain/entities/Release";
+import { RecordedAt } from "../domain/relationships/RecordedAt";
+import { ReleasedBy } from "../domain/relationships/ReleasedBy";
+import { WrittenBy } from "../domain/relationships/WrittenBy";
+import { ProducedBy } from "../domain/relationships/ProducedBy";
+import { PartOfGenre } from "../domain/relationships/PartOfGenre";
+import { RecordedInSession } from "../domain/relationships/RecordedInSession";
+import { MemberOf } from "../domain/relationships/MemberOf";
 
 export async function seedAdditionalEntities(store: GraphStore): Promise<void> {
   const artists = await store.findNodes({ label: "Artist", maxResults: 80 });

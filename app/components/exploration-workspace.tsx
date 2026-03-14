@@ -22,6 +22,8 @@ import type {
   GraphNodePayload,
   QueryResultPayload,
 } from "@/lib/exploration-types";
+import { isAnyPlaceholder, parseTripletSpec } from "@/enrichment/triplet";
+import { getApiBase } from "@/lib/api-base";
 import { getLinkColor, getNodeColor } from "../lib/graph-viz";
 
 const ForceGraph2D = dynamic(
@@ -216,10 +218,12 @@ export function ExplorationWorkspace() {
 
   const initialEntityType = normalizeEntityType(searchParams.get("entityType"));
   const initialQuery = searchParams.get("query") ?? searchParams.get("q") ?? searchParams.get("artist") ?? "";
+  const initialScope = searchParams.get("scope") ?? "";
   const initialView: ExplorationViewMode = searchParams.get("view") === "query" ? "query" : "graph";
 
   const [entityType, setEntityType] = useState<EntityLabel>(initialEntityType);
   const [searchText, setSearchText] = useState(initialQuery);
+  const [scopeText, setScopeText] = useState(initialScope);
   const [viewMode, setViewMode] = useState<ExplorationViewMode>(initialView);
   const [queryResult, setQueryResult] = useState<QueryResultPayload | null>(null);
   const [graphState, setGraphState] = useState<GraphState>({ nodes: [], links: [] });
@@ -243,14 +247,26 @@ export function ExplorationWorkspace() {
   const activeNode = hoveredNode ?? selectedNode;
   const loading = loadingQuery || loadingGraph;
 
+  const parsedTriplet = useMemo(
+    () => (searchText.trim() ? parseTripletSpec(searchText.trim()) ?? null : null),
+    [searchText]
+  );
+  const needsScope =
+    parsedTriplet !== null &&
+    (isAnyPlaceholder(parsedTriplet.subject.name) || isAnyPlaceholder(parsedTriplet.object.name));
+
   const syncUrl = useCallback(
-    (nextEntityType: EntityLabel, nextQuery: string, nextView: ExplorationViewMode) => {
+    (
+      nextEntityType: EntityLabel,
+      nextQuery: string,
+      nextView: ExplorationViewMode,
+      nextScope?: string
+    ) => {
       const params = new URLSearchParams();
       params.set("view", nextView);
       params.set("entityType", nextEntityType);
-      if (nextQuery.trim()) {
-        params.set("query", nextQuery.trim());
-      }
+      if (nextQuery.trim()) params.set("query", nextQuery.trim());
+      if (nextScope?.trim()) params.set("scope", nextScope.trim());
       const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
       router.replace(nextUrl, { scroll: false });
     },
@@ -289,7 +305,7 @@ export function ExplorationWorkspace() {
           graphParams.set("random", "1");
         }
 
-        const graphPromise = fetch(`/api/graph?${graphParams.toString()}`).then(async (response) => {
+        const graphPromise = fetch(`${getApiBase()}/api/graph?${graphParams.toString()}`).then(async (response) => {
           const data = await response.json();
           if (!response.ok) {
             throw new Error(data.error || "Failed to load graph");
@@ -298,7 +314,7 @@ export function ExplorationWorkspace() {
         });
 
         const queryPromise = trimmedQuery
-          ? fetch("/api/query-artist", {
+          ? fetch(`${getApiBase()}/api/query-artist`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ entityType: nextEntityType, query: trimmedQuery }),
@@ -372,11 +388,83 @@ export function ExplorationWorkspace() {
     [entityType, historyIndex, searchText, syncUrl, viewMode]
   );
 
+  const loadTripletContext = useCallback(
+    async (tripletSpec: string, scope: string) => {
+      syncUrl(entityType, tripletSpec, viewMode, scope);
+      setSearchText(tripletSpec);
+      setScopeText(scope);
+      setQueryError(null);
+      setGraphError(null);
+      setEnrichFeedback(null);
+      setRecentEnrichedNodeIds(new Set());
+      setLoadingGraph(true);
+      setLoadingQuery(false);
+      try {
+        const params = new URLSearchParams({ triplet: tripletSpec, scope: scope.trim() });
+        const response = await fetch(`${getApiBase()}/api/graph?${params.toString()}`);
+        const data = await response.json();
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to load triplet graph");
+        }
+        const nextGraph = applySemanticLayout(
+          {
+            nodes: Array.isArray(data.nodes) ? data.nodes : [],
+            links: Array.isArray(data.links) ? data.links : [],
+            focusNodeId: typeof data.focusNodeId === "string" ? data.focusNodeId : undefined,
+          },
+          []
+        );
+        setGraphState(nextGraph);
+        setExpandedTypeKeys([]);
+        setGraphInstanceKey((current) => current + 1);
+        const focusNode =
+          nextGraph.nodes.find((node) => node.id === nextGraph.focusNodeId) ?? nextGraph.nodes[0] ?? null;
+        setSelectedNode(focusNode);
+        setQueryResult(null);
+        setHistoryEntries((current) => [
+          ...current.slice(0, historyIndex + 1),
+          { entityType: "Artist", query: tripletSpec, expandedTypeKeys: [] },
+        ]);
+        setHistoryIndex((current) => current + 1);
+      } catch (err) {
+        setGraphState({ nodes: [], links: [] });
+        setSelectedNode(null);
+        setGraphError(err instanceof Error ? err.message : "Failed to load triplet graph");
+      } finally {
+        setLoadingGraph(false);
+      }
+    },
+    [entityType, historyIndex, syncUrl, viewMode]
+  );
+
+  const handleSearchSubmit = useCallback(() => {
+    if (parsedTriplet) {
+      if (needsScope && !scopeText.trim()) {
+        setQueryError("Scope / filter required for triplet with 'any' (e.g. Artist:Paul Weller)");
+        return;
+      }
+      void loadTripletContext(searchText.trim(), scopeText.trim());
+    } else {
+      void loadContext(entityType, searchText, { historyMode: "push" });
+    }
+  }, [parsedTriplet, needsScope, scopeText, searchText, entityType, loadContext, loadTripletContext]);
+
   useEffect(() => {
     if (hasAutoLoaded) return;
     setHasAutoLoaded(true);
-    void loadContext(initialEntityType, initialQuery, { historyMode: "push" });
-  }, [hasAutoLoaded, initialEntityType, initialQuery, loadContext]);
+    const triplet = initialQuery.trim() ? parseTripletSpec(initialQuery.trim()) ?? null : null;
+    const needsInitialScope =
+      triplet &&
+      (isAnyPlaceholder(triplet.subject.name) || isAnyPlaceholder(triplet.object.name));
+    if (triplet && needsInitialScope && initialScope.trim()) {
+      void loadTripletContext(initialQuery.trim(), initialScope.trim());
+    } else if (!triplet) {
+      void loadContext(initialEntityType, initialQuery, { historyMode: "push" });
+    } else {
+      setHasAutoLoaded(true);
+    }
+  }, [hasAutoLoaded, initialEntityType, initialQuery, initialScope, loadContext, loadTripletContext]);
+
 
   const graphData = useMemo(
     () => {
@@ -1014,9 +1102,12 @@ export function ExplorationWorkspace() {
             query={searchText}
             onEntityTypeChange={(value) => setEntityType(value)}
             onQueryChange={setSearchText}
-            onSubmit={() => void loadContext(entityType, searchText, { historyMode: "push" })}
+            onSubmit={handleSearchSubmit}
             loading={loading}
             buttonLabel="Search"
+            showScope={needsScope}
+            scope={scopeText}
+            onScopeChange={setScopeText}
           />
 
           <div className="flex flex-wrap items-center gap-2">

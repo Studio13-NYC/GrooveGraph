@@ -1,5 +1,5 @@
 // DOMAIN_MODEL §1.13
-import { GraphNode } from "../GraphNode.js";
+import { GraphNode } from "../GraphNode";
 
 const LABEL = "Playlist";
 

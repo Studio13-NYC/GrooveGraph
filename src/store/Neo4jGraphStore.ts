@@ -1,16 +1,16 @@
 import neo4j, { Driver, Integer, Record as Neo4jRecord } from "neo4j-driver";
-import { GraphNode } from "../domain/GraphNode.js";
-import { GraphEdge } from "../domain/GraphEdge.js";
+import { GraphNode } from "../domain/GraphNode";
+import { GraphEdge } from "../domain/GraphEdge";
 import {
   getSearchLabelsForEntityType,
   normalizeEntityLabels,
-} from "../lib/entity-identity.js";
-import { getEntityDisplayPropertyKeys } from "../lib/entity-config.js";
+} from "../lib/entity-identity";
+import { getEntityDisplayPropertyKeys } from "../lib/entity-config";
 import {
   isTypeHubNodeLabels,
   reconcileAllTypeHubLinks,
   reconcileTypeHubLinksForNode,
-} from "../lib/type-hubs.js";
+} from "../lib/type-hubs";
 import type {
   DeleteNodeOptions,
   Direction,
@@ -19,8 +19,8 @@ import type {
   GraphStore,
   NodePatch,
   NodeQuery,
-} from "./types.js";
-import { getNeo4jConfig } from "./neo4j-config.js";
+} from "./types";
+import { getNeo4jConfig } from "./neo4j-config";
 
 type Neo4jNodeRecord = {
   id: string;

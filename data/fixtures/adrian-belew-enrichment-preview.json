@@ -1,0 +1,590 @@
+{
+  "capturedAt": "2026-03-12T01:19:18.849Z",
+  "targetIds": [
+    "manual-artist-adrian-belew-d8649373"
+  ],
+  "targets": [
+    {
+      "id": "manual-artist-adrian-belew-d8649373",
+      "label": "Artist",
+      "name": "Adrian Belew"
+    }
+  ],
+  "previewResults": [
+    {
+      "nodeId": "manual-artist-adrian-belew-d8649373",
+      "entityType": "Artist",
+      "displayName": "Adrian Belew",
+      "sourcesUsed": [
+        "Wikipedia",
+        "Wikidata",
+        "MusicBrainz"
+      ],
+      "sourceIdsUsed": [
+        "wikipedia",
+        "wikidata",
+        "musicbrainz"
+      ],
+      "checkedSourceIds": [
+        "wikipedia",
+        "wikidata",
+        "discogs",
+        "musicbrainz",
+        "spotify",
+        "lastfm",
+        "allmusic",
+        "genius",
+        "bbc_music",
+        "rym",
+        "setlistfm",
+        "songkick",
+        "bandcamp",
+        "soundcloud",
+        "dahr",
+        "grammy",
+        "web",
+        "guitarplayer",
+        "musicianmag",
+        "keyboardmag",
+        "nme",
+        "rollingstone",
+        "pitchfork",
+        "imdb",
+        "soundonsound",
+        "mixmag",
+        "tapeop"
+      ],
+      "checkedSourceRoutes": [
+        {
+          "sourceId": "wikipedia",
+          "route": "api"
+        },
+        {
+          "sourceId": "wikidata",
+          "route": "api"
+        },
+        {
+          "sourceId": "discogs",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "musicbrainz",
+          "route": "api"
+        },
+        {
+          "sourceId": "spotify",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "lastfm",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "allmusic",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "genius",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "bbc_music",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "rym",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "setlistfm",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "songkick",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "bandcamp",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "soundcloud",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "dahr",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "grammy",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "web",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "guitarplayer",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "musicianmag",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "keyboardmag",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "nme",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "rollingstone",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "pitchfork",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "imdb",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "soundonsound",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "mixmag",
+          "route": "firecrawl"
+        },
+        {
+          "sourceId": "tapeop",
+          "route": "firecrawl"
+        }
+      ],
+      "verifiedRecords": [
+        {
+          "properties": {
+            "biography": "Robert Steven \"Adrian\" Belew is an American musician, singer, songwriter, and record producer. A multi-instrumentalist primarily known as a guitarist and singer, he is noted for his unusual approach to the instrument, his playing cited as fluid, expressive, and often resembling \"animal noises or mechanical rumblings\"."
+          },
+          "source_id": "wikipedia",
+          "source_name": "Wikipedia",
+          "source_type": "api",
+          "url": "https://en.wikipedia.org/wiki/Adrian_Belew",
+          "retrieved_at": "2026-03-12T01:19:18.383Z",
+          "excerpt": "Robert Steven \"Adrian\" Belew is an American musician, singer, songwriter, and record producer. A multi-instrumentalist primarily known as a guitarist and singer, he is noted for his unusual approach to the instrument, his playing cited as fluid, expressive, and often resembling \"animal noises or mechanical rumblings\".",
+          "confidence": "high"
+        },
+        {
+          "properties": {
+            "biography": "American rock musician"
+          },
+          "source_id": "wikidata",
+          "source_name": "Wikidata",
+          "source_type": "api",
+          "url": "http://www.wikidata.org/entity/Q363019",
+          "retrieved_at": "2026-03-12T01:19:18.525Z",
+          "excerpt": "American rock musician",
+          "confidence": "high",
+          "relatedNodes": [
+            {
+              "id": "genre-rock-music",
+              "labels": [
+                "Genre"
+              ],
+              "properties": {
+                "name": "rock music"
+              }
+            }
+          ],
+          "relatedEdges": [
+            {
+              "id": "enriched-part-of-genre-adrian-belew-rock-music",
+              "type": "PART_OF_GENRE",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "genre-rock-music",
+              "properties": {}
+            }
+          ]
+        },
+        {
+          "properties": {
+            "name": "Adrian Belew",
+            "active_years": "1949-12-23-present",
+            "genres": [
+              "acoustic rock",
+              "art pop",
+              "art rock",
+              "experimental rock",
+              "pop rock"
+            ]
+          },
+          "source_id": "musicbrainz",
+          "source_name": "MusicBrainz",
+          "source_type": "api",
+          "url": "https://musicbrainz.org/artist/73c3f499-60e2-44e1-81dd-7fe2191461fa",
+          "retrieved_at": "2026-03-12T01:19:18.847Z",
+          "confidence": "high",
+          "relatedNodes": [
+            {
+              "id": "genre-acoustic-rock",
+              "labels": [
+                "Genre"
+              ],
+              "properties": {
+                "name": "acoustic rock"
+              }
+            },
+            {
+              "id": "genre-art-pop",
+              "labels": [
+                "Genre"
+              ],
+              "properties": {
+                "name": "art pop"
+              }
+            },
+            {
+              "id": "genre-art-rock",
+              "labels": [
+                "Genre"
+              ],
+              "properties": {
+                "name": "art rock"
+              }
+            },
+            {
+              "id": "genre-experimental-rock",
+              "labels": [
+                "Genre"
+              ],
+              "properties": {
+                "name": "experimental rock"
+              }
+            },
+            {
+              "id": "genre-pop-rock",
+              "labels": [
+                "Genre"
+              ],
+              "properties": {
+                "name": "pop rock"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-c1fb4936-e47a-4a52-b1eb-f3f1606a1d4b",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "ProjeKct X"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-b38225b8-8e5f-42aa-bcdc-7bae5b5bdab3",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "King Crimson"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-b5ebf9fb-43f5-407f-a49b-8355e5c5667b",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "The Bears"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-30fda151-9520-44b5-82ba-a9ed7bce85c4",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "Adrian Belew Power Trio"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-b7ffd2af-418f-4be2-bdd1-22f8b48613da",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "Nine Inch Nails"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-74a2ff82-992b-4696-b603-c6f747bec2b7",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "ProjeKct Two"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-3dc66525-d359-406d-9cdf-cdd3a7de289c",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "Tom Tom Club"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-7e2466e5-b279-452d-ad01-b5875361d4dd",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "ProjeKct Six"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-2ab80f85-4b7f-4be8-a74f-a954c8f53cbb",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "Gizmodrome"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-ef767a5a-cbb1-420f-822c-4a3308e730ac",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "Discipline"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-3732fb22-a2f4-4087-9be1-4504dc26e83b",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "Jerry Harrison & Adrian Belew"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-c3c5f47b-0117-4bfa-ad28-ff7c8093faa2",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "The Human Experimente"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-37abc279-f281-4543-8e98-8fd0510b65b4",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "The Crimson ProjeKCt"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-aff74a2c-de0c-487d-b7fd-24caea74047d",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "BEAT"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-5441c29d-3602-4898-b1a1-b77fa23b8e50",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "David Bowie"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-e20747e7-55a4-452e-8766-7b985585082d",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "Frank Zappa"
+              }
+            },
+            {
+              "id": "artist-musicbrainz-a94a7155-c79d-4409-9fcf-220cb0e4dc3a",
+              "labels": [
+                "Artist"
+              ],
+              "properties": {
+                "name": "Talking Heads"
+              }
+            }
+          ],
+          "relatedEdges": [
+            {
+              "id": "enriched-part-of-genre-artist-adrian-belew-acoustic-rock",
+              "type": "PART_OF_GENRE",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "genre-acoustic-rock",
+              "properties": {}
+            },
+            {
+              "id": "enriched-part-of-genre-artist-adrian-belew-art-pop",
+              "type": "PART_OF_GENRE",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "genre-art-pop",
+              "properties": {}
+            },
+            {
+              "id": "enriched-part-of-genre-artist-adrian-belew-art-rock",
+              "type": "PART_OF_GENRE",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "genre-art-rock",
+              "properties": {}
+            },
+            {
+              "id": "enriched-part-of-genre-artist-adrian-belew-experimental-rock",
+              "type": "PART_OF_GENRE",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "genre-experimental-rock",
+              "properties": {}
+            },
+            {
+              "id": "enriched-part-of-genre-artist-adrian-belew-pop-rock",
+              "type": "PART_OF_GENRE",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "genre-pop-rock",
+              "properties": {}
+            },
+            {
+              "id": "enriched-collaborated-with-adrian-belew-projekct-x-musicbrainz",
+              "type": "COLLABORATED_WITH",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-c1fb4936-e47a-4a52-b1eb-f3f1606a1d4b",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-king-crimson-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-b38225b8-8e5f-42aa-bcdc-7bae5b5bdab3",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-the-bears-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-b5ebf9fb-43f5-407f-a49b-8355e5c5667b",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-adrian-belew-power-trio-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-30fda151-9520-44b5-82ba-a9ed7bce85c4",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-nine-inch-nails-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-b7ffd2af-418f-4be2-bdd1-22f8b48613da",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-projekct-two-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-74a2ff82-992b-4696-b603-c6f747bec2b7",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-tom-tom-club-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-3dc66525-d359-406d-9cdf-cdd3a7de289c",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-projekct-six-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-7e2466e5-b279-452d-ad01-b5875361d4dd",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-gizmodrome-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-2ab80f85-4b7f-4be8-a74f-a954c8f53cbb",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-discipline-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-ef767a5a-cbb1-420f-822c-4a3308e730ac",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-jerry-harrison--adrian-belew-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-3732fb22-a2f4-4087-9be1-4504dc26e83b",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-the-human-experimente-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-c3c5f47b-0117-4bfa-ad28-ff7c8093faa2",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-the-crimson-projekct-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-37abc279-f281-4543-8e98-8fd0510b65b4",
+              "properties": {}
+            },
+            {
+              "id": "enriched-member-of-manual-artist-adrian-belew-d8649373-beat-musicbrainz",
+              "type": "MEMBER_OF",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-aff74a2c-de0c-487d-b7fd-24caea74047d",
+              "properties": {}
+            },
+            {
+              "id": "enriched-collaborated-with-adrian-belew-david-bowie-musicbrainz",
+              "type": "COLLABORATED_WITH",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-5441c29d-3602-4898-b1a1-b77fa23b8e50",
+              "properties": {}
+            },
+            {
+              "id": "enriched-collaborated-with-adrian-belew-frank-zappa-musicbrainz",
+              "type": "COLLABORATED_WITH",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-e20747e7-55a4-452e-8766-7b985585082d",
+              "properties": {}
+            },
+            {
+              "id": "enriched-collaborated-with-adrian-belew-talking-heads-musicbrainz",
+              "type": "COLLABORATED_WITH",
+              "fromNodeId": "manual-artist-adrian-belew-d8649373",
+              "toNodeId": "artist-musicbrainz-a94a7155-c79d-4409-9fcf-220cb0e4dc3a",
+              "properties": {}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

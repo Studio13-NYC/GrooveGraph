@@ -1,0 +1,23 @@
+{
+  "id": "6da15d48-8289-4146-9fe8-2fab95b24f38",
+  "status": "ready_for_import",
+  "createdAt": "2026-03-12T14:52:04.763Z",
+  "updatedAt": "2026-03-12T14:52:04.763Z",
+  "approvedAt": "2026-03-12T14:52:04.763Z",
+  "summary": "Subset approved. Import curator results to begin review.",
+  "targets": [
+    {
+      "id": "triplet-subject-artist-paul-weller-g71z275i",
+      "label": "Artist",
+      "name": "paul weller"
+    },
+    {
+      "id": "triplet-object-instrument-guitar-g71z275i",
+      "label": "Instrument",
+      "name": "guitar"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [],
+  "edgeCandidates": []
+}

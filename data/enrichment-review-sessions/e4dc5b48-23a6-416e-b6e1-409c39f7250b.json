@@ -1,0 +1,927 @@
+{
+  "id": "e4dc5b48-23a6-416e-b6e1-409c39f7250b",
+  "status": "applied",
+  "createdAt": "2026-03-12T01:41:37.962Z",
+  "updatedAt": "2026-03-12T01:49:14.548Z",
+  "approvedAt": "2026-03-12T01:41:37.962Z",
+  "summary": "Approved enrichment candidates were applied to the graph.",
+  "targets": [
+    {
+      "id": "artist-adrian-belew",
+      "label": "Artist",
+      "name": "Adrian Belew"
+    }
+  ],
+  "propertyChanges": [
+    {
+      "candidateId": "prop-artist-adrian-belew-biography",
+      "targetId": "artist-adrian-belew",
+      "key": "biography",
+      "value": "Adrian Belew is an American guitarist, singer, songwriter, and record producer known for his distinctive experimental guitar work and solo career, as well as for performances and collaborations with King Crimson, Frank Zappa, David Bowie, Talking Heads, and Nine Inch Nails.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "Robert Steven \"Adrian\" Belew is an American musician, singer, songwriter, and record producer. A multi-instrumentalist primarily known as a guitarist and singer, he is noted for his unusual approach to the instrument, his playing cited as fluid, expressive, and often resembling \"animal noises or mechanical rumblings\".\n\nAmerican rock musician"
+    },
+    {
+      "candidateId": "prop-artist-adrian-belew-country",
+      "targetId": "artist-adrian-belew",
+      "key": "country",
+      "value": "United States",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-adrian-belew-active_years",
+      "targetId": "artist-adrian-belew",
+      "key": "active_years",
+      "value": [
+        "1970s",
+        "1980s",
+        "1990s",
+        "2000s",
+        "2010s",
+        "2020s"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "1949-12-23-present"
+    },
+    {
+      "candidateId": "prop-artist-adrian-belew-birth_name",
+      "targetId": "artist-adrian-belew",
+      "key": "birth_name",
+      "value": "Robert Steven Belew",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-adrian-belew-born",
+      "targetId": "artist-adrian-belew",
+      "key": "born",
+      "value": "1949-12-23",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-adrian-belew-born_place",
+      "targetId": "artist-adrian-belew",
+      "key": "born_place",
+      "value": "Covington, Kentucky, United States",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    }
+  ],
+  "nodeCandidates": [
+    {
+      "candidateId": "node-king-crimson",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "King Crimson",
+      "canonicalKey": "artist:king-crimson",
+      "properties": {
+        "name": "King Crimson"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-king-crimson",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-the-bears",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "The Bears",
+      "canonicalKey": "artist:the-bears",
+      "properties": {
+        "name": "The Bears"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-gaga",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Gaga",
+      "canonicalKey": "artist:gaga",
+      "properties": {
+        "name": "Gaga"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-frank-zappa",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Frank Zappa",
+      "canonicalKey": "person:frank-zappa",
+      "properties": {
+        "name": "Frank Zappa"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-frank-zappa",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-david-bowie",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "David Bowie",
+      "canonicalKey": "person:david-bowie",
+      "properties": {
+        "name": "David Bowie"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-david-bowie",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-talking-heads",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Talking Heads",
+      "canonicalKey": "artist:talking-heads",
+      "properties": {
+        "name": "Talking Heads"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-talking-heads",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-nine-inch-nails",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Nine Inch Nails",
+      "canonicalKey": "artist:nine-inch-nails",
+      "properties": {
+        "name": "Nine Inch Nails"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-laurie-anderson",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Laurie Anderson",
+      "canonicalKey": "person:laurie-anderson",
+      "properties": {
+        "name": "Laurie Anderson"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-laurie-anderson",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-herbie-hancock",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Herbie Hancock",
+      "canonicalKey": "person:herbie-hancock",
+      "properties": {
+        "name": "Herbie Hancock"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-herbie-hancock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-progressive-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Progressive rock",
+      "canonicalKey": "genre:progressive-rock",
+      "properties": {
+        "name": "Progressive rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-art-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Art rock",
+      "canonicalKey": "genre:art-rock",
+      "properties": {
+        "name": "Art rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-art-rock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-new-wave",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "New wave",
+      "canonicalKey": "genre:new-wave",
+      "properties": {
+        "name": "New wave"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-new-wave",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-experimental-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Experimental rock",
+      "canonicalKey": "genre:experimental-rock",
+      "properties": {
+        "name": "Experimental rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-experimental-rock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-guitar",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Guitar",
+      "canonicalKey": "instrument:guitar",
+      "properties": {
+        "name": "Guitar"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-vocals",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Vocals",
+      "canonicalKey": "instrument:vocals",
+      "properties": {
+        "name": "Vocals"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "edgeCandidates": [
+    {
+      "candidateId": "edge-member_of-artist-adrian-belew-node-king-crimson",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-king-crimson"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-artist-adrian-belew-node-the-bears",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-the-bears"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-artist-adrian-belew-node-gaga",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-gaga"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-adrian-belew-node-frank-zappa",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-frank-zappa"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-adrian-belew-node-david-bowie",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-david-bowie"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-adrian-belew-node-talking-heads",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-talking-heads"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-adrian-belew-node-nine-inch-nails",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-nine-inch-nails"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-adrian-belew-node-laurie-anderson",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-laurie-anderson"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-adrian-belew-node-herbie-hancock",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-herbie-hancock"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-adrian-belew-node-progressive-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-progressive-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-adrian-belew-node-art-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-art-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-6b34b33371e0",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-adrian-belew-node-new-wave",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-new-wave"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-adrian-belew-node-experimental-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-experimental-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "part_of_genre-683230948f8d",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-played_instrument-artist-adrian-belew-node-guitar",
+      "type": "PLAYED_INSTRUMENT",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-guitar"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-played_instrument-artist-adrian-belew-node-vocals",
+      "type": "PLAYED_INSTRUMENT",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-adrian-belew"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-vocals"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T01:41:37.964Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "importedAt": "2026-03-12T01:42:54.767Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-12T01:41:37.964Z",
+    "importedFrom": "llm-only",
+    "generator": "llm",
+    "provider": "OpenAI",
+    "model": "gpt-5.4",
+    "promptVersion": "2026-03-12.0",
+    "evidenceRecordCount": 0,
+    "sourceCount": 1,
+    "notes": "Enrichment from GPT-5.4–only pipeline; no external sources."
+  },
+  "appliedAt": "2026-03-12T01:49:14.548Z"
+}

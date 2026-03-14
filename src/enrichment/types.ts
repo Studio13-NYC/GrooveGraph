@@ -186,6 +186,54 @@ export interface ResearchEvidenceRecord extends VerifiedEnrichmentRecord {
   sourceDisplayName?: string;
 }
 
+/**
+ * Evidence layer (Phase 4). First-class provenance for extraction and review.
+ * Optional on IR and candidates; materialize when confidence + ontology pass.
+ */
+export interface SourceDocument {
+  id: string;
+  sourceId?: string;
+  url?: string;
+  retrievedAt?: string; // ISO
+  excerpt?: string;
+  /** Character length or chunk count. */
+  length?: number;
+}
+
+export interface SourceChunk {
+  id: string;
+  documentId: string;
+  /** Byte or character offsets in the document. */
+  start: number;
+  end: number;
+  text: string;
+}
+
+/** Evidence-level mention (span + optional link to ExtractionMention). */
+export interface EvidenceMention {
+  id: string;
+  text: string;
+  label: string;
+  span: { start: number; end: number };
+  chunkId?: string;
+  documentId?: string;
+  sourceId?: string;
+  extractionMentionId?: string;
+  confidence?: ConfidenceLevel;
+}
+
+/** Relation assertion with provenance (before materializing to graph edge). */
+export interface RelationAssertion {
+  id: string;
+  type: string;
+  fromMentionId: string;
+  toMentionId: string;
+  chunkId?: string;
+  documentId?: string;
+  sourceId?: string;
+  confidence?: ConfidenceLevel;
+}
+
 export interface ResearchEvidenceTarget {
   target: ReviewTargetEntity;
   records: ResearchEvidenceRecord[];
@@ -225,6 +273,52 @@ export interface ResearchBundle {
   nodeCandidates: CandidateNode[];
   edgeCandidates: CandidateEdge[];
   metadata?: ResearchBundleMetadata;
+}
+
+/**
+ * Source-agnostic extraction IR (Phase 1). Upstream of ResearchBundle; adapters
+ * produce IR, then a normalizer/candidate-builder turns IR into bundle shape.
+ */
+export interface ExtractionMention {
+  id: string;
+  text: string;
+  label: string;
+  /** Normalizer-set key for alias/canonical matching (e.g. slug of text). */
+  canonicalKey?: string;
+  /** Set when label was coerced or confidence is low; LLM disambiguation can target these. */
+  needsDisambiguation?: boolean;
+  span?: { start: number; end: number };
+  sourceId?: string;
+  confidence?: ConfidenceLevel;
+  /** Evidence layer: optional link to source chunk/document. */
+  chunkId?: string;
+  documentId?: string;
+}
+
+export interface ExtractionRelation {
+  id: string;
+  type: string;
+  fromMentionId: string;
+  toMentionId: string;
+  sourceId?: string;
+  confidence?: ConfidenceLevel;
+  /** Evidence layer: optional chunk/document for provenance. */
+  chunkId?: string;
+  documentId?: string;
+}
+
+export interface ExtractionAssertion {
+  mention: ExtractionMention;
+  relations: ExtractionRelation[];
+}
+
+export interface ExtractionIR {
+  mentions: ExtractionMention[];
+  relations: ExtractionRelation[];
+  sourceId?: string;
+  /** Evidence layer: optional documents/chunks this IR was derived from. */
+  documents?: SourceDocument[];
+  chunks?: SourceChunk[];
 }
 
 export type SourceExecutionMode = "automated" | "curator";

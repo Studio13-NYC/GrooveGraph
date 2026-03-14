@@ -1,4 +1,4 @@
-import { GraphEdge } from "../GraphEdge.js";
+import { GraphEdge } from "../GraphEdge";
 
 const TYPE = "PRODUCED_BY";
 

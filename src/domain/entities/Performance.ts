@@ -1,5 +1,5 @@
 // DOMAIN_MODEL §1.10
-import { GraphNode } from "../GraphNode.js";
+import { GraphNode } from "../GraphNode";
 
 const LABEL = "Performance";
 

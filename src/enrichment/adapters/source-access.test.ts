@@ -6,7 +6,7 @@ import {
   getEffectiveSourceRoute,
   getMissingApiEnvVars,
   usesConcreteApiWithoutKey,
-} from "./source-access.js";
+} from "./source-access";
 
 test("keyless API sources always stay concrete", () => {
   assert.equal(usesConcreteApiWithoutKey("musicbrainz"), true);

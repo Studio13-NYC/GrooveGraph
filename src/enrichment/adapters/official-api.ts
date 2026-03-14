@@ -1,11 +1,11 @@
-import type { RawEnrichmentPayload } from "../types.js";
-import type { SourceDefinition } from "../sources/registry.js";
+import type { RawEnrichmentPayload } from "../types";
+import type { SourceDefinition } from "../sources/registry";
 import {
   buildNarrativePayload,
   fetchJson,
   normalizeWhitespace,
   stripHtml,
-} from "./shared.js";
+} from "./shared";
 
 let spotifyAccessTokenCache: { token: string; expiresAt: number } | null = null;
 let soundCloudAccessTokenCache: { token: string; expiresAt: number } | null = null;

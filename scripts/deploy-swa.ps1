@@ -1,4 +1,5 @@
-# Deploy GrooveGraph static site to Azure Static Web Apps **Production** (not preview).
+# Deploy GrooveGraph **web UI** (static) to Azure Static Web Apps **swa-groovegraph**.
+# The UI calls the API at as-groovegraph-api (App Service). Build uses NEXT_PUBLIC_API_BASE_URL.
 # Usage: Set token then run, e.g.:
 #   $env:SWA_CLI_DEPLOYMENT_TOKEN = (az staticwebapp secrets list --name swa-groovegraph --resource-group rg-groovegraph --query "properties.apiKey" -o tsv)
 #   .\scripts\deploy-swa.ps1
@@ -17,9 +18,9 @@ if (-not $env:SWA_CLI_DEPLOYMENT_TOKEN) {
 }
 
 if (-not (Test-Path "out")) {
-  Write-Error "No out/ folder. Run: npm run build:static"
-  exit 1
+  Write-Host "Building static UI for SWA (API base: as-groovegraph-api)..." -ForegroundColor Cyan
+  npm run build:static:swa
 }
 
-Write-Host "Deploying to Production (--env production)..." -ForegroundColor Cyan
+Write-Host "Deploying UI to swa-groovegraph (Production)..." -ForegroundColor Cyan
 npx @azure/static-web-apps-cli deploy ./out --env production

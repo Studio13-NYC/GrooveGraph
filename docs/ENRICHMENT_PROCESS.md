@@ -129,12 +129,15 @@ API notes:
 - Supported workflow types:
   - `workflowType: "triplet"` — delegates to triplet exploration (same body: `triplet`, optional `scope`).
   - `workflowType: "llm_only"` — same body as triplet; resolves targets from subject/object/scope, creates a review session, runs the LLM-only pipeline (no external sources), imports the bundle with `importedFrom: "llm-only"` and `workflowType: "llm_only"`.
-- `span_mention` and `hybrid` return 400 until their adapters/pipelines are enabled.
+  - `workflowType: "span_mention"` — body: `{ text: string, sourceId?: string, async?: boolean }`; creates a session with one stub target, runs mention extraction (rule-based and/or compromise NER when `ENRICHMENT_EXTRACTION_MODE=dual_run` or `ensemble`), normalizes by ontology, builds bundle, imports with `importedFrom: "span-mention"` and `workflowType: "span_mention"`; response includes `runMetadata` (mentionCount, relationCount, latencyMs). If `async: true`, the server returns **202 Accepted** with `{ jobId, status: "accepted", statusUrl: "/api/enrich/jobs/{jobId}" }`; poll **GET /api/enrich/jobs/{jobId}** until `status` is `completed` or `failed`. Use `ENRICHMENT_ENGINE_PRIMARY=compromise` for compromise-only; `ENRICHMENT_EXTRACTION_MODE=ensemble` runs both engines and merges IR.
+- `hybrid` is not yet implemented.
 
 Operational notes:
 
 - **LLM required**: Set `OPENAI_API_KEY` or `ENRICHMENT_LLM_API_KEY` for triplet and llm_only extraction to run. Copy `.env.example` to `.env.local`, set one of these keys. Start the dev server from the **project root** (`npm run dev`) so Next.js loads `.env.local`; then **restart** after any env change.
-- **Default model**: Both pipelines default to `gpt-5-nano` for low-cost end-to-end runs. Override with `OPENAI_MODEL`, `ENRICHMENT_LLM_MODEL`, or (triplet only) `TRIPLET_LLM_MODEL`.
+- **Default model**: Both pipelines use task-level routing: LLM-only uses `getModelForTask("synthesis", complexity)`, triplet uses `getModelForTask("triplet_expand", complexity)`. Override per task with `ENRICHMENT_MODEL_PRECHECK`, `ENRICHMENT_MODEL_NORMALIZE`, `ENRICHMENT_MODEL_RELATION_EXTRACT`, `ENRICHMENT_MODEL_SYNTHESIS`, `ENRICHMENT_MODEL_TRIPLET_EXPAND`, or globally with `OPENAI_MODEL`, `ENRICHMENT_LLM_MODEL`, `TRIPLET_LLM_MODEL`. Complexity still uses `ENRICHMENT_MODEL_SMALL/MEDIUM/FRONTIER` and `ENRICHMENT_COMPLEXITY_FRONTIER_THRESHOLD`.
+- **Async**: For long-running runs, send `async: true` with `span_mention`, `llm_only`, or `triplet`; receive 202 and poll GET /api/enrich/jobs/{jobId}.
+- **Idempotency**: Send `idempotencyKey` in the body or `Idempotency-Key` header with async requests; retries with the same key receive the same job (no duplicate sessions).
 - Triplet requests can be long-running for broad scoped exploration.
 - Timeout controls are configurable via `TRIPLET_LLM_TIMEOUT_MS` or `ENRICHMENT_LLM_TIMEOUT_MS`.
 
@@ -165,3 +168,15 @@ Operational notes:
 4. **Validate and import**: Enforce ontology/schema constraints and import staged candidates.
 5. **Review**: Accept/reject candidate properties, nodes, and edges.
 6. **Apply**: Persist approved candidates to Neo4j using the same apply path as other sessions.
+
+### Generic extraction pipeline (IR path)
+
+When extraction goes through the **ExtractionIR** path (triplet adapter, span_mention adapter):
+
+1. **Adapter**: Input (triplet or text) → `ExtractionIR` (mentions, relations) with optional metadata.
+2. **Ontology normalizer**: `normalizeExtractionIR(ir, ontology)` — coerce mention labels to allowed entity labels, set `canonicalKey` (slug of text), drop relations with disallowed types or invalid mention refs.
+3. **Bundle build**: `irToResearchBundle(normalizedIr, sessionId, targets, ontology)` → `ResearchBundle` (targets, nodeCandidates, edgeCandidates, propertyChanges).
+4. **Import**: `importResearchBundle(store, sessionId, bundle, importedFrom, tripletContext?, workflowType)`:
+   - **Validate**: `validateResearchBundle(bundle, …)` enforces schema and ontology.
+   - **Sanitize + match**: For each node candidate, `sanitizeNodeCandidate(store, candidate)` runs **store-backed alias/canonical match** (`matchNodeCandidate`): by external ids, then by exact display name within label; sets `matchStatus: "matched_existing"` and `matchedNodeId` when a graph node is found, else `"create_new"`.
+5. **Review and apply**: Same as other sessions; apply uses `matchedNodeId` when present to update existing nodes instead of creating duplicates.

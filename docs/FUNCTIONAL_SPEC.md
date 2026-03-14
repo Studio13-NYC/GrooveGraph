@@ -108,7 +108,21 @@ Provenance is stored in node/edge `meta` or in dedicated properties (e.g. `enric
 - Storing at least one provenance record per enriched property or per enrichment run.
 - Querying or filtering by provenance (e.g. “show only facts from web” or “last enriched on date X”).
 
-### 5.3 Out of scope (v1)
+### 5.3 Staged review and triplet exploration
+
+v1 enrichment writes are mediated through a staged review workflow:
+
+- Candidate changes (properties, nodes, edges) are imported into a review session.
+- Reviewers can reject low-quality or incorrect candidates before apply.
+- Only non-rejected candidates are applied to the canonical graph.
+
+v1 also supports triplet-driven exploration in the enrichment workspace:
+
+- Input pattern: `subjectType:subjectName RELATIONSHIP objectType:objectName`
+- `any` placeholders are supported with an explicit scope requirement.
+- Triplet output is treated as staged candidates and goes through the same review/apply gate.
+
+### 5.4 Out of scope (v1)
 
 - Automated continuous enrichment pipelines.
 - Deduplication or conflict resolution across multiple enrichment sources (can be added later).

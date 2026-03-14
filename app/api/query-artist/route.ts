@@ -3,7 +3,7 @@ import { getGraphStore } from "@/load/persist-graph";
 import { buildQueryResultPayload, resolveEntityNode } from "@/lib/exploration";
 import { getEntityDescriptionNoun, getEntityDisplayName } from "@/lib/entity-config";
 
-export const dynamic = "force-dynamic";
+export const dynamic = process.env.NEXT_STATIC_EXPORT === "1" ? undefined : "force-dynamic";
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {

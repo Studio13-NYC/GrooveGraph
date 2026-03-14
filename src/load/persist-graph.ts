@@ -2,13 +2,9 @@
  * GraphStore provider helpers.
  * Runtime store is Neo4j Aura; file snapshot helpers remain for import/export scripts.
  */
-import { existsSync, readFileSync } from "node:fs";
-import { writeFile } from "node:fs/promises";
-import { join } from "node:path";
-import type { GraphStore } from "../store/index.js";
-import { InMemoryGraphStore, Neo4jGraphStore } from "../store/index.js";
-
-const DEFAULT_GRAPH_PATH = join(process.cwd(), "data", "graph-store.json");
+import { readFileSync } from "node:fs";
+import type { GraphStore } from "../store/index";
+import { InMemoryGraphStore, Neo4jGraphStore } from "../store/index";
 
 let cachedStore: GraphStore | null = null;
 
@@ -28,20 +24,6 @@ export async function getGraphStore(): Promise<GraphStore> {
  */
 export async function persistGraphStore(path?: string): Promise<void> {
   void path;
-}
-
-/**
- * Save a given store to a file (e.g. after build). Used internally by getGraphStore.
- */
-export async function saveGraphStore(
-  store: GraphStore,
-  filePath: string = DEFAULT_GRAPH_PATH
-): Promise<void> {
-  if (!("toJSON" in store) || typeof (store as InMemoryGraphStore).toJSON !== "function") {
-    throw new Error("Only InMemoryGraphStore can be persisted");
-  }
-  const snapshot = (store as InMemoryGraphStore).toJSON();
-  await writeFile(filePath, JSON.stringify(snapshot, null, 0), "utf-8");
 }
 
 /**

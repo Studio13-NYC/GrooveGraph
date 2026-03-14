@@ -1,16 +1,16 @@
-import type { GraphEdge } from "../domain/GraphEdge.js";
-import type { GraphNode } from "../domain/GraphNode.js";
-import { Neo4jGraphStore } from "../store/Neo4jGraphStore.js";
-import type { GraphStore } from "../store/types.js";
+import type { GraphEdge } from "../domain/GraphEdge";
+import type { GraphNode } from "../domain/GraphNode";
+import { Neo4jGraphStore } from "../store/Neo4jGraphStore";
+import type { GraphStore } from "../store/types";
 import {
   getPrimaryEntityLabel,
   getSearchLabelsForEntityType,
-} from "./entity-identity.js";
+} from "./entity-identity";
 import {
   getEntityDisplayName,
   getEntityDisplayPropertyKeys,
   getNodeDisplayName,
-} from "./entity-config.js";
+} from "./entity-config";
 import type {
   GraphPayload,
   GraphLinkPayload,
@@ -18,12 +18,12 @@ import type {
   PropertyFact,
   QueryResultPayload,
   RelatedEntityPreview,
-} from "./exploration-types.js";
+} from "./exploration-types";
 import {
   getTypeHubNodeId,
   IS_A_RELATIONSHIP_TYPE,
   isTypeHubNodeLabels,
-} from "./type-hubs.js";
+} from "./type-hubs";
 
 const FACT_LABELS: Record<string, string> = {
   country: "Country",
@@ -200,14 +200,6 @@ export function toGraphNodePayload(
   return payload;
 }
 
-export function toGraphLinkPayload(edge: GraphEdge): GraphLinkPayload {
-  return {
-    source: edge.fromNodeId,
-    target: edge.toNodeId,
-    type: edge.type,
-  };
-}
-
 export async function resolveEntityNode(
   store: GraphStore,
   entityType: string,
@@ -261,50 +253,6 @@ export async function resolveEntityNode(
   const bestMatch = partialMatches[0] ?? null;
   if (!bestMatch) return null;
   return (await collectIdentityCluster(store, bestMatch)).canonicalNode;
-}
-
-export async function collectNodeNeighborhood(
-  store: GraphStore,
-  seedNodeId: string,
-  maxDepth = 2,
-  maxNodes = 120
-): Promise<{ nodes: GraphNode[]; edges: GraphEdge[] }> {
-  const seedNode = await store.getNode(seedNodeId);
-  if (!seedNode) {
-    return { nodes: [], edges: [] };
-  }
-
-  const nodes = new Map<string, GraphNode>([[seedNode.id, seedNode]]);
-  const edges = new Map<string, GraphEdge>();
-  const queue: Array<{ nodeId: string; depth: number }> = [{ nodeId: seedNode.id, depth: 0 }];
-  const visited = new Set<string>();
-
-  while (queue.length > 0 && nodes.size <= maxNodes) {
-    const current = queue.shift();
-    if (!current || visited.has(current.nodeId)) continue;
-    visited.add(current.nodeId);
-
-    const adjacentEdges = await store.getAdjacentEdges(current.nodeId, "both");
-    for (const edge of adjacentEdges) {
-      edges.set(edge.id, edge);
-      for (const nextNodeId of [edge.fromNodeId, edge.toNodeId]) {
-        if (!nodes.has(nextNodeId)) {
-          const nextNode = await store.getNode(nextNodeId);
-          if (nextNode) {
-            nodes.set(nextNodeId, nextNode);
-          }
-        }
-        if (current.depth < maxDepth && !visited.has(nextNodeId) && nodes.size <= maxNodes) {
-          queue.push({ nodeId: nextNodeId, depth: current.depth + 1 });
-        }
-      }
-    }
-  }
-
-  return {
-    nodes: [...nodes.values()],
-    edges: [...edges.values()],
-  };
 }
 
 function buildPropertyFacts(node: GraphNode): PropertyFact[] {
@@ -542,5 +490,101 @@ export async function buildExplorationGraphPayload(
     nodes: [...nodes.values()],
     links: [...links.values()],
     focusNodeId: cluster.canonicalNode.id,
+  };
+}
+
+export type TripletSpecForGraph = {
+  subject: { label: string; name: string };
+  relationship: string;
+  object: { label: string; name: string };
+};
+
+/**
+ * Build a subgraph matching the triplet pattern scoped to a node (e.g. Album CONTAINS Track for Artist:Paul Weller).
+ * Returns scope node, subject-label nodes connected to scope, and relationship edges to object-label nodes.
+ */
+export async function buildTripletScopedGraphPayload(
+  store: GraphStore,
+  triplet: TripletSpecForGraph,
+  scopeNode: GraphNode
+): Promise<GraphPayload> {
+  const subjectLabel = triplet.subject.label;
+  const objectLabel = triplet.object.label;
+  const relType = triplet.relationship;
+  const nodes = new Map<string, GraphNodePayload>();
+  const links = new Map<string, GraphLinkPayload>();
+
+  nodes.set(
+    scopeNode.id,
+    toGraphNodePayload(scopeNode, {
+      nodeKind: "focus",
+      entityLabel: getPrimaryEntityLabel(scopeNode.labels),
+      labels: scopeNode.labels,
+    })
+  );
+
+  const scopeEdges = await store.getAdjacentEdges(scopeNode.id, "both");
+  const subjectNodesMap = new Map<string, GraphNode>();
+
+  for (const edge of scopeEdges) {
+    if (!isMeaningfulRelationship(edge)) continue;
+    const otherId = edge.fromNodeId === scopeNode.id ? edge.toNodeId : edge.fromNodeId;
+    const other = await store.getNode(otherId);
+    if (!other || isTypeHubNodeLabels(other.labels)) continue;
+    if (getPrimaryEntityLabel(other.labels) !== subjectLabel) continue;
+    subjectNodesMap.set(other.id, other);
+    const linkKey = `scope-${scopeNode.id}-${edge.type}-${otherId}`;
+    links.set(linkKey, {
+      source: scopeNode.id,
+      target: otherId,
+      type: edge.type,
+      groupKey: subjectLabel,
+    });
+  }
+
+  const subjectNodes = [...subjectNodesMap.values()];
+  for (const sub of subjectNodes) {
+    nodes.set(
+      sub.id,
+      toGraphNodePayload(sub, {
+        nodeKind: "entity",
+        entityLabel: subjectLabel,
+        groupKey: subjectLabel,
+      })
+    );
+  }
+
+  const objectNodesMap = new Map<string, GraphNode>();
+  for (const sub of subjectNodes) {
+    const outEdges = await store.getAdjacentEdges(sub.id, "outbound");
+    for (const edge of outEdges) {
+      if (edge.type !== relType) continue;
+      const toNode = await store.getNode(edge.toNodeId);
+      if (!toNode || isTypeHubNodeLabels(toNode.labels)) continue;
+      if (getPrimaryEntityLabel(toNode.labels) !== objectLabel) continue;
+      objectNodesMap.set(toNode.id, toNode);
+      links.set(`triplet-${sub.id}-${edge.toNodeId}`, {
+        source: sub.id,
+        target: edge.toNodeId,
+        type: relType,
+        groupKey: objectLabel,
+      });
+    }
+  }
+  for (const obj of objectNodesMap.values()) {
+    nodes.set(
+      obj.id,
+      toGraphNodePayload(obj, {
+        nodeKind: "entity",
+        entityLabel: objectLabel,
+        groupKey: objectLabel,
+      })
+    );
+  }
+
+  return {
+    nodes: [...nodes.values()],
+    links: [...links.values()],
+    focusNodeId: scopeNode.id,
   };
 }

@@ -1,10 +1,17 @@
 import { redirect } from "next/navigation";
 
+export function generateStaticParams() {
+  return [{}];
+}
+
 export default function GraphPage({
   searchParams,
 }: {
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
+  if (process.env.NEXT_STATIC_EXPORT === "1") {
+    redirect("/?view=graph&entityType=Artist");
+  }
   const params = new URLSearchParams();
   const rawArtist = searchParams?.artist;
   const rawEntityType = searchParams?.entityType;

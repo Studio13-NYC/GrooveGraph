@@ -1,0 +1,58 @@
+---
+description: Enforce cruft cleanup at feature start and finish
+alwaysApply: true
+---
+
+# Feature Cleanup And Cruft Removal Rule
+
+Keep the codebase clean. Remove stale, unused, and orphaned code/dependencies at two checkpoints:
+
+1. **Feature start cleanup**: immediately after the initial kickoff commit.
+2. **Feature end cleanup**: after implementation and before the final feature completion commit.
+
+## Required tooling
+
+Use these tools during both cleanup checkpoints:
+
+- `npm prune`
+- `npx knip`
+
+PowerShell-friendly examples:
+
+```powershell
+npm prune
+npx knip
+```
+
+## Human approval gate (mandatory)
+
+Before deleting anything, the model must:
+
+1. Run cleanup analysis tools.
+2. Produce a removal proposal for human review.
+3. Present a concrete list of what would be removed, including:
+   - file paths
+   - symbols/members where possible
+   - estimated lines to remove per file
+4. Ask for approval.
+
+No removal is allowed until human approval is given.
+
+## Presentation format requirement
+
+The model must present cleanup proposals in a concise checklist/table with:
+
+- `Path`
+- `Reason` (unused dependency, dead export, orphan file, unreachable code, etc.)
+- `Estimated lines removed`
+- `Action` (delete file, remove export, remove dependency, prune import)
+
+## Commit sequencing
+
+At feature start:
+
+- Initial kickoff commit first (plan + why), then cleanup proposal.
+
+At feature end:
+
+- Cleanup proposal and approved removals before final completion commit.

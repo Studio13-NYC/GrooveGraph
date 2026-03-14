@@ -1,7 +1,7 @@
-import type { EnrichmentEdgeMutation, EnrichmentNodeMutation, RawEnrichmentPayload } from "../types.js";
-import type { SourceDefinition } from "../sources/registry.js";
-import { slug } from "../../load/build-graph.js";
-import { buildSourceMetadata, fetchJson } from "./shared.js";
+import type { EnrichmentEdgeMutation, EnrichmentNodeMutation, RawEnrichmentPayload } from "../types";
+import type { SourceDefinition } from "../sources/registry";
+import { slug } from "../../load/build-graph";
+import { buildSourceMetadata, fetchJson } from "./shared";
 
 interface WikidataSearchResponse {
   search?: Array<{

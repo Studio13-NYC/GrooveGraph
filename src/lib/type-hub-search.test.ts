@@ -1,12 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { GraphEdge } from "../domain/GraphEdge.js";
-import { GraphNode } from "../domain/GraphNode.js";
-import { InMemoryGraphStore } from "../store/InMemoryGraphStore.js";
-import { createStubEntity } from "./graph-mutations.js";
-import { buildExplorationGraphPayload, resolveEntityNode } from "./exploration.js";
-import { getTypeHubNodeId, IS_A_RELATIONSHIP_TYPE } from "./type-hubs.js";
+import { GraphEdge } from "../domain/GraphEdge";
+import { GraphNode } from "../domain/GraphNode";
+import { InMemoryGraphStore } from "../store/InMemoryGraphStore";
+import { createStubEntity } from "./graph-mutations";
+import { buildExplorationGraphPayload, resolveEntityNode } from "./exploration";
+import { getTypeHubNodeId, IS_A_RELATIONSHIP_TYPE } from "./type-hubs";
 
 class TestNode extends GraphNode {}
 class TestEdge extends GraphEdge {}

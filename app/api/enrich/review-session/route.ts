@@ -1,13 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { buildResearchPacket, startAutomatedReviewSession } from "@/enrichment";
 import type { ReviewTargetEntity } from "@/enrichment/types";
+import { requireAdminResponse } from "@/lib/auth";
 import { createStubEntity } from "@/lib/graph-mutations";
 import { getGraphStore } from "@/load/persist-graph";
 
-export const dynamic = "force-dynamic";
+export const dynamic = process.env.NEXT_STATIC_EXPORT === "1" ? undefined : "force-dynamic";
 export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
+  const cookieStore = await cookies();
+  const unauth = requireAdminResponse(cookieStore);
+  if (unauth) return unauth;
   try {
     const body = await request.json();
     const targetIds = Array.isArray(body?.targetIds)
@@ -48,7 +53,12 @@ export async function POST(request: NextRequest) {
       });
       resolvedTargetIds.push(created.id);
     }
+    const pipelineEnv = process.env.ENRICHMENT_PIPELINE?.trim() || "(not set)";
+    console.log(
+      `[review-session] startAutomatedReviewSession targetCount=${resolvedTargetIds.length} targetIds=${resolvedTargetIds.slice(0, 5).join(", ")}${resolvedTargetIds.length > 5 ? "..." : ""} ENRICHMENT_PIPELINE=${pipelineEnv}`
+    );
     const session = await startAutomatedReviewSession(store, resolvedTargetIds);
+    console.log(`[review-session] session created id=${session.id} status=${session.status}`);
 
     return NextResponse.json({
       status: "ok",
@@ -56,7 +66,7 @@ export async function POST(request: NextRequest) {
       researchPacket: buildResearchPacket(session),
     });
   } catch (error) {
-    console.error("create-review-session", error);
+    console.error("[review-session] error:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to create review session" },
       { status: 500 }

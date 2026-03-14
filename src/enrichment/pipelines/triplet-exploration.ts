@@ -18,6 +18,11 @@ import {
   TRIPLET_EXPLORATION_PROMPT_VERSION,
 } from "./triplet-exploration-schema";
 import { getLlmOnlyProvenance } from "./llm-only-schema";
+import {
+  deriveExtractionComplexity,
+  getModelForTask,
+} from "../extraction/complexity";
+import { withRetry } from "../llm/fetch-with-retry";
 
 const LOG_PREFIX = "[triplet-pipeline]";
 
@@ -35,14 +40,18 @@ function getBaseUrl(): string {
   );
 }
 
-/** Model for triplet exploration; default gpt-5-nano for low-cost end-to-end runs. */
-function getModel(): string {
-  return (
-    process.env.OPENAI_MODEL?.trim() ||
-    process.env.ENRICHMENT_LLM_MODEL?.trim() ||
-    process.env.TRIPLET_LLM_MODEL?.trim() ||
-    "gpt-5-nano"
-  );
+/** Model for triplet exploration; TRIPLET_LLM_MODEL overrides; else task-level (triplet_expand) + complexity. */
+function getModel(options?: { hasAnySubject?: boolean; hasAnyObject?: boolean }, targets?: ReviewTargetEntity[]): string {
+  const explicitTripletModel = process.env.TRIPLET_LLM_MODEL?.trim();
+  if (explicitTripletModel) return explicitTripletModel;
+
+  const hasAnyScope = !!(options?.hasAnySubject || options?.hasAnyObject);
+  const ir = {
+    mentions: (targets ?? []).map((t) => ({ id: t.id, text: t.name, label: t.label })),
+    relations: [] as Array<{ id: string; type: string; fromMentionId: string; toMentionId: string }>,
+  };
+  const complexity = deriveExtractionComplexity(ir, { hasAnyScope });
+  return getModelForTask("triplet_expand", complexity);
 }
 
 function extractJson(text: string): unknown {
@@ -126,7 +135,10 @@ export async function runTripletExplorationPipeline(
     hasAnySubject: options?.hasAnySubject,
     hasAnyObject: options?.hasAnyObject,
   });
-  const model = getModel();
+  const model = getModel(
+    { hasAnySubject: options?.hasAnySubject, hasAnyObject: options?.hasAnyObject },
+    targets
+  );
   const baseUrl = getBaseUrl().replace(/\/$/, "");
   const url = `${baseUrl}/chat/completions`;
   console.log(
@@ -155,30 +167,26 @@ export async function runTripletExplorationPipeline(
     headersTimeout: timeoutMs,
     bodyTimeout: timeoutMs,
   });
-  let response: Awaited<ReturnType<typeof undiciFetch>>;
-  try {
-    response = await undiciFetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: bodyString,
-      dispatcher,
-    });
-  } catch (fetchErr) {
-    const cause = fetchErr instanceof Error ? fetchErr.cause : undefined;
-    const isAbort = fetchErr instanceof Error && fetchErr.name === "AbortError";
-    const isTimeout =
-      isAbort ||
-      (cause instanceof Error && (cause as { code?: string }).code === "UND_ERR_HEADERS_TIMEOUT");
-    if (isTimeout) {
-      throw new Error(
-        `Triplet exploration timed out after ${timeoutMs / 1000}s waiting for LLM response. Set TRIPLET_LLM_TIMEOUT_MS or ENRICHMENT_LLM_TIMEOUT_MS (ms) to increase.`
-      );
-    }
-    throw fetchErr;
-  }
+  const response = await withRetry(
+    async () => {
+      const res = await undiciFetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: bodyString,
+        dispatcher,
+      });
+      if (!res.ok && res.status >= 500) {
+        const err = new Error(`HTTP ${res.status}`);
+        (err as Error & { status?: number }).status = res.status;
+        throw err;
+      }
+      return res;
+    },
+    { logPrefix: LOG_PREFIX }
+  );
 
   console.log(`${LOG_PREFIX} LLM response status=${response.status}`);
   if (!response.ok) {

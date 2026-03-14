@@ -1,0 +1,445 @@
+{
+  "id": "e881dc9e-f15d-4818-a38b-08115e7428ac",
+  "status": "applied",
+  "createdAt": "2026-03-12T15:08:08.579Z",
+  "updatedAt": "2026-03-12T15:09:58.031Z",
+  "approvedAt": "2026-03-12T15:08:08.579Z",
+  "summary": "Approved enrichment candidates were applied to the graph.",
+  "targets": [
+    {
+      "id": "triplet-subject-artist-paul-weller-9nji2ynt",
+      "label": "Artist",
+      "name": "Paul Weller"
+    },
+    {
+      "id": "triplet-object-instrument-guitar-9nji2ynt",
+      "label": "Instrument",
+      "name": "Guitar"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [
+    {
+      "candidateId": "cand-instrument-rickenbacker-330-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Rickenbacker 330",
+      "canonicalKey": "instrument:rickenbacker 330",
+      "properties": {
+        "name": "Rickenbacker 330"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-instrument-rickenbacker-360-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Rickenbacker 360",
+      "canonicalKey": "instrument:rickenbacker 360",
+      "properties": {
+        "name": "Rickenbacker 360"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-instrument-gibson-sg-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Gibson SG",
+      "canonicalKey": "instrument:gibson sg",
+      "properties": {
+        "name": "Gibson SG"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-instrument-gibson-les-paul-junior-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Gibson Les Paul Junior",
+      "canonicalKey": "instrument:gibson les paul junior",
+      "properties": {
+        "name": "Gibson Les Paul Junior"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-instrument-epiphone-casino-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Epiphone Casino",
+      "canonicalKey": "instrument:epiphone casino",
+      "properties": {
+        "name": "Epiphone Casino"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-instrument-fender-telecaster-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Fender Telecaster",
+      "canonicalKey": "instrument:fender telecaster",
+      "properties": {
+        "name": "Fender Telecaster"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-instrument-fender-stratocaster-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Fender Stratocaster",
+      "canonicalKey": "instrument:fender stratocaster",
+      "properties": {
+        "name": "Fender Stratocaster"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-instrument-gretsch-country-gentleman-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Gretsch Country Gentleman",
+      "canonicalKey": "instrument:gretsch country gentleman",
+      "properties": {
+        "name": "Gretsch Country Gentleman"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-instrument-martin-acoustic-guitar-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Martin acoustic guitar",
+      "canonicalKey": "instrument:martin acoustic guitar",
+      "properties": {
+        "name": "Martin acoustic guitar"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-instrument-gibson-j-200-paul-weller",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Gibson J-200",
+      "canonicalKey": "instrument:gibson j-200",
+      "properties": {
+        "name": "Gibson J-200"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-artist-the-jam",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "The Jam",
+      "canonicalKey": "artist:the jam",
+      "properties": {
+        "name": "The Jam"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-the-jam",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-artist-the-style-council",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "The Style Council",
+      "canonicalKey": "artist:the style council",
+      "properties": {
+        "name": "The Style Council"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-the-style-council",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-album-all-mod-cons",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "All Mod Cons",
+      "canonicalKey": "album:all mod cons",
+      "properties": {
+        "title": "All Mod Cons"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-jam-all-mod-cons",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-album-snap",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Snap!",
+      "canonicalKey": "album:snap!",
+      "properties": {
+        "title": "Snap!"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-jam-snap",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-album-wild-wood",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Wild Wood",
+      "canonicalKey": "album:wild wood",
+      "properties": {
+        "title": "Wild Wood"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-wild-wood",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "cand-album-stanley-road",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Stanley Road",
+      "canonicalKey": "album:stanley road",
+      "properties": {
+        "title": "Stanley Road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:08:08.581Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-stanley-road",
+      "reviewStatus": "pending"
+    }
+  ],
+  "edgeCandidates": [],
+  "importedAt": "2026-03-12T15:09:20.426Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-12T15:08:08.581Z",
+    "importedFrom": "triplet-exploration",
+    "generator": "llm",
+    "provider": "OpenAI",
+    "model": "gpt-5.4",
+    "promptVersion": "2026-03-12.0",
+    "evidenceRecordCount": 0,
+    "sourceCount": 1,
+    "notes": "Triplet exploration: Artist:Paul Weller — PLAYED_INSTRUMENT — Instrument:Guitar."
+  },
+  "appliedAt": "2026-03-12T15:09:58.031Z"
+}

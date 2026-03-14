@@ -1,0 +1,2638 @@
+{
+  "id": "54591084-a4bc-42d7-ae0f-86104b2ba557",
+  "status": "applied",
+  "createdAt": "2026-03-12T02:05:21.213Z",
+  "updatedAt": "2026-03-12T02:10:35.292Z",
+  "approvedAt": "2026-03-12T02:05:21.213Z",
+  "summary": "Approved enrichment candidates were applied to the graph.",
+  "targets": [
+    {
+      "id": "artist-the-who",
+      "label": "Artist",
+      "name": "The Who"
+    },
+    {
+      "id": "artist-the-jam",
+      "label": "Artist",
+      "name": "The Jam"
+    },
+    {
+      "id": "artist-the-kinks",
+      "label": "Artist",
+      "name": "The Kinks"
+    },
+    {
+      "id": "studio-abbey-road",
+      "label": "Studio",
+      "name": "Abbey Road Studios"
+    },
+    {
+      "id": "manual-studio-konk-studios-a10ddb2f",
+      "label": "Studio",
+      "name": "konk studios"
+    },
+    {
+      "id": "manual-studio-eel-pie-studio-1d5eaf33",
+      "label": "Studio",
+      "name": "eel pie studio"
+    }
+  ],
+  "propertyChanges": [
+    {
+      "candidateId": "prop-artist-the-who-country",
+      "targetId": "artist-the-who",
+      "key": "country",
+      "value": "United Kingdom",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "GB"
+    },
+    {
+      "candidateId": "prop-artist-the-who-active_years",
+      "targetId": "artist-the-who",
+      "key": "active_years",
+      "value": [
+        "1964-present"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "1964-02-present"
+    },
+    {
+      "candidateId": "prop-artist-the-who-biography",
+      "targetId": "artist-the-who",
+      "key": "biography",
+      "value": "English rock band formed in London in 1964, widely associated with mod culture and known for landmark works including Tommy, Who's Next, and Quadrophenia.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending",
+      "previousValue": "Test biography from staged review."
+    },
+    {
+      "candidateId": "prop-artist-the-jam-country",
+      "targetId": "artist-the-jam",
+      "key": "country",
+      "value": "United Kingdom",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-the-jam-active_years",
+      "targetId": "artist-the-jam",
+      "key": "active_years",
+      "value": [
+        "1972-1982"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-the-jam-biography",
+      "targetId": "artist-the-jam",
+      "key": "biography",
+      "value": "English rock band from Woking, Surrey, formed in 1972 and central to the late-1970s mod revival, blending punk energy with sharp pop songwriting.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-the-kinks-country",
+      "targetId": "artist-the-kinks",
+      "key": "country",
+      "value": "United Kingdom",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-the-kinks-active_years",
+      "targetId": "artist-the-kinks",
+      "key": "active_years",
+      "value": [
+        "1963-1996"
+      ],
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-artist-the-kinks-biography",
+      "targetId": "artist-the-kinks",
+      "key": "biography",
+      "value": "English rock band formed in London in 1963 by brothers Ray and Dave Davies, influential in British Invasion, hard rock, and concept-driven British pop albums.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-studio-abbey-road-country",
+      "targetId": "studio-abbey-road",
+      "key": "country",
+      "value": "United Kingdom",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-studio-abbey-road-city",
+      "targetId": "studio-abbey-road",
+      "key": "city",
+      "value": "London",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-studio-abbey-road-founded",
+      "targetId": "studio-abbey-road",
+      "key": "founded",
+      "value": "1931",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-studio-abbey-road-biography",
+      "targetId": "studio-abbey-road",
+      "key": "biography",
+      "value": "Historic recording studio in St John's Wood, London, opened by EMI in 1931 and closely associated with major British and international recordings.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-manual-studio-konk-studios-a10ddb2f-country",
+      "targetId": "manual-studio-konk-studios-a10ddb2f",
+      "key": "country",
+      "value": "United Kingdom",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-manual-studio-konk-studios-a10ddb2f-city",
+      "targetId": "manual-studio-konk-studios-a10ddb2f",
+      "key": "city",
+      "value": "London",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-manual-studio-konk-studios-a10ddb2f-biography",
+      "targetId": "manual-studio-konk-studios-a10ddb2f",
+      "key": "biography",
+      "value": "Recording studio in Hornsey, London, established by members of the Kinks and closely associated with the band's later recording career.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-manual-studio-eel-pie-studio-1d5eaf33-country",
+      "targetId": "manual-studio-eel-pie-studio-1d5eaf33",
+      "key": "country",
+      "value": "United Kingdom",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-manual-studio-eel-pie-studio-1d5eaf33-city",
+      "targetId": "manual-studio-eel-pie-studio-1d5eaf33",
+      "key": "city",
+      "value": "London",
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "prop-manual-studio-eel-pie-studio-1d5eaf33-biography",
+      "targetId": "manual-studio-eel-pie-studio-1d5eaf33",
+      "key": "biography",
+      "value": "Private recording studio associated with Pete Townshend and named after Eel Pie Island, used for demos and sessions connected to Townshend and the Who orbit.",
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "updates_existing_target",
+      "reviewStatus": "pending"
+    }
+  ],
+  "nodeCandidates": [
+    {
+      "candidateId": "node-person-roger-daltrey",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Roger Daltrey",
+      "canonicalKey": "artist:roger-daltrey",
+      "properties": {
+        "name": "Roger Daltrey"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-pete-townshend",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Pete Townshend",
+      "canonicalKey": "artist:pete-townshend",
+      "properties": {
+        "name": "Pete Townshend"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-pete-townshend",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-john-entwistle",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "John Entwistle",
+      "canonicalKey": "artist:john-entwistle",
+      "properties": {
+        "name": "John Entwistle"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-keith-moon",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Keith Moon",
+      "canonicalKey": "artist:keith-moon",
+      "properties": {
+        "name": "Keith Moon"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-kenney-jones",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Kenney Jones",
+      "canonicalKey": "artist:kenney-jones",
+      "properties": {
+        "name": "Kenney Jones"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-zak-starkey",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Zak Starkey",
+      "canonicalKey": "artist:zak-starkey",
+      "properties": {
+        "name": "Zak Starkey"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-paul-weller",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Paul Weller",
+      "canonicalKey": "artist:paul-weller",
+      "properties": {
+        "name": "Paul Weller"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-paul-weller",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-bruce-foxton",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Bruce Foxton",
+      "canonicalKey": "artist:bruce-foxton",
+      "properties": {
+        "name": "Bruce Foxton"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-bruce-foxton",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-rick-buckler",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Rick Buckler",
+      "canonicalKey": "artist:rick-buckler",
+      "properties": {
+        "name": "Rick Buckler"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-ray-davies",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Ray Davies",
+      "canonicalKey": "artist:ray-davies",
+      "properties": {
+        "name": "Ray Davies"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-dave-davies",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Dave Davies",
+      "canonicalKey": "artist:dave-davies",
+      "properties": {
+        "name": "Dave Davies"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-pete-quaife",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Pete Quaife",
+      "canonicalKey": "artist:pete-quaife",
+      "properties": {
+        "name": "Pete Quaife"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-mick-avory",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Mick Avory",
+      "canonicalKey": "artist:mick-avory",
+      "properties": {
+        "name": "Mick Avory"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-genre-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Rock",
+      "canonicalKey": "genre:rock",
+      "properties": {
+        "name": "Rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-rock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-genre-hard-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Hard rock",
+      "canonicalKey": "genre:hard-rock",
+      "properties": {
+        "name": "Hard rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-hard-rock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-genre-power-pop",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Power pop",
+      "canonicalKey": "genre:power-pop",
+      "properties": {
+        "name": "Power pop"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-genre-mod-revival",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Mod revival",
+      "canonicalKey": "genre:mod-revival",
+      "properties": {
+        "name": "Mod revival"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-genre-punk-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Punk rock",
+      "canonicalKey": "genre:punk-rock",
+      "properties": {
+        "name": "Punk rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-genre-british-invasion",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "British Invasion",
+      "canonicalKey": "genre:british-invasion",
+      "properties": {
+        "name": "British Invasion"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-genre-pop-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "Pop rock",
+      "canonicalKey": "genre:pop-rock",
+      "properties": {
+        "name": "Pop rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-pop-rock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-label-polydor-records",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "Polydor Records",
+      "canonicalKey": "label:polydor-records",
+      "properties": {
+        "name": "Polydor Records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-label-reprise-records",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "Reprise Records",
+      "canonicalKey": "label:reprise-records",
+      "properties": {
+        "name": "Reprise Records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-label-track-records",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "Track Records",
+      "canonicalKey": "label:track-records",
+      "properties": {
+        "name": "Track Records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-label-reaction-records",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "Reaction Records",
+      "canonicalKey": "label:reaction-records",
+      "properties": {
+        "name": "Reaction Records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-label-parlophone",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "Parlophone",
+      "canonicalKey": "label:parlophone",
+      "properties": {
+        "name": "Parlophone"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-glyn-johns",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Glyn Johns",
+      "canonicalKey": "person:glyn-johns",
+      "properties": {
+        "name": "Glyn Johns"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-kit-lambert",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Kit Lambert",
+      "canonicalKey": "person:kit-lambert",
+      "properties": {
+        "name": "Kit Lambert"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-chris-thomas",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Chris Thomas",
+      "canonicalKey": "person:chris-thomas",
+      "properties": {
+        "name": "Chris Thomas"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-vic-coppersmith-heaven",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Vic Coppersmith-Heaven",
+      "canonicalKey": "person:vic-coppersmith-heaven",
+      "properties": {
+        "name": "Vic Coppersmith-Heaven"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-person-shel-talmy",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "Shel Talmy",
+      "canonicalKey": "person:shel-talmy",
+      "properties": {
+        "name": "Shel Talmy"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-album-whos-next",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Who's Next",
+      "canonicalKey": "album:whos-next",
+      "properties": {
+        "name": "Who's Next",
+        "title": "Who's Next"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-who-whos-next",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-album-quadrophenia",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Quadrophenia",
+      "canonicalKey": "album:quadrophenia",
+      "properties": {
+        "name": "Quadrophenia",
+        "title": "Quadrophenia"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-who-quadrophenia",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-album-all-mod-cons",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "All Mod Cons",
+      "canonicalKey": "album:all-mod-cons",
+      "properties": {
+        "name": "All Mod Cons",
+        "title": "All Mod Cons"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-jam-all-mod-cons",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-album-setting-sons",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Setting Sons",
+      "canonicalKey": "album:setting-sons",
+      "properties": {
+        "name": "Setting Sons",
+        "title": "Setting Sons"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-jam-setting-sons",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-album-village-green-preservation-society",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "The Kinks Are the Village Green Preservation Society",
+      "canonicalKey": "album:the-kinks-are-the-village-green-preservation-society",
+      "properties": {
+        "name": "The Kinks Are the Village Green Preservation Society",
+        "title": "The Kinks Are the Village Green Preservation Society"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "node-album-lola-versus-powerman",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Lola Versus Powerman and the Moneygoround, Part One",
+      "canonicalKey": "album:lola-versus-powerman-and-the-moneygoround-part-one",
+      "properties": {
+        "name": "Lola Versus Powerman and the Moneygoround, Part One",
+        "title": "Lola Versus Powerman and the Moneygoround, Part One"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-genre-mod",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "mod",
+      "canonicalKey": "genre:mod",
+      "properties": {
+        "name": "mod"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-mod",
+      "reviewStatus": "pending",
+      "notes": "Derived from biography narrative text."
+    },
+    {
+      "candidateId": "derived-genre-punk",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "punk",
+      "canonicalKey": "genre:punk",
+      "properties": {
+        "name": "punk"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-genre-punk",
+      "reviewStatus": "pending",
+      "notes": "Derived from biography narrative text."
+    },
+    {
+      "candidateId": "derived-genre-hard-rock",
+      "label": "Genre",
+      "labels": [
+        "Genre"
+      ],
+      "name": "hard rock",
+      "canonicalKey": "genre:hard rock",
+      "properties": {
+        "name": "hard rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "genre-hard-rock",
+      "reviewStatus": "pending",
+      "notes": "Derived from biography narrative text."
+    }
+  ],
+  "edgeCandidates": [
+    {
+      "candidateId": "edge-member_of-node-person-roger-daltrey-artist-the-who",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-roger-daltrey"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-pete-townshend-artist-the-who",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-pete-townshend"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-john-entwistle-artist-the-who",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-john-entwistle"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-keith-moon-artist-the-who",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-keith-moon"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-kenney-jones-artist-the-who",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-kenney-jones"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-zak-starkey-artist-the-who",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-zak-starkey"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-the-who-node-genre-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genre-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-the-who-node-genre-hard-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genre-hard-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "enriched-part-of-genre-artist-the-who-hard-rock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-the-who-node-genre-power-pop",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genre-power-pop"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released_by-artist-the-who-node-label-track-records",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-label-track-records"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-the-who-node-person-glyn-johns",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-person-glyn-johns"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-the-who-node-person-kit-lambert",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-person-kit-lambert"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-recorded_at-node-album-whos-next-studio-abbey-road",
+      "type": "RECORDED_AT",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-album-whos-next"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "studio-abbey-road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-recorded_at-node-album-quadrophenia-studio-abbey-road",
+      "type": "RECORDED_AT",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-album-quadrophenia"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "studio-abbey-road"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-the-who-artist-the-jam",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-influenced_by-artist-the-jam-artist-the-who",
+      "type": "INFLUENCED_BY",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-paul-weller-artist-the-jam",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-paul-weller"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-bruce-foxton-artist-the-jam",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-bruce-foxton"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-rick-buckler-artist-the-jam",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-rick-buckler"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-the-jam-node-genre-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genre-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-the-jam-node-genre-mod-revival",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genre-mod-revival"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-the-jam-node-genre-punk-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genre-punk-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released_by-artist-the-jam-node-label-polydor-records",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-label-polydor-records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-the-jam-node-person-vic-coppersmith-heaven",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-person-vic-coppersmith-heaven"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-recorded_at-node-album-all-mod-cons-studio-abbey-road",
+      "type": "RECORDED_AT",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-album-all-mod-cons"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "studio-abbey-road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-recorded_at-node-album-setting-sons-studio-abbey-road",
+      "type": "RECORDED_AT",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-album-setting-sons"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "studio-abbey-road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-ray-davies-artist-the-kinks",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-ray-davies"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-dave-davies-artist-the-kinks",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-dave-davies"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-pete-quaife-artist-the-kinks",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-pete-quaife"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-member_of-node-person-mick-avory-artist-the-kinks",
+      "type": "MEMBER_OF",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-mick-avory"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-the-kinks-node-genre-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genre-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "partofgenre-artist-artist-the-kinks-genre-rock",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-the-kinks-node-genre-pop-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genre-pop-rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-part_of_genre-artist-the-kinks-node-genre-british-invasion",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-genre-british-invasion"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released_by-artist-the-kinks-node-label-reprise-records",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-label-reprise-records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-released_by-artist-the-kinks-node-label-reaction-records",
+      "type": "RELEASED_BY",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-label-reaction-records"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-the-kinks-node-person-shel-talmy",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "node-person-shel-talmy"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-recorded_at-node-album-village-green-preservation-society-studio-abbey-road",
+      "type": "RECORDED_AT",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-album-village-green-preservation-society"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "studio-abbey-road"
+      },
+      "confidence": "low",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "low"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-recorded_at-node-album-lola-versus-powerman-manual-studio-konk-studios-a10ddb2f",
+      "type": "RECORDED_AT",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-album-lola-versus-powerman"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "manual-studio-konk-studios-a10ddb2f"
+      },
+      "confidence": "low",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "low"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-artist-the-kinks-artist-the-who",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-who"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-influenced_by-artist-the-jam-artist-the-kinks",
+      "type": "INFLUENCED_BY",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-jam"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "artist-the-kinks"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-node-person-pete-townshend-manual-studio-eel-pie-studio-1d5eaf33",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-pete-townshend"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "manual-studio-eel-pie-studio-1d5eaf33"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-node-person-ray-davies-manual-studio-konk-studios-a10ddb2f",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-ray-davies"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "manual-studio-konk-studios-a10ddb2f"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "edge-collaborated_with-node-person-dave-davies-manual-studio-konk-studios-a10ddb2f",
+      "type": "COLLABORATED_WITH",
+      "fromRef": {
+        "kind": "candidate",
+        "id": "node-person-dave-davies"
+      },
+      "toRef": {
+        "kind": "target",
+        "id": "manual-studio-konk-studios-a10ddb2f"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-part-of-genre-the-who-mod",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-who",
+        "label": "Artist",
+        "name": "The Who"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "derived-genre-mod",
+        "label": "Genre",
+        "name": "mod"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedEdgeId": "enriched-part-of-genre-artist-the-who-mod",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-part-of-genre-the-jam-mod",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-jam",
+        "label": "Artist",
+        "name": "The Jam"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "derived-genre-mod",
+        "label": "Genre",
+        "name": "mod"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-part-of-genre-the-jam-punk",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-jam",
+        "label": "Artist",
+        "name": "The Jam"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "derived-genre-punk",
+        "label": "Genre",
+        "name": "punk"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "derived-part-of-genre-the-kinks-hard-rock",
+      "type": "PART_OF_GENRE",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-the-kinks",
+        "label": "Artist",
+        "name": "The Kinks"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "derived-genre-hard-rock",
+        "label": "Genre",
+        "name": "hard rock"
+      },
+      "confidence": "high",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T02:05:21.214Z",
+          "confidence": "high"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "importedAt": "2026-03-12T02:08:54.127Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-12T02:05:21.214Z",
+    "importedFrom": "llm-only",
+    "generator": "llm",
+    "provider": "OpenAI",
+    "model": "gpt-5.4",
+    "promptVersion": "2026-03-12.0",
+    "evidenceRecordCount": 0,
+    "sourceCount": 1,
+    "notes": "Enrichment from GPT-5.4–only pipeline; no external sources."
+  },
+  "appliedAt": "2026-03-12T02:10:35.292Z"
+}

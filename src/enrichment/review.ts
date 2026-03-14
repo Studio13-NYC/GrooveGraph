@@ -992,6 +992,7 @@ function inferWorkflowType(
   if (explicitWorkflowType) return explicitWorkflowType;
   if (importedFrom === "triplet-exploration") return "triplet";
   if (importedFrom === "llm-only") return "llm_only";
+  if (importedFrom === "span-mention") return "span_mention";
   return "hybrid";
 }
 

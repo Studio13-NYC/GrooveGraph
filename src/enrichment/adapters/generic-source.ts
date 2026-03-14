@@ -1,5 +1,5 @@
-import type { RawEnrichmentPayload } from "../types.js";
-import type { SourceDefinition } from "../sources/registry.js";
+import type { RawEnrichmentPayload } from "../types";
+import type { SourceDefinition } from "../sources/registry";
 import {
   buildNarrativePayload,
   buildSummaryNarrative,
@@ -8,7 +8,7 @@ import {
   scrapeFirecrawlPageSummary,
   searchFirecrawl,
   searchDuckDuckGo,
-} from "./shared.js";
+} from "./shared";
 
 export async function fetchGenericSourceByName(
   source: SourceDefinition,

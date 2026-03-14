@@ -142,3 +142,9 @@ This architecture is intended to translate directly into:
 - TypeScript type contracts for primitives and commands
 - A `GraphStore` interface with Neo4j Aura as the production backend and InMemory as reference
 - A core service that composes validation + persistence + traversal
+
+Current implementation also includes a staged enrichment layer that sits above the graph core:
+
+- review sessions for candidate property/node/edge changes
+- provenance-preserving import and apply gates
+- triplet exploration (`subject —[relationship]—> object`) with scoped `any` support

@@ -4,9 +4,16 @@ Catalog of 20+ sources (core + magazine/trade) for enriching graph entities. Eac
 
 See [ENRICHMENT_PROCESS.md](ENRICHMENT_PROCESS.md) for collect → verify → load.
 
-**Implemented adapters:**
-- **musicbrainz** — Artist: `name`, `country`, `active_years`, `biography`; creates Genre nodes and PART_OF_GENRE edges from genres/tags.
-- **wikipedia** — Artist (by name): `biography` from Wikipedia summary API.
+**Implemented adapter execution paths (current):**
+- **musicbrainz** — API adapter with typed payload normalization.
+- **wikipedia** — API adapter for summary/biography enrichment.
+- **wikidata** — API/query adapter for structured facts.
+- **discogs / spotify / lastfm / genius / secondhandsongs / setlistfm / soundcloud** — official API adapters when credentials are present.
+- **all remaining sources** — generic source route (web lookup/fetch fallback) through the adapter execution layer.
+
+Notes:
+- Source routing is runtime-dependent and can prefer official APIs when configured, otherwise use fallback collection paths.
+- Coverage depth differs by source; all outputs still pass through enrichment verification and review-session gating before apply.
 
 ---
 

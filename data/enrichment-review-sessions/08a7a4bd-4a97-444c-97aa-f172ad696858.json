@@ -1,0 +1,18 @@
+{
+  "id": "08a7a4bd-4a97-444c-97aa-f172ad696858",
+  "status": "ready_for_import",
+  "createdAt": "2026-03-14T01:56:44.985Z",
+  "updatedAt": "2026-03-14T01:56:44.985Z",
+  "approvedAt": "2026-03-14T01:56:44.985Z",
+  "summary": "Subset approved. Import curator results to begin review.",
+  "targets": [
+    {
+      "id": "artist-paul-weller",
+      "label": "Artist",
+      "name": "Paul Weller"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [],
+  "edgeCandidates": []
+}

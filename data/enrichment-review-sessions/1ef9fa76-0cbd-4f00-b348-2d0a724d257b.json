@@ -1,0 +1,1629 @@
+{
+  "id": "1ef9fa76-0cbd-4f00-b348-2d0a724d257b",
+  "status": "applied",
+  "createdAt": "2026-03-12T17:03:06.231Z",
+  "updatedAt": "2026-03-12T17:06:51.463Z",
+  "approvedAt": "2026-03-12T17:03:06.231Z",
+  "summary": "Approved enrichment candidates were applied to the graph.",
+  "targets": [
+    {
+      "id": "artist-paul-weller",
+      "label": "Artist",
+      "name": "Paul Weller"
+    },
+    {
+      "id": "album-faces-1970-1975-you-can-make-me-dance-sing-or-anything",
+      "label": "Album",
+      "name": "1970-1975: You Can Make Me Dance Sing or Anything"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [
+    {
+      "candidateId": "candidate-album-in-the-city",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "In the City",
+      "canonicalKey": "album:in the city",
+      "properties": {
+        "title": "In the City"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-this-is-the-modern-world",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "This Is the Modern World",
+      "canonicalKey": "album:this is the modern world",
+      "properties": {
+        "title": "This Is the Modern World"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-all-mod-cons",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "All Mod Cons",
+      "canonicalKey": "album:all mod cons",
+      "properties": {
+        "title": "All Mod Cons"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-jam-all-mod-cons",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-setting-sons",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Setting Sons",
+      "canonicalKey": "album:setting sons",
+      "properties": {
+        "title": "Setting Sons"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-jam-setting-sons",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-sound-effects",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Sound Affects",
+      "canonicalKey": "album:sound affects",
+      "properties": {
+        "title": "Sound Affects"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-jam-sound-affects",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-the-gift",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "The Gift",
+      "canonicalKey": "album:the gift",
+      "properties": {
+        "title": "The Gift"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-jam-the-gift",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-artist-the-jam",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "The Jam",
+      "canonicalKey": "artist:the jam",
+      "properties": {
+        "name": "The Jam"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-the-jam",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-introducing-the-style-council",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Introducing The Style Council",
+      "canonicalKey": "album:introducing the style council",
+      "properties": {
+        "title": "Introducing The Style Council"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-style-council-introducing-the-style-council",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-cafe-bleu",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Café Bleu",
+      "canonicalKey": "album:café bleu",
+      "properties": {
+        "title": "Café Bleu"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-our-favourite-shop",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Our Favourite Shop",
+      "canonicalKey": "album:our favourite shop",
+      "properties": {
+        "title": "Our Favourite Shop"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-style-council-our-favourite-shop",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-the-cost-of-loving",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "The Cost of Loving",
+      "canonicalKey": "album:the cost of loving",
+      "properties": {
+        "title": "The Cost of Loving"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-confessions-of-a-pop-group",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Confessions of a Pop Group",
+      "canonicalKey": "album:confessions of a pop group",
+      "properties": {
+        "title": "Confessions of a Pop Group"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-modernism-a-new-decade",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Modernism: A New Decade",
+      "canonicalKey": "album:modernism: a new decade",
+      "properties": {
+        "title": "Modernism: A New Decade"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-artist-the-style-council",
+      "label": "Artist",
+      "labels": [
+        "Artist",
+        "Person"
+      ],
+      "name": "The Style Council",
+      "canonicalKey": "artist:the style council",
+      "properties": {
+        "name": "The Style Council"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "artist-the-style-council",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-paul-weller",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Paul Weller",
+      "canonicalKey": "album:paul weller",
+      "properties": {
+        "title": "Paul Weller"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-paul-weller",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-wild-wood",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Wild Wood",
+      "canonicalKey": "album:wild wood",
+      "properties": {
+        "title": "Wild Wood"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-wild-wood",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-stanley-road",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Stanley Road",
+      "canonicalKey": "album:stanley road",
+      "properties": {
+        "title": "Stanley Road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-stanley-road",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-heavy-soul",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Heavy Soul",
+      "canonicalKey": "album:heavy soul",
+      "properties": {
+        "title": "Heavy Soul"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-heavy-soul",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-heliocentric",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Heliocentric",
+      "canonicalKey": "album:heliocentric",
+      "properties": {
+        "title": "Heliocentric"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-illumination",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Illumination",
+      "canonicalKey": "album:illumination",
+      "properties": {
+        "title": "Illumination"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-illumination",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-studio-150",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Studio 150",
+      "canonicalKey": "album:studio 150",
+      "properties": {
+        "title": "Studio 150"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-as-is-now",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "As Is Now",
+      "canonicalKey": "album:as is now",
+      "properties": {
+        "title": "As Is Now"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-22-dreams",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "22 Dreams",
+      "canonicalKey": "album:22 dreams",
+      "properties": {
+        "title": "22 Dreams"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-wake-up-the-nation",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Wake Up the Nation",
+      "canonicalKey": "album:wake up the nation",
+      "properties": {
+        "title": "Wake Up the Nation"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-sonik-kicks",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Sonik Kicks",
+      "canonicalKey": "album:sonik kicks",
+      "properties": {
+        "title": "Sonik Kicks"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-saturns-pattern",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Saturns Pattern",
+      "canonicalKey": "album:saturns pattern",
+      "properties": {
+        "title": "Saturns Pattern"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-a-kind-revolution",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "A Kind Revolution",
+      "canonicalKey": "album:a kind revolution",
+      "properties": {
+        "title": "A Kind Revolution"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-true-meanings",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "True Meanings",
+      "canonicalKey": "album:true meanings",
+      "properties": {
+        "title": "True Meanings"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-on-sunset",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "On Sunset",
+      "canonicalKey": "album:on sunset",
+      "properties": {
+        "title": "On Sunset"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-fat-pop-volume-1",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Fat Pop (Volume 1)",
+      "canonicalKey": "album:fat pop (volume 1)",
+      "properties": {
+        "title": "Fat Pop (Volume 1)"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-66",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "66",
+      "canonicalKey": "album:66",
+      "properties": {
+        "title": "66"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-label-polydor-records",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "Polydor Records",
+      "canonicalKey": "label:polydor records",
+      "properties": {
+        "name": "Polydor Records"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "label-label-polydor-records",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-label-go-discs",
+      "label": "Label",
+      "labels": [
+        "Label"
+      ],
+      "name": "Go! Discs",
+      "canonicalKey": "label:go! discs",
+      "properties": {
+        "name": "Go! Discs"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-release-stanley-road",
+      "label": "Release",
+      "labels": [
+        "Release"
+      ],
+      "name": "Stanley Road",
+      "canonicalKey": "release:stanley road",
+      "properties": {
+        "title": "Stanley Road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "edgeCandidates": [
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-in-the-city",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-in-the-city"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-this-is-the-modern-world",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-this-is-the-modern-world"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-all-mod-cons",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-all-mod-cons"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-setting-sons",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-setting-sons"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-sound-effects",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-sound-effects"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-the-gift",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-the-gift"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-introducing-the-style-council",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-introducing-the-style-council"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-cafe-bleu",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-cafe-bleu"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-our-favourite-shop",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-our-favourite-shop"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-the-cost-of-loving",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-the-cost-of-loving"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-confessions-of-a-pop-group",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-confessions-of-a-pop-group"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-modernism-a-new-decade",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-modernism-a-new-decade"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-paul-weller",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-paul-weller"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-wild-wood",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-wild-wood"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-stanley-road",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-stanley-road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-heavy-soul",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-heavy-soul"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-heliocentric",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-heliocentric"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-illumination",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-illumination"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-studio-150",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-studio-150"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-as-is-now",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-as-is-now"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-22-dreams",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-22-dreams"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-wake-up-the-nation",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-wake-up-the-nation"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-sonik-kicks",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-sonik-kicks"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-saturns-pattern",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-saturns-pattern"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-a-kind-revolution",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-a-kind-revolution"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-true-meanings",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-true-meanings"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-on-sunset",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-on-sunset"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-fat-pop-volume-1",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-fat-pop-volume-1"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "triplet-edge-PLAYED_ON-candidate-album-66",
+      "type": "PLAYED_ON",
+      "fromRef": {
+        "kind": "target",
+        "id": "artist-paul-weller"
+      },
+      "toRef": {
+        "kind": "candidate",
+        "id": "candidate-album-66"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T17:03:06.234Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "importedAt": "2026-03-12T17:05:10.706Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-12T17:03:06.234Z",
+    "importedFrom": "triplet-exploration",
+    "generator": "llm",
+    "provider": "OpenAI",
+    "model": "gpt-5.4",
+    "promptVersion": "2026-03-12.0",
+    "evidenceRecordCount": 0,
+    "sourceCount": 1,
+    "notes": "Triplet exploration: Artist:paul weller — PLAYED_ON — Album:any."
+  },
+  "appliedAt": "2026-03-12T17:06:51.463Z"
+}

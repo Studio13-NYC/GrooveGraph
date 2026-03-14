@@ -1,5 +1,5 @@
-import type { SourceDefinition } from "../sources/registry.js";
-import type { SourceRuntimeRoute } from "../types.js";
+import type { SourceDefinition } from "../sources/registry";
+import type { SourceRuntimeRoute } from "../types";
 
 const KEYED_API_ENV_VARS: Record<string, string[]> = {
   discogs: ["DISCOGS_ACCESS_TOKEN"],
@@ -29,10 +29,6 @@ export function canUseConcreteApi(source: Pick<SourceDefinition, "adapterId">): 
     return true;
   }
   return getMissingApiEnvVars(source.adapterId).length === 0 && getRequiredApiEnvVars(source.adapterId).length > 0;
-}
-
-export function shouldFallbackToFirecrawl(source: Pick<SourceDefinition, "adapterId">): boolean {
-  return !canUseConcreteApi(source);
 }
 
 export function getEffectiveSourceRoute(source: Pick<SourceDefinition, "adapterId">): SourceRuntimeRoute {

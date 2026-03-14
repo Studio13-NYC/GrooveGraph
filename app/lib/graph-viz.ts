@@ -8,37 +8,7 @@ export {
   getEntityDisplayName,
   type EntityLabel,
 } from "@/lib/entity-config";
-
-export const RELATIONSHIP_TYPES = [
-  "PERFORMED_BY",
-  "WRITTEN_BY",
-  "PRODUCED_BY",
-  "RELEASED_ON",
-  "RECORDED_AT",
-  "RECORDED_IN_SESSION",
-  "USED_EQUIPMENT",
-  "PLAYED_INSTRUMENT",
-  "RELEASED_BY",
-  "ISSUED_BY_LABEL",
-  "FEATURES",
-  "MASTERED_BY",
-  "ENGINEERED_BY",
-  "PLAYED_ON",
-  "MEMBER_OF",
-  "CONTAINS",
-  "COLLABORATED_WITH",
-  "INFLUENCED_BY",
-  "COVERS",
-  "REMIXES",
-  "CREDITS_PERSON",
-  "HAS_VERSION",
-  "PART_OF_GENRE",
-  "PERFORMED_AT",
-  "PARTICIPATED_IN",
-  "USES_EFFECT",
-] as const;
-
-export type RelationshipType = (typeof RELATIONSHIP_TYPES)[number];
+export { RELATIONSHIP_TYPES, type RelationshipType } from "@/lib/relationship-config";
 
 /** HSL colors for each entity label. Saturation/lightness tuned for contrast on card background. */
 const NODE_COLORS: Record<string, string> = {

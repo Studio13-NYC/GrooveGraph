@@ -1,0 +1,369 @@
+{
+  "id": "9331e808-5add-4876-8f50-771543019b4f",
+  "status": "applied",
+  "createdAt": "2026-03-12T15:35:54.980Z",
+  "updatedAt": "2026-03-12T15:39:18.984Z",
+  "approvedAt": "2026-03-12T15:35:54.980Z",
+  "summary": "Approved enrichment candidates were applied to the graph.",
+  "targets": [
+    {
+      "id": "artist-paul-weller",
+      "label": "Artist",
+      "name": "Paul Weller"
+    },
+    {
+      "id": "instrument-instrument-guitar",
+      "label": "Instrument",
+      "name": "Guitar"
+    }
+  ],
+  "propertyChanges": [],
+  "nodeCandidates": [
+    {
+      "candidateId": "candidate-instrument-rickenbacker-330",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Rickenbacker 330",
+      "canonicalKey": "instrument:rickenbacker 330",
+      "properties": {
+        "name": "Rickenbacker 330"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "instrument-instrument-rickenbacker-330",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-instrument-gibson-sg",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Gibson SG",
+      "canonicalKey": "instrument:gibson sg",
+      "properties": {
+        "name": "Gibson SG"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "instrument-instrument-gibson-sg",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-instrument-epiphone-casino",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Epiphone Casino",
+      "canonicalKey": "instrument:epiphone casino",
+      "properties": {
+        "name": "Epiphone Casino"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "instrument-instrument-epiphone-casino",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-instrument-fender-telecaster",
+      "label": "Instrument",
+      "labels": [
+        "Instrument"
+      ],
+      "name": "Fender Telecaster",
+      "canonicalKey": "instrument:fender telecaster",
+      "properties": {
+        "name": "Fender Telecaster"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "instrument-instrument-fender-telecaster",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-song-town-called-malice",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Town Called Malice",
+      "canonicalKey": "track:town called malice",
+      "properties": {
+        "title": "Town Called Malice"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-song-thats-entertainment",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "That's Entertainment",
+      "canonicalKey": "track:that's entertainment",
+      "properties": {
+        "title": "That's Entertainment"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-song-peacock-suit",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "Peacock Suit",
+      "canonicalKey": "track:peacock suit",
+      "properties": {
+        "title": "Peacock Suit"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-song-you-do-something-to-me",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "You Do Something to Me",
+      "canonicalKey": "track:you do something to me",
+      "properties": {
+        "title": "You Do Something to Me"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-song-changingman",
+      "label": "Track",
+      "labels": [
+        "Track"
+      ],
+      "name": "The Changingman",
+      "canonicalKey": "track:the changingman",
+      "properties": {
+        "title": "The Changingman"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-snap",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Snap!",
+      "canonicalKey": "album:snap!",
+      "properties": {
+        "title": "Snap!"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-the-jam-snap",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-stanley-road",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Stanley Road",
+      "canonicalKey": "album:stanley road",
+      "properties": {
+        "title": "Stanley Road"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-stanley-road",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-album-heavy-soul",
+      "label": "Album",
+      "labels": [
+        "Album"
+      ],
+      "name": "Heavy Soul",
+      "canonicalKey": "album:heavy soul",
+      "properties": {
+        "title": "Heavy Soul"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "matched_existing",
+      "matchedNodeId": "album-paul-weller-heavy-soul",
+      "reviewStatus": "pending"
+    },
+    {
+      "candidateId": "candidate-performance-jam-live-aid-1985",
+      "label": "Performance",
+      "labels": [
+        "Performance"
+      ],
+      "name": "The Style Council / Paul Weller Live Aid appearance 1985",
+      "canonicalKey": "performance:the style council / paul weller live aid appearance 1985",
+      "properties": {
+        "name": "The Style Council / Paul Weller Live Aid appearance 1985"
+      },
+      "confidence": "medium",
+      "provenance": [
+        {
+          "source_id": "gpt-5.4",
+          "source_name": "GPT-5.4",
+          "source_type": "api",
+          "url": "https://openai.com/gpt-5.4",
+          "retrieved_at": "2026-03-12T15:35:54.982Z",
+          "confidence": "medium"
+        }
+      ],
+      "matchStatus": "create_new",
+      "reviewStatus": "pending"
+    }
+  ],
+  "edgeCandidates": [],
+  "importedAt": "2026-03-12T15:36:57.565Z",
+  "importMetadata": {
+    "generatedAt": "2026-03-12T15:35:54.982Z",
+    "importedFrom": "triplet-exploration",
+    "generator": "llm",
+    "provider": "OpenAI",
+    "model": "gpt-5.4",
+    "promptVersion": "2026-03-12.0",
+    "evidenceRecordCount": 0,
+    "sourceCount": 1,
+    "notes": "Triplet exploration: Artist:paul weller — PLAYED_INSTRUMENT — Instrument:guitar."
+  },
+  "appliedAt": "2026-03-12T15:39:18.984Z"
+}
