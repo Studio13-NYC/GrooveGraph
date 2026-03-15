@@ -210,7 +210,7 @@ export interface SourceChunk {
 }
 
 /** Evidence-level mention (span + optional link to ExtractionMention). */
-export interface EvidenceMention {
+interface EvidenceMention {
   id: string;
   text: string;
   label: string;
@@ -223,7 +223,7 @@ export interface EvidenceMention {
 }
 
 /** Relation assertion with provenance (before materializing to graph edge). */
-export interface RelationAssertion {
+interface RelationAssertion {
   id: string;
   type: string;
   fromMentionId: string;
@@ -307,7 +307,7 @@ export interface ExtractionRelation {
   documentId?: string;
 }
 
-export interface ExtractionAssertion {
+interface ExtractionAssertion {
   mention: ExtractionMention;
   relations: ExtractionRelation[];
 }

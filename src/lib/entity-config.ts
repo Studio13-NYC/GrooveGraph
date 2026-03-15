@@ -196,10 +196,6 @@ export function getEntityDisplayPropertyKeys(label: string): string[] {
   return getEntityConfig(label).displayPropertyKeys;
 }
 
-export function getEntitySearchPlaceholder(label: string): string {
-  return getEntityConfig(label).placeholder;
-}
-
 export function getEntityDescriptionNoun(label: string): string {
   return getEntityConfig(label).descriptionNoun;
 }

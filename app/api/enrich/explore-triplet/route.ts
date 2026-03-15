@@ -171,12 +171,23 @@ export async function POST(request: NextRequest) {
           }
         : undefined;
 
+    const tripletSpecForImport =
+      needsScope && scopeTarget
+        ? {
+            relationship: triplet.relationship,
+            subjectLabel: triplet.subject.label,
+            objectLabel: triplet.object.label,
+          }
+        : undefined;
+
     const updatedSession = await importResearchBundle(
       store,
       session.id,
       bundle,
       "triplet-exploration",
-      tripletContext
+      tripletContext,
+      undefined,
+      tripletSpecForImport
     );
     console.log(`${LOG_PREFIX} bundle imported; session status=${updatedSession.status}`);
 

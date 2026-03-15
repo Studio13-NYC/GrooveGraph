@@ -17,12 +17,9 @@ export type {
   CandidateMatchStatus,
   EnrichmentReviewSession,
   EnrichmentWorkflowType,
-  EvidenceMention,
-  ExtractionAssertion,
   ExtractionIR,
   ExtractionMention,
   ExtractionRelation,
-  RelationAssertion,
   ResearchPacket,
   ResearchBundle,
   ReviewDecision,
@@ -63,11 +60,9 @@ export {
   runTripletExplorationPipeline,
 } from "./pipelines/triplet-exploration";
 export {
-  formatTripletSpec,
   isAnyPlaceholder,
   parseScopeSpec,
   parseTripletSpec,
-  TRIPLET_EXAMPLES,
 } from "./triplet";
 export type { TripletSpec, TripletEntity } from "./triplet";
 export {

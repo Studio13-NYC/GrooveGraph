@@ -3,8 +3,6 @@
  * Idempotency (Phase 8): optional key → jobId map so retries return the same job.
  */
 
-export type EnrichmentJobStatus = "pending" | "completed" | "failed";
-
 export interface EnrichmentJobResult {
   status: "completed";
   session: unknown;

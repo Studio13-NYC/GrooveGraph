@@ -83,24 +83,6 @@ export function parseTripletSpec(spec: string): TripletSpec | null {
 }
 
 /**
- * Format a triplet for display, e.g. "Artist: Paul Weller — PLAYED_INSTRUMENT — Instrument: guitar"
- */
-export function formatTripletSpec(triplet: TripletSpec): string {
-  return `${triplet.subject.label}: ${triplet.subject.name} — ${triplet.relationship} — ${triplet.object.label}: ${triplet.object.name}`;
-}
-
-/**
- * Example specs for UI placeholder or help.
- */
-export const TRIPLET_EXAMPLES = [
-  "artist:Paul Weller PLAYED_INSTRUMENT instrument:guitar",
-  "album:any CONTAINS track:any",
-  "artist:Adrian Belew MEMBER_OF artist:King Crimson",
-  "artist:David Bowie COLLABORATED_WITH person:Brian Eno",
-  "artist:The Who PART_OF_GENRE genre:rock",
-] as const;
-
-/**
  * Parse scope string to { label, name } for scoped triplet expansion.
  * Accepts "Paul Weller" (defaults to Artist) or "artist:Paul Weller".
  */
@@ -120,22 +102,17 @@ export function parseScopeSpec(scope: string): { label: string; name: string } |
   return { label, name };
 }
 
-export function isTripletSpec(value: unknown): value is TripletSpec {
-  if (!value || typeof value !== "object") return false;
-  const t = value as Record<string, unknown>;
-  const sub = t.subject;
-  const obj = t.object;
-  if (!sub || typeof sub !== "object" || !obj || typeof obj !== "object") return false;
-  const s = sub as Record<string, unknown>;
-  const o = obj as Record<string, unknown>;
-  return (
-    typeof s.label === "string" &&
-    typeof s.name === "string" &&
-    typeof t.relationship === "string" &&
-    typeof o.label === "string" &&
-    typeof o.name === "string" &&
-    isEntityLabel(s.label) &&
-    isEntityLabel(o.label) &&
-    isRelationshipType(t.relationship as string)
-  );
+/**
+ * Build triplet spec string from parts: subjectLabel:subjectName RELATIONSHIP objectLabel:objectName
+ */
+export function buildTripletSpecString(parts: {
+  subjectLabel: string;
+  subjectName: string;
+  relationship: string;
+  objectLabel: string;
+  objectName: string;
+}): string {
+  const sub = `${parts.subjectLabel}:${parts.subjectName.trim() || "any"}`;
+  const obj = `${parts.objectLabel}:${parts.objectName.trim() || "any"}`;
+  return `${sub} ${parts.relationship} ${obj}`;
 }
