@@ -30,7 +30,28 @@ While testing/fixing, provide concise status updates as attempts are made:
 
 Do not wait for the user to intervene to continue the validation cycle.
 
-## 3. Required browser interaction sequence
+## 3. Browser tool preflight (fail fast)
+
+Before running UI automation, perform exactly one browser capability check:
+
+1. Attempt to open the target URL in the built-in browser automation tool.
+2. If navigation succeeds, continue with the normal UI flow.
+3. If the browser tool is unavailable, stop immediately and report a blocker.
+
+Hard requirements:
+
+- Use the built-in browser automation path directly (`@browser` / `cursor-ide-browser`).
+- Do not probe multiple possible MCP server names.
+- Do not spend repeated attempts guessing tool names or alternate browser endpoints.
+
+If preflight fails, report blockers in this format:
+
+- Tool attempted
+- Exact error text
+- Why UI validation cannot proceed
+- Required environment action to unblock
+
+## 4. Required browser interaction sequence
 
 For each meaningful run, agents must execute this sequence:
 
@@ -41,7 +62,7 @@ For each meaningful run, agents must execute this sequence:
 5. Take full-page screenshots at each critical transition and on final state.
 6. Evaluate screenshots against expected behavior and mark pass/fail with reasons.
 
-## 4. Screenshot evidence and validation standard
+## 5. Screenshot evidence and validation standard
 
 Each attempt must include screenshot-based validation:
 
@@ -54,7 +75,7 @@ Each attempt must include screenshot-based validation:
   - pass/fail decision.
 - If fail: state the user-visible discrepancy, suspected cause, and next corrective action.
 
-## 5. Terminal session hygiene and port preflight
+## 6. Terminal session hygiene and port preflight
 
 Before starting a local run expected on port `3000`:
 
@@ -68,7 +89,7 @@ As work progresses:
 - Keep terminal usage clean (avoid accumulating redundant server sessions).
 - Shut down no-longer-needed local processes at natural checkpoints.
 
-## 6. Evidence-first debugging and validation
+## 7. Evidence-first debugging and validation
 
 When failures occur:
 
@@ -77,7 +98,7 @@ When failures occur:
 - Make fixes based on observed evidence.
 - Re-run the same browser flow to confirm the fix from the user perspective.
 
-## 7. Completion criteria
+## 8. Completion criteria
 
 A task is not considered complete until:
 
