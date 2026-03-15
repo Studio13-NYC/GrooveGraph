@@ -3,7 +3,7 @@
  * Uses OpenAI-style tool definitions (function schema + executor).
  */
 
-import { loadOntologySchema, ontologySchemaForLlm } from "../../lib/ontology";
+import { loadOntologySchema, ontologySchemaForLlm } from "../../lib/ontology/load";
 import { getEntityDisplayPropertyKeys } from "../../lib/entity-config";
 import type { GraphStore } from "../../store/types";
 

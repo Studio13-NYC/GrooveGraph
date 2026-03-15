@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
 const appApi = path.join(root, "app", "api");
-const appApiBackup = path.join(root, "app", "_api_backup_static_export");
+const appApiBackup = path.join(root, "_api_backup_static_export");
 
 function hideApi() {
   if (!fs.existsSync(appApi)) return;
