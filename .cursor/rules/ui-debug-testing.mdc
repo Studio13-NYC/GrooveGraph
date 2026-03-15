@@ -9,7 +9,8 @@ For any feature build, enhancement, or debugging task that affects user workflow
 
 ## 1. Mandatory autonomous browser testing (watchable by user)
 
-Use built-in browser automation (`@browser` / `cursor-ide-browser`) to execute realistic end-to-end flows:
+Use built-in browser automation (`@browser` / `Browser` tool) to execute realistic end-to-end flows.
+Browser automation here means the native Cursor browser tool, not project MCP tools.
 
 - Navigate to the real workflow entry point (for example `http://localhost:3000/enrichment`).
 - Keep automation in a visible browser tab so the user can watch the live interaction.
@@ -30,17 +31,36 @@ While testing/fixing, provide concise status updates as attempts are made:
 
 Do not wait for the user to intervene to continue the validation cycle.
 
-## 3. Browser tool preflight (fail fast)
+## 3. Local server preflight and deterministic restart (mandatory)
+
+Before browser automation starts, verify local runtime readiness:
+
+1. Check whether the target app is already serving correctly on `http://localhost:3000`.
+2. If server state is unknown, unhealthy, or stale, clear listeners on the `3000` range (`3000-3099`) to remove conflicting processes.
+3. Start a fresh dev server in a visible terminal session with `npm run dev`.
+4. Wait for startup completion (ready log plus successful response from `http://localhost:3000`).
+5. If startup falls back to another port, stop it, free port `3000`, and re-run `npm run dev`.
+6. Begin browser testing only after `localhost:3000` is confirmed up.
+
+Runtime requirements:
+
+- Keep one active dev server terminal for the run; do not spawn duplicate servers.
+- Keep startup logs visible to the user while validating.
+- At natural checkpoints, stop no-longer-needed local processes.
+
+## 4. Browser tool preflight (fail fast)
 
 Before running UI automation, perform exactly one browser capability check:
 
-1. Attempt to open the target URL in the built-in browser automation tool.
-2. If navigation succeeds, continue with the normal UI flow.
-3. If the browser tool is unavailable, stop immediately and report a blocker.
+1. Confirm the native `Browser` / `@browser` tool is available in the current agent session.
+2. Attempt to open the target URL in that native browser tool.
+3. If navigation succeeds, continue with the normal UI flow.
+4. If the browser tool is unavailable, stop immediately and report a blocker.
 
 Hard requirements:
 
-- Use the built-in browser automation path directly (`@browser` / `cursor-ide-browser`).
+- Use the built-in browser automation path directly (`@browser` / `Browser` tool).
+- Do not call browser actions via MCP (`call_mcp_tool`) and do not use `cursor-ide-browser-*` tool names.
 - Do not probe multiple possible MCP server names.
 - Do not spend repeated attempts guessing tool names or alternate browser endpoints.
 
@@ -51,7 +71,7 @@ If preflight fails, report blockers in this format:
 - Why UI validation cannot proceed
 - Required environment action to unblock
 
-## 4. Required browser interaction sequence
+## 5. Required browser interaction sequence
 
 For each meaningful run, agents must execute this sequence:
 
@@ -62,7 +82,7 @@ For each meaningful run, agents must execute this sequence:
 5. Take full-page screenshots at each critical transition and on final state.
 6. Evaluate screenshots against expected behavior and mark pass/fail with reasons.
 
-## 5. Screenshot evidence and validation standard
+## 6. Screenshot evidence and validation standard
 
 Each attempt must include screenshot-based validation:
 
@@ -75,7 +95,7 @@ Each attempt must include screenshot-based validation:
   - pass/fail decision.
 - If fail: state the user-visible discrepancy, suspected cause, and next corrective action.
 
-## 6. Terminal session hygiene and port preflight
+## 7. Terminal session hygiene and port preflight
 
 Before starting a local run expected on port `3000`:
 
@@ -89,7 +109,7 @@ As work progresses:
 - Keep terminal usage clean (avoid accumulating redundant server sessions).
 - Shut down no-longer-needed local processes at natural checkpoints.
 
-## 7. Evidence-first debugging and validation
+## 8. Evidence-first debugging and validation
 
 When failures occur:
 
@@ -98,12 +118,14 @@ When failures occur:
 - Make fixes based on observed evidence.
 - Re-run the same browser flow to confirm the fix from the user perspective.
 
-## 8. Completion criteria
+## 9. Completion criteria
 
 A task is not considered complete until:
 
 - The end-to-end UI workflow has been exercised through browser automation.
+- Local runtime was brought up deterministically on `http://localhost:3000` before browser steps.
 - The user could observe the automation run in a browser tab.
+- The user could observe dev-server startup in a visible terminal session.
 - Full-page screenshots were captured across the full workflow.
 - Screenshot analysis explicitly marked expected vs observed behavior.
 - The user-visible result is confirmed working.
