@@ -52,10 +52,11 @@ Runtime requirements:
 
 Before running UI automation, perform exactly one browser capability check:
 
-1. Confirm the native `Browser` / `@browser` tool is available in the current agent session.
-2. Attempt to open the target URL in that native browser tool.
-3. If navigation succeeds, continue with the normal UI flow.
-4. If the browser tool is unavailable, stop immediately and report a blocker.
+1. Confirm the native `Browser` / `@browser` tool is available in the current agent session by checking the session tool list.
+2. Verify browser automation actions are present (for example navigate/click/type/snapshot/screenshot equivalents).
+3. Attempt to open the target URL in that native browser tool.
+4. If navigation succeeds, continue with the normal UI flow.
+5. If browser actions are unavailable, stop immediately and report a blocker.
 
 Hard requirements:
 
@@ -63,6 +64,7 @@ Hard requirements:
 - Do not call browser actions via MCP (`call_mcp_tool`) and do not use `cursor-ide-browser-*` tool names.
 - Do not probe multiple possible MCP server names.
 - Do not spend repeated attempts guessing tool names or alternate browser endpoints.
+- Do not treat "Browser connected" UI state alone as sufficient; browser actions must exist in the active agent tool list.
 
 If preflight fails, report blockers in this format:
 
@@ -70,6 +72,12 @@ If preflight fails, report blockers in this format:
 - Exact error text
 - Why UI validation cannot proceed
 - Required environment action to unblock
+
+If blocker reason is missing browser actions in-session, required environment action must be:
+
+- Start a new agent chat with `@browser` explicitly attached.
+- Ensure the target Browser Tab is selected in Cursor Tools.
+- Re-run the same task in that new chat.
 
 ## 5. Required browser interaction sequence
 
