@@ -24,14 +24,14 @@ export function loadOntologySchema(): OntologySchema {
 /**
  * Reset cache (e.g. in tests or after schema hot-reload).
  */
-function clearOntologyCache(): void {
+export function clearOntologyCache(): void {
   cached = null;
 }
 
 /**
  * Entity labels in schema order (for prompts and validation).
  */
-function getOntologyEntityLabels(schema?: OntologySchema): string[] {
+export function getOntologyEntityLabels(schema?: OntologySchema): string[] {
   const s = schema ?? loadOntologySchema();
   return Object.keys(s.entities);
 }
@@ -39,7 +39,7 @@ function getOntologyEntityLabels(schema?: OntologySchema): string[] {
 /**
  * Relationship types in schema order.
  */
-function getOntologyRelationshipTypes(schema?: OntologySchema): string[] {
+export function getOntologyRelationshipTypes(schema?: OntologySchema): string[] {
   const s = schema ?? loadOntologySchema();
   return s.relationships.map((r) => r.type);
 }
@@ -47,7 +47,7 @@ function getOntologyRelationshipTypes(schema?: OntologySchema): string[] {
 /**
  * Resolve a label synonym (e.g. "song" -> "Track") using schema.labelSynonyms.
  */
-function resolveLabelSynonym(label: string, schema?: OntologySchema): string | null {
+export function resolveLabelSynonym(label: string, schema?: OntologySchema): string | null {
   const s = schema ?? loadOntologySchema();
   const lower = label.trim().toLowerCase();
   const resolved = s.labelSynonyms?.[lower];
@@ -60,7 +60,7 @@ function resolveLabelSynonym(label: string, schema?: OntologySchema): string | n
 /**
  * Check if an entity can be the subject of a relationship (ontology-driven).
  */
-function canSubjectHaveRelationshipOntology(
+export function canSubjectHaveRelationshipOntology(
   subjectLabel: string,
   relationshipType: string,
   schema?: OntologySchema
@@ -74,7 +74,7 @@ function canSubjectHaveRelationshipOntology(
 /**
  * Check if an entity can be the object of a relationship (ontology-driven).
  */
-function canObjectHaveRelationshipOntology(
+export function canObjectHaveRelationshipOntology(
   objectLabel: string,
   relationshipType: string,
   schema?: OntologySchema

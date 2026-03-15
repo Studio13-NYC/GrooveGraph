@@ -1,6 +1,7 @@
 /**
  * Run Next.js static export without app/api so API routes are not included.
  * API is served by App Service; SWA only needs static UI.
+ * Uses copy/remove instead of rename to avoid EPERM on Windows when folder is in use.
  */
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
@@ -12,14 +13,20 @@ const root = path.resolve(__dirname, "..");
 const appApi = path.join(root, "app", "api");
 const appApiBackup = path.join(root, "app", "_api_backup_static_export");
 
-function move(from, to) {
-  if (fs.existsSync(from)) {
-    fs.renameSync(from, to);
-  }
+function hideApi() {
+  if (!fs.existsSync(appApi)) return;
+  fs.cpSync(appApi, appApiBackup, { recursive: true });
+  fs.rmSync(appApi, { recursive: true });
 }
 
-// Move app/api out so Next static export doesn't see it
-move(appApi, appApiBackup);
+function restoreApi() {
+  if (!fs.existsSync(appApiBackup)) return;
+  if (fs.existsSync(appApi)) fs.rmSync(appApi, { recursive: true });
+  fs.cpSync(appApiBackup, appApi, { recursive: true });
+  fs.rmSync(appApiBackup, { recursive: true });
+}
+
+hideApi();
 
 try {
   const result = spawnSync(
@@ -37,6 +44,5 @@ try {
     process.exit(result.status ?? 1);
   }
 } finally {
-  // Restore app/api
-  move(appApiBackup, appApi);
+  restoreApi();
 }
