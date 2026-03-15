@@ -7,15 +7,16 @@ alwaysApply: true
 
 For any feature build, enhancement, or debugging task that affects user workflows, the model must autonomously validate the full workflow from a user/UI perspective using browser automation. Do not stop at code changes alone.
 
-## 1. Mandatory autonomous browser testing
+## 1. Mandatory autonomous browser testing (watchable by user)
 
 Use built-in browser automation (`@browser` / `cursor-ide-browser`) to execute realistic end-to-end flows:
 
 - Navigate to the real workflow entry point (for example `http://localhost:3000/enrichment`).
-- Snapshot before interaction to capture structure and element refs.
+- Keep automation in a visible browser tab so the user can watch the live interaction.
+- Capture a full-page screenshot before interaction to capture structure and element refs.
 - Exercise the full interaction path (type/click/select/submit/wait).
-- Snapshot after each critical step and after completion.
-- Verify visible user outcomes, not only API/network assumptions.
+- Capture a full-page screenshot after each critical step and after completion.
+- Verify visible user outcomes from the page itself, not only API/network assumptions.
 
 Do this repeatedly until the workflow works end-to-end or a hard blocker is identified with evidence.
 
@@ -29,7 +30,31 @@ While testing/fixing, provide concise status updates as attempts are made:
 
 Do not wait for the user to intervene to continue the validation cycle.
 
-## 3. Terminal session hygiene and port preflight
+## 3. Required browser interaction sequence
+
+For each meaningful run, agents must execute this sequence:
+
+1. Open target page and take baseline full-page screenshot.
+2. Enter test data into required fields.
+3. Trigger the workflow using the relevant UI control(s) (for example click submit/run/apply).
+4. Wait for completion indicators (loading state resolved, result panel, confirmation toast, status badge, etc.).
+5. Take full-page screenshots at each critical transition and on final state.
+6. Evaluate screenshots against expected behavior and mark pass/fail with reasons.
+
+## 4. Screenshot evidence and validation standard
+
+Each attempt must include screenshot-based validation:
+
+- Keep an ordered screenshot trail covering start, action, and end states.
+- Use full-page captures (not cropped snippets) unless the tool cannot provide full-page mode.
+- For each screenshot, record:
+  - what action was just performed,
+  - what was expected on screen,
+  - what was actually visible,
+  - pass/fail decision.
+- If fail: state the user-visible discrepancy, suspected cause, and next corrective action.
+
+## 5. Terminal session hygiene and port preflight
 
 Before starting a local run expected on port `3000`:
 
@@ -43,7 +68,7 @@ As work progresses:
 - Keep terminal usage clean (avoid accumulating redundant server sessions).
 - Shut down no-longer-needed local processes at natural checkpoints.
 
-## 4. Evidence-first debugging and validation
+## 6. Evidence-first debugging and validation
 
 When failures occur:
 
@@ -52,10 +77,13 @@ When failures occur:
 - Make fixes based on observed evidence.
 - Re-run the same browser flow to confirm the fix from the user perspective.
 
-## 5. Completion criteria
+## 7. Completion criteria
 
 A task is not considered complete until:
 
 - The end-to-end UI workflow has been exercised through browser automation.
+- The user could observe the automation run in a browser tab.
+- Full-page screenshots were captured across the full workflow.
+- Screenshot analysis explicitly marked expected vs observed behavior.
 - The user-visible result is confirmed working.
 - The validation attempts and outcomes were communicated in status updates.
