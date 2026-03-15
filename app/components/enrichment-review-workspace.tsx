@@ -530,14 +530,29 @@ export function EnrichmentReviewWorkspace() {
     setWorking(true);
     setMessage(null);
     try {
-      const response = await fetch(`${getApiBase()}/api/enrich/review-session/${session.id}/apply`, {
+      const response = await fetch(`${getApiBase()}/api/enrich/apply-review-session`, {
         method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sessionId: session.id }),
       });
-      const data = (await response.json()) as { session: EnrichmentReviewSession; error?: string };
+      const text = await response.text();
+      let data: { session?: EnrichmentReviewSession; error?: string };
+      try {
+        data = text ? (JSON.parse(text) as typeof data) : {};
+      } catch {
+        const preview = text.slice(0, 80).replace(/\s+/g, " ");
+        setMessage(
+          response.ok
+            ? "Apply failed: server returned invalid JSON."
+            : `Apply failed: server returned ${response.status} (not JSON). If using a static deploy, set NEXT_PUBLIC_API_BASE_URL to your API server. ${preview}`
+        );
+        return;
+      }
       if (!response.ok) {
         throw new Error(data.error || "Failed to apply review session");
       }
-      setSession(data.session);
+      if (data.session) setSession(data.session);
       setMessage("Approved candidates were applied to Neo4j.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Failed to apply review session");

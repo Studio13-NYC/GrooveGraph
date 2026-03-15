@@ -1,6 +1,6 @@
 # Deploying GrooveGraph
 
-The app runs as a **dynamic** Node.js/Next.js application. All graph data lives in **Neo4j Aura**; API routes (for example `/api/graph`, `/api/query-artist`, `/api/enrich/review-session`, `/api/enrich/explore-triplet`) query and persist to Aura at runtime.
+The app runs as a **dynamic** Node.js/Next.js application. All graph data lives in **Neo4j Aura**; API routes (for example `/api/graph`, `/api/query-artist`, `/api/enrich/review-session`, `/api/enrich/apply-review-session`, `/api/enrich/explore-triplet`) query and persist to Aura at runtime.
 
 For same-origin deployment, the site requires a server (API routes and Neo4j). For Azure you can split **web UI** (static) on Static Web Apps and **API** on App Service; the UI then calls the API via `NEXT_PUBLIC_API_BASE_URL`.
 

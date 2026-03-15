@@ -126,6 +126,7 @@ GrooveGraph also supports triplet-driven enrichment in the `/enrichment` workspa
 API notes:
 
 - Generic extraction entrypoint: `POST /api/enrich/extract`
+- Apply session to graph: `POST /api/enrich/apply-review-session` with body `{ sessionId: string }`. The UI uses this endpoint; the nested route `POST /api/enrich/review-session/[id]/apply` is not used by the client (Next.js 14 returns 405 for that path).
 - Supported workflow types:
   - `workflowType: "triplet"` — delegates to triplet exploration (same body: `triplet`, optional `scope`).
   - `workflowType: "llm_only"` — same body as triplet; resolves targets from subject/object/scope, creates a review session, runs the LLM-only pipeline (no external sources), imports the bundle with `importedFrom: "llm-only"` and `workflowType: "llm_only"`.
