@@ -1,0 +1,15 @@
+---
+description: Baseline UI workflow validation for frontend slices
+globs:
+  - frontend/**/*.ts
+  - frontend/**/*.tsx
+alwaysApply: false
+---
+
+# Baseline UI Workflow Validation
+
+- Validate each user-facing slice with browser automation before considering it done.
+- Prefer Playwright with `frontend/playwright.config.ts`.
+- Use local checks for implementation feedback and deployed checks for integration/cors/auth confidence.
+- Keep runtime deterministic on port `3000` when using local validation.
+- Report pass/fail outcomes with user-visible evidence.

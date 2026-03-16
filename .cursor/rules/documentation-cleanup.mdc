@@ -1,0 +1,37 @@
+---
+description: Keep docs accurate, non-redundant, and indexed
+alwaysApply: true
+---
+
+# Documentation Cleanup Rule
+
+When creating, updating, or reviewing documentation in `docs/` and `README.md`, act as documentation custodian. Ensure docs are up to date, non-redundant, and easy to find.
+
+## 1. Accuracy (reflect current code)
+
+- **Verify against code** when changing or writing docs that describe behavior, APIs, or structure. Read the relevant code (routes, types, config) to confirm names, paths, and contracts.
+- **Single source of truth**: [docs/DOMAIN_MODEL.md](docs/DOMAIN_MODEL.md) is the authority for node labels, properties, and edge types. [docs/ONTOLOGY.md](docs/ONTOLOGY.md) and `data/ontology/schema.json` are the authority for the formal ontology and LLM use. Do not duplicate or contradict these in other docs.
+- After feature or refactor work, update any doc that references changed behavior, paths, or APIs (see also `feature-start-commit-tag.mdc` documentation sweep).
+
+## 2. Remove redundancy
+
+- **One canonical catalog**: [docs/INDEX.md](docs/INDEX.md) lists every document with purpose and category. Avoid maintaining a second full list elsewhere; the README "Project status and docs" table is a short reference that points to INDEX for the full catalog.
+- **Archive, don’t duplicate**: Completed or superseded implementation plans belong in `docs/archive/`. Move old plan files to `archive/` and update INDEX links; do not keep duplicate or overlapping “current state” descriptions in multiple places.
+- When adding a new doc, add it to INDEX in the appropriate section.
+
+## 3. Clear naming and index
+
+- **Naming**: Core design docs use `UPPER_SNAKE.md`. A few keep lowercase for historical links (e.g. `neo4j.md`, `uat.md`). Leave filenames as they are unless the user asks to rename; when renaming, update all references and INDEX.
+- **Index**: INDEX.md is the entry point for finding docs. Sections: Core design and architecture; Setup, deploy, and operations; Enrichment; UI, testing, and quality; Backlog and historical plans (including `docs/archive/`); Other references.
+- New docs must be added to INDEX with a one-line purpose.
+
+## 4. When this applies
+
+- Any commit or change that touches `docs/**` or `README.md`.
+- After adding or removing a doc file (update INDEX).
+- When a feature changes behavior that is described in existing docs (update those docs in the same work).
+
+## 5. Out of scope
+
+- This rule does not require renaming existing files unless the user requests it.
+- It does not dictate doc content style beyond accuracy, non-redundancy, and inclusion in the index.

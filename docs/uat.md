@@ -110,7 +110,7 @@ The remaining gaps are now mostly polish:
 
 ### What still feels weak
 
-- Large force-graph neighborhoods are still visually dense
+- Large graph neighborhoods can still be visually dense (Cytoscape 2D with semantic layout; future improvements may include layout toggles or 3D view).
 - Summary pills such as `Artist 2` or `PART OF GENRE 2` are accurate but not yet especially polished
 - Cold-start request latency is improved but still noticeable enough to warrant continued tuning
 

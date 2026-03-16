@@ -17,6 +17,11 @@ This document catalogs all Cursor rules and coding/layout standards for GrooveGr
 | **ui-debug-testing.mdc** | Requires autonomous UI workflow testing: **Playwright e2e** (local and **deployed** project) preferred; browser tool when needed. Progress updates during attempts; terminal hygiene and port `3000` preflight (see runtime-hygiene subagent). For deployment/cross-origin work, run tests against the deployed site. | Always |
 | **port-3000-runtime-hygiene.mdc** | Enforces deterministic local runtime on port `3000`, including stale-listener cleanup and mandatory `npm run dev` startup path with project port guard. | Always |
 | **documentation-cleanup.mdc** | Keep docs accurate (verify against code), non-redundant (single catalog in docs/INDEX.md, archive old plans in docs/archive/), and indexed; update INDEX when adding or removing docs. | Always |
+| **architecture-fuzzy.mdc** | Fuzzy-branch architecture and vision: ontology-as-runtime-source, modular design, LLM-assisted interpretation, and exhaustive tracing/logging. | `backend/src/**/*.ts(x)`, `frontend/app/**/*.ts(x)` |
+| **baseline-typescript-standards.mdc** | Curated baseline TS guardrails adapted to the `frontend/backend` repository layout. | `frontend/**/*.ts(x)`, `backend/**/*.ts(x)` |
+| **baseline-documentation-flow.mdc** | Curated baseline documentation flow for active rebuild work and index hygiene. | `docs/**/*.md`, `README.md` |
+| **baseline-ui-workflow-validation.mdc** | Curated baseline UI validation expectations for frontend slices using Playwright. | `frontend/**/*.ts(x)` |
+| **milestone-posts.mdc** | Requires narrative milestone posts in `docs/posts/` as key fuzzy milestones are reached. | `docs/posts/**/*.md` |
 
 ---
 
@@ -53,11 +58,12 @@ This document catalogs all Cursor rules and coding/layout standards for GrooveGr
   - remove obsolete statements
   - add new behavior/details introduced by the change
 - At feature start and feature end, run cleanup analysis with `npm run cleanup:check` (or `npm prune` and `npx knip` separately) and present proposed removals for human approval before deleting anything.
+- Fuzzy branch exception: when working on `fuzzy`, cleanup/restructure may proceed without prior human approval (see `.cursor/rules/architecture-fuzzy.mdc`).
 
 ### UI validation and runtime hygiene
 
-- **UI testing:** Prefer **Playwright e2e** tests in `e2e/*.spec.ts`. Run locally with `npx playwright test` and against the **deployed** site with `$env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"; npx playwright test --project=deployed`. See [UI_TESTING.md](UI_TESTING.md) and the **ui-testing** subagent (`.cursor/agents/ui-testing.md`).
+- **UI testing:** Prefer **Playwright e2e** tests in `frontend/tests/e2e/*.spec.ts`. Run locally with `npx playwright test -c frontend/playwright.config.ts` and against the **deployed** site with `$env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"; npx playwright test -c frontend/playwright.config.ts --project=deployed`. See [UI_TESTING.md](UI_TESTING.md) and the **ui-testing** subagent (`.cursor/agents/ui-testing.md`).
 - For feature, enhancement, and debug work, validate full user workflows (Playwright or browser automation) before considering work complete.
 - While attempts are running, provide concise status updates (attempt, result, next step) without requiring user intervention.
 - **Runtime hygiene:** Before starting local runs on port `3000`, verify the port is free and avoid duplicate/stale dev servers. Use `npm run dev` (runs port guard). See **port-3000-runtime-hygiene.mdc** and the **runtime-hygiene** subagent (`.cursor/agents/runtime-hygiene.md`).
-- **Deployment:** For Azure (SWA + App Service), use scripts in `scripts/` and the **deployment** subagent (`.cursor/agents/deployment.md`). See [DEPLOY.md](DEPLOY.md).
+- **Deployment:** For Azure (SWA + App Service), use scripts in `frontend/scripts/`, `backend/scripts/`, and `utilities/scripts/` with the **deployment** subagent (`.cursor/agents/deployment.md`). See [DEPLOY.md](DEPLOY.md).

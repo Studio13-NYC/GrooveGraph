@@ -57,7 +57,7 @@ This compiles TypeScript and produces a production Next.js build. The `out/` fol
 ```powershell
 npm run build
 npm run build:web
-.\scripts\deploy-appservice.ps1 -WebAppName as-groovegraph-api
+.\backend\scripts\deploy-appservice.ps1 -WebAppName as-groovegraph-api
 ```
 
 Ensure **as-groovegraph-api** has app settings: `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, `NEO4J_DATABASE`, `OPENAI_API_KEY`, `ENRICHMENT_PIPELINE`, and Application Insights (`APPLICATIONINSIGHTS_CONNECTION_STRING`). Admin auth is UI-only (header `X-Admin-User: nickknyc`); no cookie secret required.
@@ -68,7 +68,7 @@ Ensure **as-groovegraph-api** has app settings: `NEO4J_URI`, `NEO4J_USERNAME`, `
 
 ```powershell
 $env:SWA_CLI_DEPLOYMENT_TOKEN = (az staticwebapp secrets list --name swa-groovegraph --resource-group rg-groovegraph --query "properties.apiKey" -o tsv)
-.\scripts\deploy-swa.ps1
+.\frontend\scripts\deploy-swa.ps1
 ```
 
 The script runs `npm run build:static:swa` (builds with `NEXT_PUBLIC_API_BASE_URL=https://as-groovegraph-api.azurewebsites.net`) if `out/` is missing, then deploys `out/` to **swa-groovegraph**. Users hit groovegraph.s13.nyc for the UI; the UI calls the API at as-groovegraph-api.
@@ -77,7 +77,7 @@ The script runs `npm run build:static:swa` (builds with `NEXT_PUBLIC_API_BASE_UR
 
 ```powershell
 $env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"
-npx playwright test e2e/login-and-graph.spec.ts --project=deployed
+npx playwright test -c frontend/playwright.config.ts frontend/tests/e2e/login-and-graph.spec.ts --project=deployed
 ```
 
 ---
@@ -111,10 +111,10 @@ Build locally, then run the deploy script (zips `.next`, `node_modules`, `packag
 ```powershell
 npm run build
 npm run build:web
-.\scripts\deploy-appservice.ps1
+.\backend\scripts\deploy-appservice.ps1
 ```
 
-Optional parameters: `-ResourceGroup` and `-WebAppName`. For the GrooveGraph API host: `.\scripts\deploy-appservice.ps1 -WebAppName as-groovegraph-api`.
+Optional parameters: `-ResourceGroup` and `-WebAppName`. For the GrooveGraph API host: `.\backend\scripts\deploy-appservice.ps1 -WebAppName as-groovegraph-api`.
 
 ---
 
@@ -128,7 +128,7 @@ Deploy only the **static web UI** to **swa-groovegraph** (e.g. for groovegraph.s
    ```
 2. **Deploy** (builds with API base URL if `out/` is missing):
    ```powershell
-   .\scripts\deploy-swa.ps1
+   .\frontend\scripts\deploy-swa.ps1
    ```
 
 **Automatic deploy on push (GitHub Actions):** A workflow in `.github/workflows/deploy-swa.yml` builds the static UI and deploys to **swa-groovegraph** on every push to `main`. Add the SWA deployment token as a GitHub repository secret:

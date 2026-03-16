@@ -6,25 +6,25 @@ GrooveGraph uses **Playwright** for end-to-end UI tests. Tests run against local
 
 | Target | Command |
 |--------|--------|
-| Local (dev server on 3000) | `npx playwright test` |
-| Deployed (groovegraph.s13.nyc) | `$env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"; npx playwright test --project=deployed` |
-| Single spec (deployed) | `$env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"; npx playwright test e2e/login-and-graph.spec.ts --project=deployed` |
+| Local (dev server on 3000) | `npx playwright test -c frontend/playwright.config.ts` |
+| Deployed (groovegraph.s13.nyc) | `$env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"; npx playwright test -c frontend/playwright.config.ts --project=deployed` |
+| Single spec (deployed) | `$env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"; npx playwright test -c frontend/playwright.config.ts frontend/tests/e2e/login-and-graph.spec.ts --project=deployed` |
 
 ## Setup
 
 - **Playwright** is a dev dependency (`@playwright/test`). Browsers are installed with `npx playwright install` (or on first run).
-- Config: `playwright.config.ts`. Base URL is `http://localhost:3000` by default; override with `PLAYWRIGHT_BASE_URL` for deployed runs.
+- Config: `frontend/playwright.config.ts`. Base URL is `http://localhost:3000` by default; override with `PLAYWRIGHT_BASE_URL` for deployed runs.
 - Projects: **local** (starts/reuses dev server) and **deployed** (no server; uses `https://groovegraph.s13.nyc`).
 
 ## When to run which
 
-- **After local UI changes:** `npx playwright test` (local project).
+- **After local UI changes:** `npx playwright test -c frontend/playwright.config.ts` (local project).
 - **After deployment or CORS/API changes:** Always run the **deployed** project; local tests can miss cross-origin or credentials issues.
-- **New workflows:** Add specs under `e2e/*.spec.ts` and run both local and deployed.
+- **New workflows:** Add specs under `frontend/tests/e2e/*.spec.ts` and run both local and deployed.
 
 ## Current specs
 
-- **e2e/login-and-graph.spec.ts:** Login with nickknyc → nav shows Explore/Enrichment/Sign out → graph view loads without "Failed to fetch".
+- **frontend/tests/e2e/login-and-graph.spec.ts:** Login with nickknyc → nav shows Explore/Enrichment/Sign out → graph view loads without "Failed to fetch".
 
 ## Runtime hygiene (before local tests)
 

@@ -1,0 +1,46 @@
+---
+description: Write narrative milestone posts for the fuzzy build
+globs:
+  - docs/posts/**/*.md
+alwaysApply: false
+---
+
+# Milestone Posts Rule
+
+When a meaningful milestone is reached, write a new post in `docs/posts/`.
+
+Milestone examples:
+
+- a hard bug is fixed,
+- a major architecture slice lands,
+- a UI approach is implemented and validated,
+- a fuzzy function is promoted into deterministic code with evidence.
+
+## Post style
+
+- Write like a developer blog update: friendly, direct, and concise.
+- Keep observations brief and pointed.
+- Avoid fluff and generic celebration language.
+- Explain what changed, why it matters, and what comes next.
+
+## Narrative continuity
+
+- Every post should continue the story from the previous post.
+- Maintain one throughline: software is built with **Fuzzy Functions** first, then codified where evidence supports it.
+- Emphasize DRY organization and modular boundaries when describing codification.
+
+## Required structure
+
+Each post should include:
+
+1. milestone title,
+2. what changed,
+3. why it matters,
+4. brief observations,
+5. next step teaser.
+
+## Naming convention
+
+Use dated filenames:
+
+- `docs/posts/YYYY-MM-DD-short-slug.md`

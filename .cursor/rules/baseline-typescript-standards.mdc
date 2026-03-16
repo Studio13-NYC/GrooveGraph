@@ -1,0 +1,18 @@
+---
+description: Baseline TypeScript standards for frontend and backend
+globs:
+  - backend/**/*.ts
+  - backend/**/*.tsx
+  - frontend/**/*.ts
+  - frontend/**/*.tsx
+alwaysApply: false
+---
+
+# Baseline TypeScript Standards
+
+- Keep strict typing at module boundaries.
+- Use clear named interfaces/types for cross-module contracts.
+- Avoid clever one-liners where readability suffers.
+- Prefer small, composable functions over large utility blobs.
+- Treat unknown input as `unknown` and narrow with guards.
+- Keep imports/path aliases aligned with the `frontend/backend` structure.

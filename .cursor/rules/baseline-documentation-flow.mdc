@@ -1,0 +1,15 @@
+---
+description: Baseline documentation flow for active rebuild work
+globs:
+  - docs/**/*.md
+  - README.md
+alwaysApply: false
+---
+
+# Baseline Documentation Flow
+
+- Keep docs consistent with current runtime behavior.
+- Remove obsolete guidance rather than leaving conflicting alternatives.
+- Add new docs to `docs/INDEX.md` with one-line purpose statements.
+- Keep `docs/ONTOLOGY.md` and `data/ontology/schema.json` aligned when ontology behavior changes.
+- Archive superseded plans in `docs/archive/`.

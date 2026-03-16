@@ -1,0 +1,59 @@
+---
+description: Fuzzy architecture and vision guidance for the fuzzy branch
+globs:
+  - backend/src/**/*.ts
+  - backend/src/**/*.tsx
+  - frontend/app/**/*.ts
+  - frontend/app/**/*.tsx
+alwaysApply: false
+---
+
+# Fuzzy Architecture And Vision
+
+Apply this rule for work executed on the `fuzzy` branch.
+
+## Product intent
+
+Prioritize a system that is:
+
+1. Simple
+2. Modular
+3. LLM-assisted first
+4. Fully traceable through logs
+
+## Architectural directives
+
+- Use `data/ontology/schema.json` as the machine-readable ontology source of truth.
+- Keep `docs/DOMAIN_MODEL.md` as human-readable domain authority and keep docs aligned.
+- Favor headless reusable modules over monolithic UI-bound logic.
+- Keep query building and graph viewing as separate concerns.
+
+## Fuzzy-first behavior
+
+- Software will be built forward with **Fuzzy Functions**: make the app broadly LLM-assisted first, then codify behavior in deterministic code only where runtime evidence is strong.
+- Prefer adaptable LLM-assisted functions where deterministic hardcoding would be brittle.
+- For interpretation/execution flows, design for:
+  - pre-run insight lookup,
+  - strategy selection,
+  - execution,
+  - post-run analysis and recorded learnings.
+- Avoid premature rigid specialization; move to pure code only after patterns stabilize, and when codified keep implementation DRY, modular, and organized.
+
+## Logging requirements
+
+- Every backend route should emit structured stage logs.
+- Every LLM call should log model/base URL/request+response metadata and timing.
+- Every Neo4j call should log query metadata and timing (respecting sanitization policy).
+- Frontend user workflows should log key actions and failure states.
+- Prefer shared trace IDs end-to-end.
+
+## Branch operation notes
+
+- On `fuzzy`, cleanup and restructuring are permitted without prior human approval.
+- Outside `fuzzy`, follow standard cleanup approval rules.
+
+## Constraints
+
+- Keep the current deployment process intact (`docs/DEPLOY.md`).
+- Keep Cytoscape as the default graph renderer unless explicitly replaced.
+- Do not break existing Neo4j data compatibility.

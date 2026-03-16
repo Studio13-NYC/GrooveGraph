@@ -1,0 +1,433 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "GrooveGraph Music Ontology",
+  "version": "2026-03-15.0",
+  "description": "Formal graph schema for music entities, properties, and relationships. Used by the LLM for search and enrichment. Relationship subject/object constraints and container semantics (Album, Playlist CONTAINS Track/SongWork) are defined here.",
+  "entities": {
+    "Artist": {
+      "displayName": "Artist",
+      "descriptionNoun": "artist",
+      "description": "A music artist (band, solo act, or group).",
+      "displayPropertyKeys": ["name"],
+      "properties": [
+        { "key": "name", "type": "string", "required": true, "description": "Primary display name" },
+        { "key": "biography", "type": "string", "required": false },
+        { "key": "country", "type": "string", "required": false },
+        { "key": "active_years", "type": "string", "required": false }
+      ],
+      "allowedRelationshipsAsSubject": ["MEMBER_OF", "COLLABORATED_WITH", "PLAYED_INSTRUMENT", "PART_OF_GENRE", "USED_EQUIPMENT", "PARTICIPATED_IN", "PLAYED_ON", "INFLUENCED_BY", "FEATURES"],
+      "allowedRelationshipsAsObject": ["PERFORMED_BY", "PRODUCED_BY", "PLAYED_ON", "FEATURES", "RELEASED_BY", "COLLABORATED_WITH", "INFLUENCED_BY", "MEMBER_OF"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["band", "musician", "act", "group", "artist"],
+      "contextMessage": "Use for bands, solo artists, and groups. For a human who is both a person and an artist, create one node with labels [\"Artist\", \"Person\"]. Use 'name' for the canonical name."
+    },
+    "Album": {
+      "displayName": "Album",
+      "descriptionNoun": "album",
+      "description": "A release containing tracks or song works (container).",
+      "displayPropertyKeys": ["title", "name"],
+      "properties": [
+        { "key": "title", "type": "string", "required": true },
+        { "key": "name", "type": "string", "required": false },
+        { "key": "release_date", "type": "string", "required": false }
+      ],
+      "allowedRelationshipsAsSubject": ["CONTAINS", "RELEASED_BY", "ISSUED_BY_LABEL", "PRODUCED_BY", "RECORDED_AT", "USED_EQUIPMENT", "PART_OF_GENRE", "MASTERED_BY", "ENGINEERED_BY", "CREDITS_PERSON"],
+      "allowedRelationshipsAsObject": ["RELEASED_ON", "PRODUCED_BY", "FEATURES"],
+      "constraints": { "primaryDisplayProperty": "title" },
+      "synonyms": ["record", "LP", "release", "album"],
+      "contextMessage": "Use for an album or LP that contains tracks. Link to Artist via PERFORMED_BY or RELEASED_BY; link to Track/SongWork via CONTAINS. Album is a container: CONTAINS → Track or SongWork."
+    },
+    "Track": {
+      "displayName": "Song",
+      "descriptionNoun": "song",
+      "description": "A recorded track or song on a release.",
+      "displayPropertyKeys": ["title", "name"],
+      "properties": [
+        { "key": "title", "type": "string", "required": true },
+        { "key": "name", "type": "string", "required": false },
+        { "key": "duration_ms", "type": "number", "required": false }
+      ],
+      "allowedRelationshipsAsSubject": ["PERFORMED_BY", "RELEASED_ON", "PRODUCED_BY", "RECORDED_AT", "PART_OF_GENRE", "USED_EQUIPMENT", "COVERS", "REMIXES", "HAS_VERSION", "WRITTEN_BY", "FEATURES", "MASTERED_BY", "ENGINEERED_BY", "RECORDED_IN_SESSION", "CREDITS_PERSON"],
+      "allowedRelationshipsAsObject": ["CONTAINS", "PERFORMED_BY", "PRODUCED_BY", "PLAYED_ON", "RECORDED_IN_SESSION", "COVERS", "REMIXES", "HAS_VERSION", "PART_OF_GENRE", "USES_EFFECT"],
+      "constraints": { "primaryDisplayProperty": "title" },
+      "synonyms": ["song", "track", "recording", "cut"],
+      "contextMessage": "Use for a specific recording or release of a song. For the abstract composition use SongWork. Track can be contained by Album or Playlist (CONTAINS)."
+    },
+    "SongWork": {
+      "displayName": "Song work",
+      "descriptionNoun": "song work",
+      "description": "Abstract composition distinct from a specific recording.",
+      "displayPropertyKeys": ["title", "name"],
+      "properties": [
+        { "key": "title", "type": "string", "required": true },
+        { "key": "name", "type": "string", "required": false }
+      ],
+      "allowedRelationshipsAsSubject": ["WRITTEN_BY", "HAS_VERSION", "PART_OF_GENRE"],
+      "allowedRelationshipsAsObject": ["CONTAINS", "HAS_VERSION", "WRITTEN_BY", "PART_OF_GENRE"],
+      "constraints": { "primaryDisplayProperty": "title" },
+      "synonyms": ["work", "composition"],
+      "contextMessage": "Use for the abstract composition; link recordings via HAS_VERSION. Can be contained by Album (CONTAINS)."
+    },
+    "Person": {
+      "displayName": "Person",
+      "descriptionNoun": "person",
+      "description": "Producers, engineers, songwriters, and other non-performing contributors.",
+      "displayPropertyKeys": ["name"],
+      "properties": [
+        { "key": "name", "type": "string", "required": true },
+        { "key": "roles", "type": "array", "required": false }
+      ],
+      "allowedRelationshipsAsSubject": ["WRITTEN_BY", "PRODUCED_BY", "MASTERED_BY", "ENGINEERED_BY", "PLAYED_INSTRUMENT", "PLAYED_ON", "MEMBER_OF", "PARTICIPATED_IN", "USED_EQUIPMENT"],
+      "allowedRelationshipsAsObject": ["MEMBER_OF", "FEATURES", "CREDITS_PERSON", "PARTICIPATED_IN"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["person", "human"],
+      "contextMessage": "Use for non-performing contributors. For artists who are also persons, use dual label Artist+Person."
+    },
+    "Genre": {
+      "displayName": "Genre",
+      "descriptionNoun": "genre",
+      "description": "Musical styles and categories.",
+      "displayPropertyKeys": ["name"],
+      "properties": [{ "key": "name", "type": "string", "required": true }],
+      "allowedRelationshipsAsSubject": [],
+      "allowedRelationshipsAsObject": ["PART_OF_GENRE"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["genre", "style"]
+    },
+    "Label": {
+      "displayName": "Label",
+      "descriptionNoun": "label",
+      "description": "Music publishing / record companies.",
+      "displayPropertyKeys": ["name"],
+      "properties": [{ "key": "name", "type": "string", "required": true }],
+      "allowedRelationshipsAsSubject": [],
+      "allowedRelationshipsAsObject": ["RELEASED_BY", "ISSUED_BY_LABEL"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["label", "record label"]
+    },
+    "Studio": {
+      "displayName": "Studio",
+      "descriptionNoun": "studio",
+      "description": "Recording facilities.",
+      "displayPropertyKeys": ["name"],
+      "properties": [{ "key": "name", "type": "string", "required": true }],
+      "allowedRelationshipsAsSubject": ["USED_EQUIPMENT"],
+      "allowedRelationshipsAsObject": ["RECORDED_AT"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["studio", "recording studio"]
+    },
+    "Instrument": {
+      "displayName": "Instrument",
+      "descriptionNoun": "instrument",
+      "description": "Musical instruments (guitars, synths, drums, etc.).",
+      "displayPropertyKeys": ["name"],
+      "properties": [{ "key": "name", "type": "string", "required": true }],
+      "allowedRelationshipsAsSubject": [],
+      "allowedRelationshipsAsObject": ["USED_EQUIPMENT", "PLAYED_INSTRUMENT", "PLAYED_ON"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["instrument", "gear"]
+    },
+    "Equipment": {
+      "displayName": "Equipment",
+      "descriptionNoun": "piece of equipment",
+      "description": "Recording gear, outboard, software (non-instrument).",
+      "displayPropertyKeys": ["name"],
+      "properties": [{ "key": "name", "type": "string", "required": true }],
+      "allowedRelationshipsAsSubject": ["USES_EFFECT"],
+      "allowedRelationshipsAsObject": ["USED_EQUIPMENT", "PLAYED_ON", "USES_EFFECT"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["equipment", "gear"]
+    },
+    "Playlist": {
+      "displayName": "Playlist",
+      "descriptionNoun": "playlist",
+      "description": "User- or curator-created collections of tracks (container).",
+      "displayPropertyKeys": ["name", "title"],
+      "properties": [{ "key": "name", "type": "string", "required": true }],
+      "allowedRelationshipsAsSubject": ["CONTAINS"],
+      "allowedRelationshipsAsObject": [],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["playlist", "collection"],
+      "contextMessage": "Playlist is a container: CONTAINS → Track."
+    },
+    "Venue": {
+      "displayName": "Venue",
+      "descriptionNoun": "venue",
+      "description": "Concert venues.",
+      "displayPropertyKeys": ["venue", "name"],
+      "properties": [{ "key": "name", "type": "string", "required": true }],
+      "allowedRelationshipsAsSubject": [],
+      "allowedRelationshipsAsObject": ["PERFORMED_AT"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["venue"]
+    },
+    "Performance": {
+      "displayName": "Performance",
+      "descriptionNoun": "performance",
+      "description": "Live shows / events.",
+      "displayPropertyKeys": ["name", "title"],
+      "properties": [{ "key": "venue", "type": "string", "required": false }],
+      "allowedRelationshipsAsSubject": ["PERFORMED_AT", "PARTICIPATED_IN"],
+      "allowedRelationshipsAsObject": ["PARTICIPATED_IN"],
+      "constraints": { "primaryDisplayProperty": "venue" },
+      "synonyms": ["performance", "concert", "show"]
+    },
+    "Session": {
+      "displayName": "Session",
+      "descriptionNoun": "session",
+      "description": "A recording session.",
+      "displayPropertyKeys": ["name", "title"],
+      "properties": [{ "key": "name", "type": "string", "required": false }],
+      "allowedRelationshipsAsSubject": ["USED_EQUIPMENT"],
+      "allowedRelationshipsAsObject": ["RECORDED_IN_SESSION"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["session", "recording session"]
+    },
+    "Release": {
+      "displayName": "Release",
+      "descriptionNoun": "release",
+      "description": "A release product (vinyl, CD, digital).",
+      "displayPropertyKeys": ["title", "name"],
+      "properties": [{ "key": "title", "type": "string", "required": true }],
+      "allowedRelationshipsAsSubject": ["RELEASED_BY", "ISSUED_BY_LABEL", "CONTAINS"],
+      "allowedRelationshipsAsObject": ["RELEASED_ON"],
+      "constraints": { "primaryDisplayProperty": "title" },
+      "synonyms": ["release"]
+    },
+    "Effect": {
+      "displayName": "Effect",
+      "descriptionNoun": "effect",
+      "description": "Audio effects and processing.",
+      "displayPropertyKeys": ["name"],
+      "properties": [{ "key": "name", "type": "string", "required": true }],
+      "allowedRelationshipsAsSubject": [],
+      "allowedRelationshipsAsObject": ["USES_EFFECT"],
+      "constraints": { "primaryDisplayProperty": "name" },
+      "synonyms": ["effect"]
+    },
+    "Credit": {
+      "displayName": "Credit",
+      "descriptionNoun": "credit",
+      "description": "Role attribution.",
+      "displayPropertyKeys": ["role_name", "name"],
+      "properties": [{ "key": "role_name", "type": "string", "required": false }],
+      "allowedRelationshipsAsSubject": [],
+      "allowedRelationshipsAsObject": ["CREDITS_PERSON"],
+      "constraints": { "primaryDisplayProperty": "role_name" },
+      "synonyms": ["credit", "role"]
+    }
+  },
+  "relationships": [
+    {
+      "type": "CONTAINS",
+      "description": "A collection or release contains another work or recording. Containers: Album, Playlist (and optionally Release). Objects: Track, SongWork.",
+      "subjectLabels": ["Album", "Playlist", "Release"],
+      "objectLabels": ["Track", "SongWork"],
+      "synonyms": ["contains", "includes", "track list"]
+    },
+    {
+      "type": "PERFORMED_BY",
+      "description": "A recorded track or work is performed by an artist.",
+      "subjectLabels": ["Track", "SongWork"],
+      "objectLabels": ["Artist"],
+      "synonyms": ["performed by", "performer"]
+    },
+    {
+      "type": "RELEASED_ON",
+      "description": "A track appears on an album or release.",
+      "subjectLabels": ["Track"],
+      "objectLabels": ["Album", "Release"],
+      "synonyms": ["released on", "appears on"]
+    },
+    {
+      "type": "WRITTEN_BY",
+      "description": "A work or recording is written by a person.",
+      "subjectLabels": ["Track", "SongWork"],
+      "objectLabels": ["Person"],
+      "synonyms": ["written by", "writer"]
+    },
+    {
+      "type": "PRODUCED_BY",
+      "description": "A recording or release is produced by a person.",
+      "subjectLabels": ["Track", "Album", "Release"],
+      "objectLabels": ["Person"],
+      "synonyms": ["produced by", "producer"]
+    },
+    {
+      "type": "RECORDED_AT",
+      "description": "A recording took place at a studio.",
+      "subjectLabels": ["Track"],
+      "objectLabels": ["Studio"],
+      "synonyms": ["recorded at"]
+    },
+    {
+      "type": "RECORDED_IN_SESSION",
+      "description": "A recording is part of a recording session.",
+      "subjectLabels": ["Track"],
+      "objectLabels": ["Session"],
+      "synonyms": ["recorded in session"]
+    },
+    {
+      "type": "USED_EQUIPMENT",
+      "description": "A studio, session, recording, or person used a piece of equipment or instrument.",
+      "subjectLabels": ["Artist", "Track", "Album", "Studio", "Session", "Performance", "Person"],
+      "objectLabels": ["Equipment", "Instrument"],
+      "synonyms": ["used equipment", "used"]
+    },
+    {
+      "type": "PLAYED_INSTRUMENT",
+      "description": "A person or artist played an instrument.",
+      "subjectLabels": ["Person", "Artist"],
+      "objectLabels": ["Instrument"],
+      "synonyms": ["played instrument"]
+    },
+    {
+      "type": "PLAYED_ON",
+      "description": "A person or artist performed on a track, album, or release.",
+      "subjectLabels": ["Person", "Artist"],
+      "objectLabels": ["Instrument", "Equipment", "Track"],
+      "synonyms": ["played on"]
+    },
+    {
+      "type": "RELEASED_BY",
+      "description": "A release or album was released by a label.",
+      "subjectLabels": ["Album", "Release"],
+      "objectLabels": ["Label"],
+      "synonyms": ["released by"]
+    },
+    {
+      "type": "ISSUED_BY_LABEL",
+      "description": "A work or release was issued by a label.",
+      "subjectLabels": ["Album", "Release"],
+      "objectLabels": ["Label"],
+      "synonyms": ["issued by label"]
+    },
+    {
+      "type": "FEATURES",
+      "description": "A recording or release features another artist or person.",
+      "subjectLabels": ["Track", "Album"],
+      "objectLabels": ["Artist", "Person"],
+      "synonyms": ["features", "featuring"]
+    },
+    {
+      "type": "MASTERED_BY",
+      "description": "A recording or release was mastered by a person.",
+      "subjectLabels": ["Track", "Album"],
+      "objectLabels": ["Person"],
+      "synonyms": ["mastered by"]
+    },
+    {
+      "type": "ENGINEERED_BY",
+      "description": "A recording or release was engineered by a person.",
+      "subjectLabels": ["Track", "Album"],
+      "objectLabels": ["Person"],
+      "synonyms": ["engineered by"]
+    },
+    {
+      "type": "MEMBER_OF",
+      "description": "A person or artist is or was a member of a group.",
+      "subjectLabels": ["Person"],
+      "objectLabels": ["Artist"],
+      "synonyms": ["member of", "member"]
+    },
+    {
+      "type": "COLLABORATED_WITH",
+      "description": "Two artists or people collaborated.",
+      "subjectLabels": ["Artist"],
+      "objectLabels": ["Artist", "Person"],
+      "synonyms": ["collaborated with"]
+    },
+    {
+      "type": "INFLUENCED_BY",
+      "description": "An entity was influenced by another entity.",
+      "subjectLabels": ["Artist"],
+      "objectLabels": ["Artist"],
+      "synonyms": ["influenced by"]
+    },
+    {
+      "type": "COVERS",
+      "description": "One recording is a cover of another work or recording.",
+      "subjectLabels": ["Track"],
+      "objectLabels": ["Track", "SongWork"],
+      "synonyms": ["covers", "cover of"]
+    },
+    {
+      "type": "REMIXES",
+      "description": "One recording remixes another recording.",
+      "subjectLabels": ["Track"],
+      "objectLabels": ["Track"],
+      "synonyms": ["remixes", "remix of"]
+    },
+    {
+      "type": "CREDITS_PERSON",
+      "description": "A credit entity refers to a person.",
+      "subjectLabels": ["Track", "Album"],
+      "objectLabels": ["Person", "Credit"],
+      "synonyms": ["credits person"]
+    },
+    {
+      "type": "HAS_VERSION",
+      "description": "A work has a version, variant, or derivative recording.",
+      "subjectLabels": ["Track"],
+      "objectLabels": ["Track", "SongWork"],
+      "synonyms": ["has version", "version of"]
+    },
+    {
+      "type": "PART_OF_GENRE",
+      "description": "An entity belongs to a genre.",
+      "subjectLabels": ["Artist", "Track", "SongWork"],
+      "objectLabels": ["Genre"],
+      "synonyms": ["part of genre", "genre"]
+    },
+    {
+      "type": "PERFORMED_AT",
+      "description": "A performance took place at a venue.",
+      "subjectLabels": ["Performance"],
+      "objectLabels": ["Venue"],
+      "synonyms": ["performed at"]
+    },
+    {
+      "type": "PARTICIPATED_IN",
+      "description": "A person or artist participated in a performance or session.",
+      "subjectLabels": ["Artist", "Person"],
+      "objectLabels": ["Performance", "Session"],
+      "synonyms": ["participated in"]
+    },
+    {
+      "type": "USES_EFFECT",
+      "description": "A performer or recording uses an effect.",
+      "subjectLabels": ["Track", "Equipment"],
+      "objectLabels": ["Effect"],
+      "synonyms": ["uses effect"]
+    }
+  ],
+  "identityRules": [
+    {
+      "labels": ["Artist", "Person"],
+      "note": "If a real-world human is an artist, treat Artist and Person as the same identity. Match or create a single dual-labeled node instead of split duplicates."
+    }
+  ],
+  "labelSynonyms": {
+    "song": "Track",
+    "track": "Track",
+    "album": "Album",
+    "artist": "Artist",
+    "band": "Artist",
+    "musician": "Artist",
+    "person": "Person",
+    "genre": "Genre",
+    "label": "Label",
+    "studio": "Studio",
+    "instrument": "Instrument",
+    "equipment": "Equipment",
+    "playlist": "Playlist",
+    "venue": "Venue",
+    "performance": "Performance",
+    "session": "Session",
+    "release": "Release",
+    "effect": "Effect",
+    "credit": "Credit",
+    "work": "SongWork",
+    "composition": "SongWork"
+  }
+}

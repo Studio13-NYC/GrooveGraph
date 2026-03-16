@@ -68,21 +68,28 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 
 ## Project status and docs
 
-**Phase 2 (current)** implements the graph with Neo4j Aura as the production store. The app runs dynamically: API routes serve graph data, type-aware query summaries, direct enrichment, and a staged enrichment review workflow for curator-led imports.
+**Phase 2 (current)** implements the graph with Neo4j Aura as the production store. The app runs dynamically: API routes serve graph data, type-aware query summaries, and a staged enrichment review workflow for curator-led imports.
+
+**Full doc catalog:** [docs/INDEX.md](docs/INDEX.md) lists every document with a clear purpose and naming. Short reference:
 
 | Document | Purpose |
 |----------|---------|
+| [docs/INDEX.md](docs/INDEX.md) | **Doc index** — catalog of all docs and where to find them. |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Property-graph core, conceptual layers, query model, indexing, validation. |
-| [docs/DOMAIN_MODEL.md](docs/DOMAIN_MODEL.md) | **Single source of truth**: node labels, properties, edge types, and advanced structures (Instrument, SongWork, provenance). |
+| [docs/DOMAIN_MODEL.md](docs/DOMAIN_MODEL.md) | **Single source of truth**: node labels, properties, edge types, and advanced structures. |
 | [docs/FUNCTIONAL_SPEC.md](docs/FUNCTIONAL_SPEC.md) | Product outcome, actors, capabilities, discovery use cases, enrichment, import contract. |
 | [docs/STORAGE_ABSTRACTION.md](docs/STORAGE_ABSTRACTION.md) | `GraphStore` interface, Neo4j Aura production store, InMemory reference adapter. |
 | [docs/neo4j.md](docs/neo4j.md) | Neo4j Aura setup: configure `.env.local` for connection. |
-| [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Implementation plan: domain types, OOP rule, entity/relationship layout, data population. |
+| [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) | Domain types, OOP rule, entity/relationship layout, data population. |
 | [docs/RULES_AND_STANDARDS.md](docs/RULES_AND_STANDARDS.md) | Catalog of Cursor rules and coding/layout standards. |
-| [docs/ENRICHMENT_PROCESS.md](docs/ENRICHMENT_PROCESS.md) | Enrichment pipeline: direct collect → verify → load plus staged review-session workflow. |
-| [docs/ENRICHMENT_SOURCES.md](docs/ENRICHMENT_SOURCES.md) | Catalog of enrichment sources; MusicBrainz and Wikipedia implemented. |
-| [data/README.md](data/README.md) | Reference datasets (Last.fm, play history, Spotify lists) for import and testing. |
-| [docs/DEPLOY.md](docs/DEPLOY.md) | Deploy the dynamic app (Node hosting, Vercel, or similar). |
+| [docs/ENRICHMENT_PROCESS.md](docs/ENRICHMENT_PROCESS.md) | Enrichment pipeline: collect → verify → review → load; staged session; triplet/span_mention. |
+| [docs/ENRICHMENT_SOURCES.md](docs/ENRICHMENT_SOURCES.md) | Catalog of enrichment sources; MusicBrainz, Wikipedia, and others. |
+| [docs/ONTOLOGY.md](docs/ONTOLOGY.md) | Formal ontology (`data/ontology/schema.json`), LLM context, validation, tools. |
+| [data/README.md](data/README.md) | Reference datasets for import and testing. |
+| [docs/DEPLOY.md](docs/DEPLOY.md) | Deploy the dynamic app (Vercel, Node, Azure, Docker). |
+| [docs/GRAPH_VIZ_REPAIR_PLAN.md](docs/GRAPH_VIZ_REPAIR_PLAN.md) | Graph viz: current Cytoscape 2D stack, options, validation, 3D upgrade path. |
+
+**Hygiene.** For cruft and unused-code analysis, run `npm run cleanup:check` (runs `npm prune` and `npx knip`). Present any proposed removals in a table (Path | Reason | Estimated lines removed | Action) and get human approval before deleting or changing anything. See [docs/RULES_AND_STANDARDS.md](docs/RULES_AND_STANDARDS.md) and `.cursor/rules/feature-cleanup-cruft.mdc` for the full workflow.
 
 **Run it:** From the repo root, `npm install` then `npm run build`. Configure Neo4j Aura in `.env.local` (see [docs/neo4j.md](docs/neo4j.md)). Use `npm run load:neo4j` to import the graph from `data/bobdobbsnyc.csv` (or `data/graph-store.json` if present) into Aura. Use `npm run query -- "Artist Name"` to list that artist’s tracks and albums (e.g. `npm run query -- "Kacey Musgraves"`).
 
@@ -96,7 +103,7 @@ The domain model defines **node types** (Artist, Album, Track, Instrument, Studi
 - a `Reset layout` action that reapplies the graph's structured layout
 - a dedicated `/enrichment` workspace for staged curator review before applying new facts to Neo4j
 
-Search for an entity, inspect its structured summary in query mode, or view its neighborhood in the graph without leaving the page. The current graph presentation is biased toward the common `Artist -> Album -> Song` mental model while still supporting shared songs, cover relationships, and broader cross-entity discovery. Enrichment is run through the staged `/enrichment` workflow: select targets, run automated source collection and/or triplet exploration, review staged candidates with provenance, reject incorrect candidates, and apply only deduped approved changes to Neo4j. For open-ended triplet exploration, the app supports scoped `any` placeholders (for example `Album:any CONTAINS Track:any` scoped to an artist) and enforces the same validation and review/apply gate before writes. The graph uses `react-force-graph-2d` for force-directed visualization.
+Search for an entity, inspect its structured summary in query mode, or view its neighborhood in the graph without leaving the page. The current graph presentation is biased toward the common `Artist -> Album -> Song` mental model while still supporting shared songs, cover relationships, and broader cross-entity discovery. Enrichment is run through the staged `/enrichment` workflow: select targets, run automated source collection and/or triplet exploration, review staged candidates with provenance, reject incorrect candidates, and apply only deduped approved changes to Neo4j. For open-ended triplet exploration, the app supports scoped `any` placeholders (for example `Album:any CONTAINS Track:any` scoped to an artist) and enforces the same validation and review/apply gate before writes. The graph uses **Cytoscape.js** for 2D graph visualization (preset semantic layout, WebGL rendering). A view abstraction (`GraphViewProps`) allows a future 3D view to plug in without changing the exploration workspace.
 
 ---
 

@@ -16,10 +16,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "resolveJsonModule": true,
+    "baseUrl": ".",
     "rootDir": ".",
     "paths": {
       "@/*": [
-        "./src/*"
+        "./backend/src/*"
       ]
     },
     "plugins": [
@@ -30,10 +31,11 @@
     "allowJs": true
   },
   "include": [
-    "src/**/*",
-    "scripts/**/*",
-    "app/**/*",
-    "next-env.d.ts",
+    "backend/src/**/*",
+    "backend/scripts/**/*",
+    "frontend/app/**/*",
+    "frontend/tests/**/*",
+    "frontend/next-env.d.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": [

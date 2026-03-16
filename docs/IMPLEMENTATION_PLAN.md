@@ -94,7 +94,7 @@ Each relationship file exports one class; constructor takes `id?`, `fromNodeId`,
 - Add a **data-loading** entry that reads from existing `data/` assets and produces **instances** of the domain classes.
   - **Preferred first source**: `data/bobdobbsnyc.csv` (columns: artist, album, track, played-at). Parse CSV, normalize artist/album/track names, create **Artist**, **Album**, **Track** entities (dedupe by name or by a generated id), and **ReleasedOn** / **Contains** relationships between them.
   - Optional: read `data/cleaned_lastfm_sample.json` to create **Artist** (and optionally **Track**) entities from `artists` array; link to play history where names match.
-- **Recommendation**: A small script under `scripts/` (e.g. `scripts/load-play-history.ts`) that reads CSV/JSON, builds entity and relationship instances, and outputs a JSON summary or returns them. No persistence in this step—just prove we can parse data and instantiate domain objects.
+- **Recommendation**: A small script under `backend/scripts/` (e.g. `backend/scripts/load-play-history.ts`) that reads CSV/JSON, builds entity and relationship instances, and outputs a JSON summary or returns them. No persistence in this step—just prove we can parse data and instantiate domain objects.
 
 ---
 
@@ -107,7 +107,7 @@ Each relationship file exports one class; constructor takes `id?`, `fromNodeId`,
 5. Implement Phase 1 **entities** (Artist, Album, Track, Instrument; optionally Equipment, Studio) in `src/domain/entities/`, each in its own file.
 6. Implement Phase 1 **relationships** (PerformedBy, ReleasedOn, RecordedAt, Contains) in `src/domain/relationships/`, each in its own file.
 7. Add **barrel exports** (entities/index, relationships/index, domain/index).
-8. Add **scripts/load-play-history.ts** (or equivalent) that parses `data/bobdobbsnyc.csv`, dedupes artists/albums/tracks by name, creates entity and relationship instances, and logs or returns them.
+8. Add **backend/scripts/load-play-history.ts** (or equivalent) that parses `data/bobdobbsnyc.csv`, dedupes artists/albums/tracks by name, creates entity and relationship instances, and logs or returns them.
 
 **Update:** GraphStore is implemented. Production uses **Neo4j Aura** (`Neo4jGraphStore`); `InMemoryGraphStore` remains for scripts and tests. Run `npm run load:neo4j` to import the graph into Aura. See [STORAGE_ABSTRACTION.md](STORAGE_ABSTRACTION.md) and [neo4j.md](neo4j.md).
 

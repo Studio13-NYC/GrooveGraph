@@ -9,15 +9,15 @@ For any feature build, enhancement, or debugging task that affects user workflow
 
 ## 1. Mandatory UI testing
 
-**Preferred: Playwright e2e** (project has `e2e/` and `playwright.config.ts`):
+**Preferred: Playwright e2e** (project has `frontend/tests/e2e/` and `playwright.config.ts`):
 
-- **Local:** `npx playwright test` (uses baseURL `http://localhost:3000`; starts or reuses dev server).
+- **Local:** `npx playwright test -c frontend/playwright.config.ts` (uses baseURL `http://localhost:3000`; starts or reuses dev server).
 - **Deployed:** Run against production so issues on the live site are caught:
   ```powershell
   $env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"
-  npx playwright test e2e/login-and-graph.spec.ts --project=deployed
+ npx playwright test -c frontend/playwright.config.ts frontend/tests/e2e/login-and-graph.spec.ts --project=deployed
   ```
-- Add or extend specs in `e2e/*.spec.ts` for new workflows (login, nav, graph load, enrichment).
+- Add or extend specs in `frontend/tests/e2e/*.spec.ts` for new workflows (login, nav, graph load, enrichment).
 - For deployment or cross-origin fixes, **always run the deployed project**; local-only tests can miss CORS/credentials issues.
 
 **Alternative: built-in browser** (`@browser` / cursor-ide-browser) when Playwright is not sufficient:
