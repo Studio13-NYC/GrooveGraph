@@ -6,39 +6,32 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 
+const ADMIN_USERNAME = "nickknyc";
+const STORAGE_KEY = "gg_admin";
+
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
+  function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    const trimmed = username.trim();
+    if (trimmed !== ADMIN_USERNAME) {
+      setError("Invalid admin username");
+      return;
+    }
     setLoading(true);
     try {
-      const res = await fetch("/api/auth/signin", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username.trim() }),
-      });
-      const data = (await res.json()) as { ok?: boolean; redirectUrl?: string; error?: string };
-      if (!res.ok) {
-        setError(data.error ?? "Sign-in failed");
-        return;
-      }
-      if (data.redirectUrl) {
-        router.push(data.redirectUrl);
-        router.refresh();
-      } else {
-        router.push("/");
-        router.refresh();
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Sign-in failed");
-    } finally {
-      setLoading(false);
+      sessionStorage.setItem(STORAGE_KEY, "1");
+    } catch {
+      /* ignore */
     }
+    router.push("/");
+    router.refresh();
+    setLoading(false);
   }
 
   return (
