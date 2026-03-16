@@ -17,3 +17,5 @@
 - Enrichment validation and review logic lives primarily in `src/enrichment/review.ts` and `src/enrichment/llm/validate-bundle.ts`.
 - Project workflow rules are enforced via files in `.cursor/rules/`.
 - Runtime hygiene rule `port-3000-runtime-hygiene.mdc` requires deterministic startup on `3000` via `npm run dev`.
+- Cruft cleanup runs at feature start (after kickoff commit) and feature end (before completion commit), or as standalone hygiene. Use `npm run cleanup:check` (runs `npm prune` and `npx knip`); present proposed removals in a table (Path | Reason | Estimated lines removed | Action) and do not delete or change anything until human approval (see `.cursor/rules/feature-cleanup-cruft.mdc`).
+- UI validation uses **Playwright e2e** (`e2e/*.spec.ts`). For deployed-site checks run `npx playwright test --project=deployed` with `PLAYWRIGHT_BASE_URL=https://groovegraph.s13.nyc`. See `docs/UI_TESTING.md` and `.cursor/rules/ui-debug-testing.mdc`. Subagents: **runtime-hygiene** (port 3000, dev server), **ui-testing** (Playwright local/deployed), **deployment** (Azure SWA + App Service per `docs/DEPLOY.md`).

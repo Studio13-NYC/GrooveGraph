@@ -1,23 +1,30 @@
 ---
-description: Autonomous browser workflow testing with terminal hygiene and progress updates
+description: Autonomous UI workflow testing with Playwright e2e (local and deployed), browser automation, and progress updates
 alwaysApply: true
 ---
 
 # Autonomous UI Workflow Validation Rule
 
-For any feature build, enhancement, or debugging task that affects user workflows, the model must autonomously validate the full workflow from a user/UI perspective using browser automation. Do not stop at code changes alone.
+For any feature build, enhancement, or debugging task that affects user workflows, the model must autonomously validate the full workflow from a user/UI perspective. Do not stop at code changes alone.
 
-## 1. Mandatory autonomous browser testing (watchable by user)
+## 1. Mandatory UI testing
 
-Use built-in browser automation (`@browser` / `Browser` tool) to execute realistic end-to-end flows.
-Browser automation here means the native Cursor browser tool, not project MCP tools.
+**Preferred: Playwright e2e** (project has `e2e/` and `playwright.config.ts`):
 
-- Navigate to the real workflow entry point (for example `http://localhost:3000/enrichment`).
-- Keep automation in a visible browser tab so the user can watch the live interaction.
-- Capture a full-page screenshot before interaction to capture structure and element refs.
-- Exercise the full interaction path (type/click/select/submit/wait).
-- Capture a full-page screenshot after each critical step and after completion.
-- Verify visible user outcomes from the page itself, not only API/network assumptions.
+- **Local:** `npx playwright test` (uses baseURL `http://localhost:3000`; starts or reuses dev server).
+- **Deployed:** Run against production so issues on the live site are caught:
+  ```powershell
+  $env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"
+  npx playwright test e2e/login-and-graph.spec.ts --project=deployed
+  ```
+- Add or extend specs in `e2e/*.spec.ts` for new workflows (login, nav, graph load, enrichment).
+- For deployment or cross-origin fixes, **always run the deployed project**; local-only tests can miss CORS/credentials issues.
+
+**Alternative: built-in browser** (`@browser` / cursor-ide-browser) when Playwright is not sufficient:
+
+- Navigate to the real workflow entry point (e.g. `http://localhost:3000/enrichment` or `https://groovegraph.s13.nyc`).
+- Snapshot before interaction; exercise full path (type/click/submit/wait); snapshot after critical steps.
+- Verify visible user outcomes, not only API/network assumptions.
 
 Do this repeatedly until the workflow works end-to-end or a hard blocker is identified with evidence.
 
@@ -31,85 +38,13 @@ While testing/fixing, provide concise status updates as attempts are made:
 
 Do not wait for the user to intervene to continue the validation cycle.
 
-## 3. Local server preflight and deterministic restart (mandatory)
+## 3. Terminal session hygiene and port preflight
 
-Before browser automation starts, verify local runtime readiness:
-
-1. Check whether the target app is already serving correctly on `http://localhost:3000`.
-2. If server state is unknown, unhealthy, or stale, clear listeners on the `3000` range (`3000-3099`) to remove conflicting processes.
-3. Start a fresh dev server in a visible terminal session with `npm run dev`.
-4. Wait for startup completion (ready log plus successful response from `http://localhost:3000`).
-5. If startup falls back to another port, stop it, free port `3000`, and re-run `npm run dev`.
-6. Begin browser testing only after `localhost:3000` is confirmed up.
-
-Runtime requirements:
-
-- Keep one active dev server terminal for the run; do not spawn duplicate servers.
-- Keep startup logs visible to the user while validating.
-- At natural checkpoints, stop no-longer-needed local processes.
-
-## 4. Browser tool preflight (fail fast)
-
-Before running UI automation, perform exactly one browser capability check:
-
-1. Confirm the native `Browser` / `@browser` tool is available in the current agent session by checking the session tool list.
-2. Verify browser automation actions are present (for example navigate/click/type/snapshot/screenshot equivalents).
-3. Attempt to open the target URL in that native browser tool.
-4. If navigation succeeds, continue with the normal UI flow.
-5. If browser actions are unavailable, stop immediately and report a blocker.
-
-Hard requirements:
-
-- Use the built-in browser automation path directly (`@browser` / `Browser` tool).
-- Do not call browser actions via MCP (`call_mcp_tool`) and do not use `cursor-ide-browser-*` tool names.
-- Do not probe multiple possible MCP server names.
-- Do not spend repeated attempts guessing tool names or alternate browser endpoints.
-- Do not treat "Browser connected" UI state alone as sufficient; browser actions must exist in the active agent tool list.
-
-If preflight fails, report blockers in this format:
-
-- Tool attempted
-- Exact error text
-- Why UI validation cannot proceed
-- Required environment action to unblock
-
-If blocker reason is missing browser actions in-session, required environment action must be:
-
-- Start a new agent chat with `@browser` explicitly attached.
-- Ensure the target Browser Tab is selected in Cursor Tools.
-- Re-run the same task in that new chat.
-
-## 5. Required browser interaction sequence
-
-For each meaningful run, agents must execute this sequence:
-
-1. Open target page and take baseline full-page screenshot.
-2. Enter test data into required fields.
-3. Trigger the workflow using the relevant UI control(s) (for example click submit/run/apply).
-4. Wait for completion indicators (loading state resolved, result panel, confirmation toast, status badge, etc.).
-5. Take full-page screenshots at each critical transition and on final state.
-6. Evaluate screenshots against expected behavior and mark pass/fail with reasons.
-
-## 6. Screenshot evidence and validation standard
-
-Each attempt must include screenshot-based validation:
-
-- Keep an ordered screenshot trail covering start, action, and end states.
-- Use full-page captures (not cropped snippets) unless the tool cannot provide full-page mode.
-- For each screenshot, record:
-  - what action was just performed,
-  - what was expected on screen,
-  - what was actually visible,
-  - pass/fail decision.
-- If fail: state the user-visible discrepancy, suspected cause, and next corrective action.
-
-## 7. Terminal session hygiene and port preflight
-
-Before starting a local run expected on port `3000`:
+Before starting a local run expected on port `3000`, follow the **runtime hygiene** rule (see `port-3000-runtime-hygiene.mdc` and the `runtime-hygiene` subagent):
 
 1. Check existing terminal sessions and running processes.
 2. Stop or reuse stale/duplicate dev servers.
-3. Ensure port `3000` is available before launching a new server.
+3. Ensure port `3000` is available before launching a new server (use `npm run dev`, which runs the port guard).
 4. Start only the required process for the current validation run.
 
 As work progresses:
@@ -117,7 +52,7 @@ As work progresses:
 - Keep terminal usage clean (avoid accumulating redundant server sessions).
 - Shut down no-longer-needed local processes at natural checkpoints.
 
-## 8. Evidence-first debugging and validation
+## 4. Evidence-first debugging and validation
 
 When failures occur:
 
@@ -126,15 +61,10 @@ When failures occur:
 - Make fixes based on observed evidence.
 - Re-run the same browser flow to confirm the fix from the user perspective.
 
-## 9. Completion criteria
+## 5. Completion criteria
 
 A task is not considered complete until:
 
 - The end-to-end UI workflow has been exercised through browser automation.
-- Local runtime was brought up deterministically on `http://localhost:3000` before browser steps.
-- The user could observe the automation run in a browser tab.
-- The user could observe dev-server startup in a visible terminal session.
-- Full-page screenshots were captured across the full workflow.
-- Screenshot analysis explicitly marked expected vs observed behavior.
 - The user-visible result is confirmed working.
 - The validation attempts and outcomes were communicated in status updates.

@@ -2,6 +2,8 @@
 
 Use this prompt when you want an agent to run observable UI automation and validate behavior with screenshot evidence.
 
+**Preferred for regression:** Use **Playwright e2e** first (`npx playwright test`; for deployed: `--project=deployed` with `PLAYWRIGHT_BASE_URL=https://groovegraph.s13.nyc`). See `docs/UI_TESTING.md` and the **ui-testing** subagent. Use the browser prompt below when you need interactive exploration or screenshot evidence beyond what the e2e specs capture.
+
 ## Copy/paste prompt
 
 ```md

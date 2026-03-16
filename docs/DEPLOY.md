@@ -50,7 +50,7 @@ This compiles TypeScript and produces a production Next.js build. The `out/` fol
 ### Option C: Azure split — UI on SWA, API on App Service (recommended for groovegraph.s13.nyc)
 
 - **Web UI** → **swa-groovegraph** (Static Web App, custom domain groovegraph.s13.nyc). Application Insights is linked to this SWA.
-- **API** → **as-groovegraph-api** (App Service, free F1 tier). Runs the Next.js API routes and Neo4j; Application Insights is configured and active. CORS allows requests from the SWA origin.
+- **API** → **as-groovegraph-api** (App Service, free F1 tier). Runs the Next.js API routes and Neo4j; Application Insights is configured and active. CORS allows requests from the SWA origin. The API uses the **built-in Node.js runtime** (`NODE|20-lts`), not a custom Docker image; startup command is `npm start` (Next.js). Linux App Service runs the stack in a platform-managed environment; to avoid Linux/containers entirely you would use a Windows App Service plan instead.
 
 **1. Deploy the API (App Service)** — full Next.js app so `/api/*` and server run there:
 
@@ -60,7 +60,9 @@ npm run build:web
 .\scripts\deploy-appservice.ps1 -WebAppName as-groovegraph-api
 ```
 
-Ensure **as-groovegraph-api** has app settings: `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, `NEO4J_DATABASE`, `OPENAI_API_KEY`, `ENRICHMENT_PIPELINE`, and Application Insights (`APPLICATIONINSIGHTS_CONNECTION_STRING`).
+Ensure **as-groovegraph-api** has app settings: `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, `NEO4J_DATABASE`, `OPENAI_API_KEY`, `ENRICHMENT_PIPELINE`, and Application Insights (`APPLICATIONINSIGHTS_CONNECTION_STRING`). Admin auth is UI-only (header `X-Admin-User: nickknyc`); no cookie secret required.
+
+**Avoiding 404 on `/api/*` after static build:** When you run `npm run build:static:swa`, the script removes `app/api` and then restores it from the backup. If the process is interrupted or the backup path is wrong, `app/api` can stay missing. Before building for App Service, ensure `app/api` is present (e.g. run `git restore app/api` if it’s missing), then build and deploy as above. After deploy, `https://as-groovegraph-api.azurewebsites.net/api/graph?entityType=Artist&random=1` should respond with 200.
 
 **2. Deploy the UI (SWA)** — static export with API base URL pointing at App Service:
 
@@ -70,6 +72,13 @@ $env:SWA_CLI_DEPLOYMENT_TOKEN = (az staticwebapp secrets list --name swa-grooveg
 ```
 
 The script runs `npm run build:static:swa` (builds with `NEXT_PUBLIC_API_BASE_URL=https://as-groovegraph-api.azurewebsites.net`) if `out/` is missing, then deploys `out/` to **swa-groovegraph**. Users hit groovegraph.s13.nyc for the UI; the UI calls the API at as-groovegraph-api.
+
+**Testing after deploy:** Run Playwright e2e against the deployed site to confirm login, nav, and graph load. See [UI_TESTING.md](UI_TESTING.md) and the **ui-testing** subagent. Example:
+
+```powershell
+$env:PLAYWRIGHT_BASE_URL = "https://groovegraph.s13.nyc"
+npx playwright test e2e/login-and-graph.spec.ts --project=deployed
+```
 
 ---
 
