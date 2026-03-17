@@ -1,0 +1,13 @@
+[
+  {
+    "id": "4ea7af58-16bc-4193-b3ca-979b99a7273d",
+    "createdAt": "2026-03-17T06:00:52.899Z",
+    "updatedAt": "2026-03-17T06:01:22.446Z",
+    "relationshipType": "PLAYED_ON",
+    "direction": "outbound",
+    "fromLabel": "Person",
+    "toLabel": "Album",
+    "status": "accepted",
+    "approvedAt": "2026-03-17T06:01:22.446Z"
+  }
+]

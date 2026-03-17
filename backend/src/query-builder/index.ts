@@ -11,11 +11,23 @@ export {
   appendQueryInsight,
   findRelevantInsights,
   loadQueryInsights,
+  recordQueryInsightFeedback,
   type QueryInsight,
 } from "./insights";
 export {
   buildHumanSummary,
 } from "./summary";
+export {
+  upsertRelationshipProposal,
+  markRelationshipProposalAccepted,
+  loadRelationshipProposals,
+  type RelationshipProposal,
+  type RelationshipProposalStatus,
+} from "./relationship-proposals";
+export {
+  synthesizeResearchAnswer,
+  type ResearchAnswerResult,
+} from "./research-answer";
 export type {
   QueryDirection,
   QueryNodeSelector,

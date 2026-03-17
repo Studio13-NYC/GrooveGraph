@@ -6,6 +6,7 @@
 - Keep responses concise and use Markdown only when semantically helpful.
 - Format paths, files, functions, and classes with inline code backticks.
 - Keep local runtime deterministic: `npm run dev` must guarantee port `3000` via the project port guard.
+- Avoid one-off, case-specific fixes in parsing/extraction; prefer generalized, ontology-driven, LLM-assisted logic aligned with the fuzzy architecture.
 
 ## Learned Workspace Facts
 

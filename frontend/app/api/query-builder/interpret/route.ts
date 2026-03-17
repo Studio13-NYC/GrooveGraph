@@ -7,6 +7,7 @@ import {
   compileQueryStateToCypher,
   getOntologyAwareNextOptions,
   interpretQueryPrompt,
+  synthesizeResearchAnswer,
 } from "@/query-builder";
 
 export const dynamic = process.env.NEXT_STATIC_EXPORT === "1" ? undefined : "force-dynamic";
@@ -38,11 +39,66 @@ export async function POST(request: NextRequest) {
     trace.log("interpretation.completed", {
       strategy: interpretation.strategy,
       usedInsightCount: interpretation.usedInsightIds.length,
+      proposedNodeCount: interpretation.proposedAdditions?.nodes.length ?? 0,
+      proposedRelationshipCount: interpretation.proposedAdditions?.relationships.length ?? 0,
     });
 
-    const compiled = compileQueryStateToCypher(interpretation.queryState, ontology);
+    let compiled: { cypher: string; params: Record<string, unknown> };
+    let compileBlockedReason: string | undefined;
+    try {
+      compiled = compileQueryStateToCypher(interpretation.queryState, ontology);
+    } catch (error) {
+      compileBlockedReason = error instanceof Error ? error.message : String(error);
+      compiled = {
+        cypher: "-- compile blocked due to ontology-invalid interpreted relationship; see diagnostics --",
+        params: {},
+      };
+      trace.log("compile.blocked", { reason: compileBlockedReason });
+    }
     const nextOptions = getOntologyAwareNextOptions(interpretation.queryState, ontology);
     const summary = buildHumanSummary(interpretation.queryState);
+    const research = await synthesizeResearchAnswer({
+      prompt,
+      queryState: interpretation.queryState,
+      ontology,
+      trace,
+    });
+    const unavailable = interpretation.diagnostics?.unavailableRelationships ?? [];
+    const unavailableNote =
+      unavailable.length > 0
+        ? `\n\nProposed unavailable relationships:\n${unavailable
+            .map(
+              (item) =>
+                `- ${item.fromLabel} ${item.direction === "outbound" ? "->" : "<-"} ${item.relationshipType} -> ${item.toLabel} (allowed targets: ${
+                  item.allowedTargets.join(", ") || "none"
+                })`
+            )
+            .join("\n")}`
+        : "";
+
+    const mergedNodes = new Map<string, { label: string; value: string; canonicalKey: string }>();
+    for (const node of interpretation.proposedAdditions?.nodes ?? []) {
+      mergedNodes.set(node.canonicalKey, node);
+    }
+    for (const node of research?.proposedAdditions.nodes ?? []) {
+      mergedNodes.set(node.canonicalKey, node);
+    }
+    const mergedRels = new Map<
+      string,
+      {
+        type: string;
+        fromCanonicalKey: string;
+        toCanonicalKey: string;
+        direction: "outbound" | "inbound";
+        canonicalKey: string;
+      }
+    >();
+    for (const rel of interpretation.proposedAdditions?.relationships ?? []) {
+      mergedRels.set(rel.canonicalKey, rel);
+    }
+    for (const rel of research?.proposedAdditions.relationships ?? []) {
+      mergedRels.set(rel.canonicalKey, rel);
+    }
 
     appendQueryInsight({
       prompt,
@@ -58,7 +114,15 @@ export async function POST(request: NextRequest) {
         traceId,
         strategy: interpretation.strategy,
         rationale: interpretation.rationale,
+        answerMarkdown: `${research.answerMarkdown}${unavailableNote}`,
+        answerStrategy: research.strategy,
         usedInsightIds: interpretation.usedInsightIds,
+        diagnostics: interpretation.diagnostics,
+        compileBlockedReason,
+        proposedAdditions: {
+          nodes: [...mergedNodes.values()],
+          relationships: [...mergedRels.values()],
+        },
         queryState: interpretation.queryState,
         summary,
         nextOptions,
@@ -83,12 +147,15 @@ export async function POST(request: NextRequest) {
       durationMs: Date.now() - startedAt,
       errorMessage: error instanceof Error ? error.message : String(error),
     });
+    const message = error instanceof Error ? error.message : String(error);
+    const status =
+      /valid ontology|unknown|cannot connect|prompt could not be mapped/i.test(message) ? 422 : 500;
     return NextResponse.json(
       {
         traceId,
-        error: error instanceof Error ? error.message : "Failed to interpret query prompt",
+        error: message,
       },
-      { status: 500, headers: { "x-trace-id": traceId } }
+      { status, headers: { "x-trace-id": traceId } }
     );
   }
 }

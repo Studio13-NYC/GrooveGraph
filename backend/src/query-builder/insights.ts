@@ -12,7 +12,19 @@ export interface QueryInsight {
   success: boolean;
   traceId?: string;
   note?: string;
+  feedbackScore?: number;
+  feedbackCount?: number;
   queryState?: QueryState;
+}
+
+export interface QueryInsightFeedback {
+  id: string;
+  createdAt: string;
+  traceId: string;
+  rating: 1 | -1;
+  context: "interpret" | "execute";
+  wasEmpty?: boolean;
+  note?: string;
 }
 
 const DEFAULT_MAX_INSIGHTS = 200;
@@ -30,6 +42,10 @@ function tokenize(prompt: string): string[] {
 
 function getInsightsFilePath(): string {
   return path.join(process.cwd(), "data", "query-builder-insights", "insights.json");
+}
+
+function getFeedbackFilePath(): string {
+  return path.join(process.cwd(), "data", "query-builder-insights", "feedback.json");
 }
 
 function ensureInsightsDirectory(): void {
@@ -76,6 +92,52 @@ export function appendQueryInsight(
   return next;
 }
 
+export function recordQueryInsightFeedback(input: {
+  traceId: string;
+  rating: 1 | -1;
+  context: "interpret" | "execute";
+  wasEmpty?: boolean;
+  note?: string;
+}): QueryInsightFeedback {
+  const insights = loadQueryInsights();
+  const target = insights.find((item) => item.traceId === input.traceId);
+  if (target) {
+    target.feedbackScore = (target.feedbackScore ?? 0) + input.rating;
+    target.feedbackCount = (target.feedbackCount ?? 0) + 1;
+    ensureInsightsDirectory();
+    writeFileSync(getInsightsFilePath(), JSON.stringify(insights, null, 2), "utf8");
+  }
+
+  const feedbackPath = getFeedbackFilePath();
+  let existing: QueryInsightFeedback[] = [];
+  if (existsSync(feedbackPath)) {
+    try {
+      const raw = readFileSync(feedbackPath, "utf8");
+      const parsed = JSON.parse(raw) as unknown;
+      if (Array.isArray(parsed)) {
+        existing = parsed.filter((item): item is QueryInsightFeedback => {
+          return Boolean(item && typeof item === "object" && typeof (item as QueryInsightFeedback).id === "string");
+        });
+      }
+    } catch {
+      existing = [];
+    }
+  }
+
+  const next: QueryInsightFeedback = {
+    id: randomUUID(),
+    createdAt: new Date().toISOString(),
+    traceId: input.traceId,
+    rating: input.rating,
+    context: input.context,
+    wasEmpty: input.wasEmpty,
+    note: input.note,
+  };
+  ensureInsightsDirectory();
+  writeFileSync(feedbackPath, JSON.stringify([next, ...existing].slice(0, 1000), null, 2), "utf8");
+  return next;
+}
+
 export function findRelevantInsights(prompt: string, limit = 5): QueryInsight[] {
   const normalized = normalizePrompt(prompt);
   const insights = loadQueryInsights().filter((item) => item.success && item.queryState);
@@ -90,6 +152,11 @@ export function findRelevantInsights(prompt: string, limit = 5): QueryInsight[] 
     const insightTokens = tokenize(item.prompt);
     for (const token of insightTokens) {
       if (promptTokens.has(token)) score += 1;
+    }
+
+    score += item.feedbackScore ?? 0;
+    if ((item.feedbackCount ?? 0) > 0 && (item.feedbackScore ?? 0) <= -2) {
+      score -= 3;
     }
 
     return { item, score };

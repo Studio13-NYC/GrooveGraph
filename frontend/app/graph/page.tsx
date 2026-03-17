@@ -9,24 +9,17 @@ export default function GraphPage({
 }: {
   searchParams?: Record<string, string | string[] | undefined>;
 }) {
-  if (process.env.NEXT_STATIC_EXPORT === "1") {
-    redirect("/?view=graph&entityType=Artist");
-  }
   const params = new URLSearchParams();
   const rawArtist = searchParams?.artist;
-  const rawEntityType = searchParams?.entityType;
   const rawQuery = searchParams?.query;
   const artist = Array.isArray(rawArtist) ? rawArtist[0] : rawArtist;
-  const entityType = Array.isArray(rawEntityType) ? rawEntityType[0] : rawEntityType;
   const query = Array.isArray(rawQuery) ? rawQuery[0] : rawQuery;
 
-  params.set("view", "graph");
-  params.set("entityType", entityType ?? "Artist");
   if (query) {
-    params.set("query", query);
+    params.set("q", query);
   } else if (artist) {
-    params.set("query", artist);
+    params.set("q", artist);
   }
 
-  redirect(`/?${params.toString()}`);
+  redirect(params.toString() ? `/?${params.toString()}` : "/");
 }

@@ -1,5 +1,976 @@
 [
   {
+    "id": "909ca7f8-45af-42e4-a3cd-9876fe777600",
+    "createdAt": "2026-03-17T06:19:47.892Z",
+    "normalizedPrompt": "what albums did jeff tweedy play on?",
+    "prompt": "What albums did Jeff Tweedy play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "d882d38d-f848-46f5-a7b1-53d12b87abb1",
+    "note": "The query asks for albums that Jeff Tweedy played on, starting from the person Jeff Tweedy and traversing an outgoing performed-on relationship to albums.",
+    "queryState": {
+      "start": {
+        "label": "Person",
+        "propertyKey": "name",
+        "value": "Jeff Tweedy"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 10
+    },
+    "feedbackScore": 1,
+    "feedbackCount": 1
+  },
+  {
+    "id": "8af355e3-26ae-4d8d-a1f2-c879f3954078",
+    "createdAt": "2026-03-17T06:17:39.180Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "19aa43f2-c5ef-4cc8-b256-354e0580bce2",
+    "note": "User asks for albums that Dave Edmunds played on, starting from the artist and traversing to albums via a performance/credits relationship.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "Dave Edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 10
+    }
+  },
+  {
+    "id": "8416cb43-bb73-48b6-9b50-dbede33603a1",
+    "createdAt": "2026-03-17T06:12:57.301Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "419b5cf4-c04e-4327-9fba-b6d655566eb3",
+    "note": "The user asks for albums that Dave Edmunds played on, so start from the person Dave Edmunds and traverse an outgoing performed-on relationship to albums.",
+    "queryState": {
+      "start": {
+        "label": "Person",
+        "propertyKey": "name",
+        "value": "Dave Edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 10
+    }
+  },
+  {
+    "id": "7576b375-edab-47cd-ace0-c61c96f28447",
+    "createdAt": "2026-03-17T06:11:50.293Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "a29d3040-67b4-4870-bfe1-191a9bb12581",
+    "note": "The user asks for albums that Dave Edmunds played on, so start from the artist Dave Edmunds and traverse an outgoing performed-on relationship to albums.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "Dave Edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "876bdffd-0d47-4307-8f69-5454e1600ea5",
+    "createdAt": "2026-03-17T06:11:15.005Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "f40bb4b5-7add-452c-8232-b54b968758ca",
+    "note": "The user asks for albums that Dave Edmunds played on, so start from the person entity and traverse an outgoing PLAYED_ON relationship to Album nodes.",
+    "queryState": {
+      "start": {
+        "label": "Person",
+        "propertyKey": "name",
+        "value": "Dave Edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "514d9c11-b355-4de9-ac36-bae27cc9c527",
+    "createdAt": "2026-03-17T06:01:46.582Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "772c8308-709d-4388-86ca-899bf6c9734f",
+    "note": "The user asks for albums that Dave Edmunds played on, so start from the person entity and traverse an outgoing performance relationship to albums.",
+    "queryState": {
+      "start": {
+        "label": "Person",
+        "propertyKey": "name",
+        "value": "Dave Edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "2032c33e-a7fa-4aba-a3af-d46b36e4e37d",
+    "createdAt": "2026-03-17T06:01:00.559Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "09ff3480-d8fc-4d9b-a6c5-b5a34bb2a9ac",
+    "note": "The user asks for albums that Dave Edmunds played on, implying a traversal from the person entity to album entities via a performance/contribution relationship.",
+    "queryState": {
+      "start": {
+        "label": "Person",
+        "propertyKey": "name",
+        "value": "Dave Edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "f83c4443-2775-4906-8d41-e2dada38725b",
+    "createdAt": "2026-03-17T05:52:29.028Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "b61ff07f-de8e-4fbd-bdc4-7a8e19656891",
+    "note": "Relationship PLAYED_ON cannot connect Instrument -> Track as outbound"
+  },
+  {
+    "id": "7e216e91-d81d-4e84-b368-863a003603c3",
+    "createdAt": "2026-03-17T05:50:58.558Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "3e8b80fe-6205-4607-8f1f-9e2ade803b1d",
+    "note": "Relationship PLAYED_ON cannot connect Artist -> Album as outbound"
+  },
+  {
+    "id": "0a48219f-745f-4cd5-b7fd-f769ea181b47",
+    "createdAt": "2026-03-17T05:45:02.886Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did Dave Edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "cb6e1794-373b-4385-b942-2f9661fe53fd",
+    "note": "The question asks for albums associated with tracks Dave Edmunds played on, which maps to Person -> PLAYED_ON -> Track -> RELEASED_ON -> Album.",
+    "queryState": {
+      "start": {
+        "label": "Person",
+        "propertyKey": "name",
+        "value": "Dave Edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Track",
+            "propertyKey": "name",
+            "value": ""
+          }
+        },
+        {
+          "relationshipType": "RELEASED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "9997583b-3ce6-4a6e-8d87-493b3fb38213",
+    "createdAt": "2026-03-17T05:43:25.480Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "4748c897-6d7c-40d3-a692-6a086f516155",
+    "note": "The question asks for albums associated with tracks that Dave Edmunds played on, which is represented by Person -> PLAYED_ON -> Track -> RELEASED_ON -> Album.",
+    "queryState": {
+      "start": {
+        "label": "Person",
+        "propertyKey": "name",
+        "value": "Dave Edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Track",
+            "propertyKey": "name",
+            "value": ""
+          }
+        },
+        {
+          "relationshipType": "RELEASED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "32f91e23-0606-4f7a-ae0b-aef82e085819",
+    "createdAt": "2026-03-17T05:42:18.530Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "493ebae2-99f1-46b4-b741-2be39ab45b41",
+    "note": "Research answer generation failed: answerMarkdown was empty."
+  },
+  {
+    "id": "f1f276fd-c217-42e5-a1a7-d31fae173ce8",
+    "createdAt": "2026-03-17T05:35:27.560Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "e9802939-39a3-467b-9cdd-fbaa8d7820bd",
+    "note": "Used LLM-guided interpretation from prompt and ontology constraints.",
+    "queryState": {
+      "start": {
+        "label": "Album",
+        "propertyKey": "name",
+        "value": "edmunds play on?"
+      },
+      "steps": [
+        {
+          "relationshipType": "CONTAINS",
+          "direction": "outbound",
+          "target": {
+            "label": "Track",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "78e4af82-1ca7-45a7-90b1-17478f0dfbee",
+    "createdAt": "2026-03-17T05:29:44.670Z",
+    "normalizedPrompt": "what albums did dave edmunds play on",
+    "prompt": "What albums did dave edmunds play on",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "cb37e266-3d0e-4d96-b1ca-fa9f95c74c9c",
+    "note": "OPENAI_API_KEY is required. LLM interpretation is mandatory and fallback is disabled."
+  },
+  {
+    "id": "549aaf34-1b0a-4a33-ab13-9dd3de2d603f",
+    "createdAt": "2026-03-17T05:28:16.498Z",
+    "normalizedPrompt": "who was influenced by the kinks",
+    "prompt": "who was influenced by the kinks",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "035199f5-029c-43ab-a6eb-6003c230caad",
+    "note": "OPENAI_API_KEY is required. LLM interpretation is mandatory and fallback is disabled."
+  },
+  {
+    "id": "4d8c4c9c-4d95-4a66-91f6-dade48ea0049",
+    "createdAt": "2026-03-17T05:25:19.610Z",
+    "normalizedPrompt": "who was influenced by the kinks, bands and individuals",
+    "prompt": "Who was influenced by the kinks, bands and individuals",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "fe7e30a7-528f-485b-8f0e-bc534f83b890",
+    "note": "Used generic ontology-driven fallback interpretation by scoring relationship phrases and extracting entity spans around matched ontology terms.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": ""
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": "the kinks"
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "53d37a2c-322a-4240-a0c7-927a6319bc68",
+    "createdAt": "2026-03-17T05:22:03.611Z",
+    "normalizedPrompt": "who was influenced by the kinks, bands and individuals",
+    "prompt": "Who was influenced by the kinks, bands and individuals",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "1fde7140-f726-40dc-97ca-7b5f791730be",
+    "note": "Used ontology-driven fallback intent mapping for influence questions when LLM interpretation is unavailable.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": ""
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": "the kinks"
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "9772aa23-0535-4f22-97a1-d684c2cb9e9c",
+    "createdAt": "2026-03-17T05:21:21.772Z",
+    "normalizedPrompt": "who was influenced by the kinks, bands and individuals",
+    "prompt": "Who was influenced by the kinks, bands and individuals",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "2e437944-7aed-4a87-b9bf-7dd5c8b4fbb1",
+    "note": "Used fallback heuristic interpretation from ontology labels and relationship hints in prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "bands and individuals"
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "9eaf36bc-2b2e-4a89-9e92-630b4af987f2",
+    "createdAt": "2026-03-17T05:11:52.057Z",
+    "normalizedPrompt": "who did the kinks influence",
+    "prompt": "who did the kinks influence",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "3b02aef8-785c-419f-b8c9-57fe0d5a4b88",
+    "note": "Used ontology-driven fallback intent mapping for influence questions when LLM interpretation is unavailable.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": ""
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": "the kinks"
+          }
+        }
+      ],
+      "limit": 25
+    },
+    "feedbackScore": 1,
+    "feedbackCount": 1
+  },
+  {
+    "id": "0cadecad-be5d-428d-a0dd-1984ca30a79f",
+    "createdAt": "2026-03-17T05:10:53.770Z",
+    "normalizedPrompt": "who did the kinks influence",
+    "prompt": "who did the kinks influence",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "84720550-3820-4a34-91c0-da3368e48225",
+    "note": "Used fallback heuristic interpretation from ontology labels and relationship hints in prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "the kinks influence"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "9fa5f95b-3a12-4046-be16-232a7377cbc1",
+    "createdAt": "2026-03-17T05:10:05.916Z",
+    "normalizedPrompt": "who did the kinks influence",
+    "prompt": "who did the kinks influence",
+    "strategy": "insight-reuse-exact",
+    "success": true,
+    "traceId": "30a96f45-cabb-4975-85d0-c5c490a68cb5",
+    "note": "Reused an exact previous successful interpretation for this prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": ""
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": "the kinks"
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "ab0b904d-e0b2-4a25-a7b4-a81d1e13ace3",
+    "createdAt": "2026-03-17T04:58:49.962Z",
+    "normalizedPrompt": "who did the kinks influence",
+    "prompt": "who did the kinks influence",
+    "strategy": "deterministic-intent",
+    "success": true,
+    "traceId": "49ca0c15-738d-4d69-97b8-e4233336f89d",
+    "note": "Detected influence intent (\"who did the kinks influence\") and mapped to Artist -[INFLUENCED_BY]-> Artist with target filter \"the kinks\".",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": ""
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": "the kinks"
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "007f184c-97a0-4a24-b2de-b94f050c77a6",
+    "createdAt": "2026-03-17T04:53:01.700Z",
+    "normalizedPrompt": "who did the kinks influence",
+    "prompt": "who did the kinks influence",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "e3aea405-70c9-470c-a4f3-423f77e4a657",
+    "note": "Used fallback heuristic interpretation from ontology labels and relationship hints in prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "the kinks influence"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "0350a1d3-df8e-427d-ba06-d72ff38890a9",
+    "createdAt": "2026-03-17T04:52:18.625Z",
+    "normalizedPrompt": "the kinks",
+    "prompt": "the kinks",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "fedee501-4bc2-4098-90d4-64f542e17742",
+    "note": "Used fallback heuristic interpretation from ontology labels and relationship hints in prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "the kinks"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "af46a5bf-d7f0-4258-b61e-008ec4f49ea3",
+    "createdAt": "2026-03-17T02:02:34.897Z",
+    "normalizedPrompt": "artists influenced by the kinks",
+    "prompt": "artists influenced by the kinks",
+    "strategy": "insight-reuse-exact",
+    "success": true,
+    "traceId": "2f8ca6d1-ebfb-48c3-990c-a92d756a2a84",
+    "note": "Reused an exact previous successful interpretation for this prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": ""
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": "the kinks"
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "2d2c0884-2810-4b2d-b81a-71e787ee00e4",
+    "createdAt": "2026-03-17T01:58:44.726Z",
+    "normalizedPrompt": "artists influenced by the kinks",
+    "prompt": "artists influenced by the kinks",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "57e8a77e-2c31-49f9-a398-1cbd1b0aec6c",
+    "note": "Used fallback heuristic interpretation from ontology labels and relationship hints in prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "by the kinks"
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "f8427273-28dd-42f0-8f68-ea89a98d792c",
+    "createdAt": "2026-03-17T01:58:18.517Z",
+    "normalizedPrompt": "artists influenced by adrian belew",
+    "prompt": "artists influenced by adrian belew",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "a2697c1e-57c3-4f4e-a47e-0c7e43db7a7a",
+    "note": "Used fallback heuristic interpretation from ontology labels and relationship hints in prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "by adrian belew"
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "fc8b2a94-d645-4484-9fe5-06ed77b86dc3",
+    "createdAt": "2026-03-17T01:58:00.685Z",
+    "normalizedPrompt": "adrian belew",
+    "prompt": "adrian belew",
+    "strategy": "insight-reuse-exact",
+    "success": true,
+    "traceId": "e5541cac-835a-4a24-bbf7-100e14c5f9ba",
+    "note": "Reused an exact previous successful interpretation for this prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "adrian belew"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "4c92d9f9-2d62-4208-8e73-d306e2e397f8",
+    "createdAt": "2026-03-17T01:57:49.668Z",
+    "normalizedPrompt": "adrian belew",
+    "prompt": "adrian belew",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "3fc0ca55-dcd7-403a-acb5-35f4c243f96a",
+    "note": "Used fallback heuristic interpretation from ontology labels and relationship hints in prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "adrian belew"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "f760ea0b-035d-407f-91a1-080e40a3bd67",
+    "createdAt": "2026-03-17T01:28:57.346Z",
+    "normalizedPrompt": "the who",
+    "prompt": "the who",
+    "strategy": "insight-reuse-exact",
+    "success": true,
+    "traceId": "cafa8fb6-0f95-4ff2-b59e-fa307cec42b0",
+    "note": "Reused an exact previous successful interpretation for this prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "the who"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "13ff12b4-4c22-4a01-a2b5-461755420036",
+    "createdAt": "2026-03-17T01:28:33.603Z",
+    "normalizedPrompt": "the who",
+    "prompt": "the who",
+    "strategy": "insight-reuse-exact",
+    "success": true,
+    "traceId": "37b99102-5331-47e7-b577-a85d6cc7edd2",
+    "note": "Reused an exact previous successful interpretation for this prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "the who"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "b1ece0c8-40ed-4428-a4de-23b378f1103d",
+    "createdAt": "2026-03-17T01:28:04.559Z",
+    "normalizedPrompt": "the who",
+    "prompt": "the who",
+    "strategy": "insight-reuse-exact",
+    "success": true,
+    "traceId": "85206028-c5a2-477f-89b1-ce9d22c5f4e0",
+    "note": "Reused an exact previous successful interpretation for this prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "the who"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "34ee19ea-a921-4d0d-9533-af7b663851b4",
+    "createdAt": "2026-03-17T01:27:17.786Z",
+    "normalizedPrompt": "the who",
+    "prompt": "the who",
+    "strategy": "insight-reuse-exact",
+    "success": true,
+    "traceId": "50cf6672-f0b2-45b7-819a-6e05051bd477",
+    "note": "Reused an exact previous successful interpretation for this prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "the who"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "f75c452d-b053-434a-a21d-738e54c5fa7b",
+    "createdAt": "2026-03-17T01:22:05.309Z",
+    "normalizedPrompt": "the who",
+    "prompt": "the who",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "78b657f5-d796-464e-8832-a2040182280e",
+    "note": "Used fallback heuristic interpretation from ontology labels and relationship hints in prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "the who"
+      },
+      "steps": [
+        {
+          "relationshipType": "USED_EQUIPMENT",
+          "direction": "outbound",
+          "target": {
+            "label": "Equipment",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "1f1646ad-802a-4da2-8003-e648ef23fa39",
+    "createdAt": "2026-03-17T01:18:03.304Z",
+    "normalizedPrompt": "artists influenced by adrian",
+    "prompt": "artists influenced by adrian",
+    "strategy": "insight-reuse-exact",
+    "success": true,
+    "traceId": "526c95bf-dfa0-497d-a98e-da70fe5de0a4",
+    "note": "Reused an exact previous successful interpretation for this prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "influenced by adrian"
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "a62e67bb-47a4-4080-b695-9f3ed3fbafae",
+    "createdAt": "2026-03-17T00:58:16.597Z",
+    "normalizedPrompt": "artists influenced by adrian",
+    "prompt": "artists influenced by adrian",
+    "strategy": "insight-reuse-exact",
+    "success": true,
+    "traceId": "88db92d1-fb98-4512-976b-fca5cae5eee2",
+    "note": "Reused an exact previous successful interpretation for this prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "influenced by adrian"
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
     "id": "c924df4f-dcc8-4d6c-ab35-239aec48f30f",
     "createdAt": "2026-03-17T00:54:32.305Z",
     "normalizedPrompt": "artists influenced by adrian",

@@ -70,3 +70,11 @@ Software is built forward with **Fuzzy Functions**:
 ## Success signal
 
 A user can issue a natural-language or structured query, the system chooses a strategy adaptively, executes against Neo4j with ontology-aware constraints, renders understandable graph results, and emits complete traces for review and iterative improvement.
+
+## Tuesday 2am wrap-up lessons
+
+- Interpretation failures are most useful when surfaced as explicit proposal state, not silently repaired.
+- Relationship approval in the UI should immediately update ontology and move proposal status from `proposed` to `accepted`.
+- Proposed additions are only actionable when each candidate has a direct accept path that persists to Neo4j.
+- The learning loop is strongest when the same surface supports interpret, review, approve, persist, and rerun.
+- Architecture guardrail: avoid one-off case parsing; keep extraction generalized through ontology-constrained LLM steps.

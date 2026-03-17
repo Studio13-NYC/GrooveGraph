@@ -1,0 +1,18 @@
+[
+  {
+    "id": "14ac47c0-334c-4d1f-8598-6ab3a5ab88e7",
+    "createdAt": "2026-03-17T06:21:47.579Z",
+    "traceId": "d882d38d-f848-46f5-a7b1-53d12b87abb1",
+    "rating": 1,
+    "context": "interpret",
+    "wasEmpty": false
+  },
+  {
+    "id": "9fb7fc54-744d-4547-aa55-f9cb245a5c98",
+    "createdAt": "2026-03-17T05:12:14.145Z",
+    "traceId": "3b02aef8-785c-419f-b8c9-57fe0d5a4b88",
+    "rating": 1,
+    "context": "interpret",
+    "wasEmpty": false
+  }
+]

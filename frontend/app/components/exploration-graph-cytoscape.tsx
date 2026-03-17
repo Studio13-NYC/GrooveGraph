@@ -25,7 +25,8 @@ const CYTOSCAPE_STYLE = [
       "font-size": "12px",
       "text-margin-y": 6,
       "border-width": 1,
-      "border-color": "hsl(var(--border))",
+      // Cytoscape cannot resolve CSS variables inside style strings.
+      "border-color": "#64748b",
     },
   },
   { selector: "node:selected", style: { "border-width": 2 } },
@@ -54,8 +55,8 @@ function buildCytoscapeElements(
   recentEnrichedNodeIds: Set<string>
 ): Array<{ group: "nodes"; data: Record<string, unknown>; position?: { x: number; y: number } } | { group: "edges"; data: Record<string, unknown> }> {
   const nodes = graphData.nodes.map((node: GraphNodePayload) => {
-    const x = node.x ?? node.fx ?? 0;
-    const y = node.y ?? node.fy ?? 0;
+    const x = node.x ?? node.fx;
+    const y = node.y ?? node.fy;
     const entityLabel = node.entityLabel ?? node.label ?? "Track";
     const color =
       node.nodeKind === "type_hub" ? getNodeColor("Genre") : getNodeColor(entityLabel);
@@ -83,7 +84,7 @@ function buildCytoscapeElements(
         labels: node.labels,
         isEnriched,
       },
-      position: { x, y },
+      position: typeof x === "number" && typeof y === "number" ? { x, y } : undefined,
     };
   });
   const edges = graphData.links.map((link, i) => ({
@@ -98,6 +99,15 @@ function buildCytoscapeElements(
     },
   }));
   return [...nodes, ...edges];
+}
+
+function hasPresetNodePositions(nodes: GraphViewProps["graphData"]["nodes"]): boolean {
+  if (nodes.length === 0) return false;
+  return nodes.every((node) => {
+    const x = node.x ?? node.fx;
+    const y = node.y ?? node.fy;
+    return typeof x === "number" && typeof y === "number";
+  });
 }
 
 /**
@@ -163,7 +173,19 @@ export function ExplorationGraphCytoscape(
       cy.elements().remove();
       cy.add([...nodes, ...edges]);
       cy.resize();
-      const layout = cy.layout({ name: "preset" });
+      const usePreset = hasPresetNodePositions(gd.nodes);
+      const layout = cy.layout(
+        usePreset
+          ? { name: "preset" }
+          : {
+              name: "cose",
+              animate: false,
+              padding: 36,
+              nodeRepulsion: 8000,
+              idealEdgeLength: 140,
+              edgeElasticity: 120,
+            }
+      );
       layout.run();
       layout.on("layoutstop", () => {
         cy.resize();
@@ -279,7 +301,19 @@ export function ExplorationGraphCytoscape(
     });
     cy.elements().remove();
     cy.add([...nodes, ...edges]);
-    const layout = cy.layout({ name: "preset" });
+    const usePreset = hasPresetNodePositions(graphData.nodes);
+    const layout = cy.layout(
+      usePreset
+        ? { name: "preset" }
+        : {
+            name: "cose",
+            animate: false,
+            padding: 36,
+            nodeRepulsion: 8000,
+            idealEdgeLength: 140,
+            edgeElasticity: 120,
+          }
+    );
     layout.run();
     const FIT_THROTTLE_MS = 400;
     const onDone = () => {
