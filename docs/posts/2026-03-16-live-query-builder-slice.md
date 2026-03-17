@@ -1,42 +1,25 @@
 # Live Query Builder Slice
 
-Today we shipped the first end-to-end slice of the new query-builder path.
+Earlier this afternoon we reset the foundation. A little later, the harder question showed up: would we keep that discipline once implementation got messy?
 
-It is still early, but it is real:
+The first temptation was obvious. Build a polished query-builder demo against local fake responses, make it look complete, and wire the real backend later. It would have looked better, faster. We said no.
 
-- a frontend query-builder route,
-- a live compile API,
-- ontology-aware next-options and compilation,
-- trace IDs and structured stage logging.
+Instead, we built a rough UI and forced it to talk to a live compile endpoint from the start.
 
-## What changed
+That single decision changed the entire pace of the slice. Every frontend action immediately pressure-tested backend contracts. Every backend change had a visible user consequence. There was nowhere to hide vague assumptions.
 
-The UI now composes a first-row query and sends it to a real compile endpoint.
+Then another choice surfaced: should we optimize for appearance or observability? We chose observability again. The compile response was shaped to be useful for humans and for debugging at the same time: readable summary, generated Cypher, params, and trace ID. That combination turned “something seems off” into “this exact stage did this exact thing.”
 
-The backend compiles a parameterized Cypher preview and returns:
+There was also scope pressure. We could have jumped into a fully generalized multi-row builder, but we deliberately cut scope to one meaningful row and one reliable compile path. This was not avoiding ambition. It was sequencing ambition.
 
-- a human-readable summary,
-- Cypher text,
-- params,
-- a trace ID.
+A narrow live slice taught us more in one afternoon than a broad speculative layer would have taught us in a week.
 
-No mock fallback was used for completion.
+By the end of the run, the workflow was real:
 
-## Why this matters
+compose query -> call compile API -> inspect summary/Cypher/params/trace -> iterate.
 
-This is the first concrete loop of the Fuzzy Functions model:
+No mocks required for that loop.
 
-1. make behavior LLM/ontology-assisted where uncertainty exists,
-2. observe real runtime behavior with logs and traces,
-3. codify stable pieces cleanly and DRY.
+The interesting part is not that this shipped. The interesting part is why it shipped cleanly: explicit contracts, live pressure, and traces everywhere. That is the Fuzzy Functions loop doing exactly what it is supposed to do - explore with flexibility, then harden with evidence.
 
-We are not chasing perfect abstractions first.  
-We are proving behavior in live paths, then hardening only what earns it.
-
-## Brief observations
-
-- Fast feedback improved once frontend and backend contracts were explicit.
-- Trace IDs made debugging collaboration between slices much easier.
-- The current UI is functional but visually rough; structure is right, styling is next.
-
-Next post: first multi-row query composition and the initial fuzzy orchestration contract for pre-run insights and post-run learning.
+Next up is where this gets truly interesting: multi-row composition plus the first orchestration loop that checks prior run insights before deciding how to execute.
