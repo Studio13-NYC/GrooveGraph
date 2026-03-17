@@ -1,5 +1,804 @@
 [
   {
+    "id": "27e74681-2f16-4add-ad11-462756c01b22",
+    "createdAt": "2026-03-17T19:20:26.346Z",
+    "normalizedPrompt": "what songs are on the jam album setting sons",
+    "prompt": "What songs are on the Jam album setting sons",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "ec25bc11-bc4e-4f1c-b48a-844a59c23ed0",
+    "note": "User asks for the songs on the album 'Setting Sons'. In the ontology, Album has outgoing CONTAINS relationships to Track.",
+    "queryState": {
+      "start": {
+        "label": "Album",
+        "propertyKey": "name",
+        "value": "Setting Sons"
+      },
+      "steps": [
+        {
+          "relationshipType": "CONTAINS",
+          "direction": "outbound",
+          "target": {
+            "label": "Track",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "8105c081-ecfb-45f8-b139-6691b2d1ea78",
+    "createdAt": "2026-03-17T18:54:41.259Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "423f42b4-c85f-4c80-95b5-d22d72ebaee8",
+    "note": "The user asks for albums released by the band Talking Heads. Ontology supports Band -> RELEASED -> Album.",
+    "queryState": {
+      "start": {
+        "label": "Band",
+        "propertyKey": "name",
+        "value": "Talking Heads"
+      },
+      "steps": [
+        {
+          "relationshipType": "RELEASED",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "0963dbf6-dc4a-458a-bba5-9d5054b6ada9",
+    "createdAt": "2026-03-17T18:38:38.209Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "75ea2f23-850d-45eb-93ae-0e030bcf96d0",
+    "note": "User asks for albums released by Talking Heads. Ontology includes Band as an entity label and RELEASED as a valid relationship from Band to Album.",
+    "queryState": {
+      "start": {
+        "label": "Band",
+        "propertyKey": "name",
+        "value": "Talking Heads"
+      },
+      "steps": [
+        {
+          "relationshipType": "RELEASED",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 50
+    }
+  },
+  {
+    "id": "26c0014a-8de3-40c3-bd6c-f540c541529a",
+    "createdAt": "2026-03-17T18:25:57.653Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "da3125e3-0092-40ba-8116-986ea8678ee3",
+    "note": "The user asks for albums released by the band Talking Heads. The ontology supports Band -> RELEASED -> Album.",
+    "queryState": {
+      "start": {
+        "label": "Band",
+        "propertyKey": "name",
+        "value": "Talking Heads"
+      },
+      "steps": [
+        {
+          "relationshipType": "RELEASED",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "69aa73fb-5f9f-44ec-93dd-4bffa5467f08",
+    "createdAt": "2026-03-17T18:14:00.873Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "llm-ontology-compliance",
+    "success": false,
+    "traceId": "c388b43d-9ce7-4688-8d07-3be9a85139ba",
+    "note": "The ontology does not contain a relationship for a Band releasing an Album, so the requested intent cannot be represented exactly. | compile_blocked: Unknown relationship type: RELEASED",
+    "queryState": {
+      "start": {
+        "label": "Band",
+        "propertyKey": "name",
+        "value": "Talking Heads"
+      },
+      "steps": [
+        {
+          "relationshipType": "RELEASED",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "d9374173-4fbf-4750-a84b-40ae5a391d17",
+    "createdAt": "2026-03-17T18:07:51.148Z",
+    "normalizedPrompt": "use released as the relationship clarification 1: album clarification 2: band and person clarification 3: both when it is possible individuals can release an album and so can a band clarification 4: add a new relationship from album to both band and person clarification 5: create it",
+    "prompt": "use RELEASED as the relationship\nClarification 1: Album\nClarification 2: Band and Person\nClarification 3: both when it is possible individuals can release an album and so can a band\nClarification 4: add a new relationship from Album to both Band and Person\nClarification 5: create it",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "42528043-4569-44d6-8bc9-a69dbdc91cb1",
+    "note": "I cannot create or modify ontology relationships from within query intent parsing, and 'RELEASED' is not an existing canonical relationship type."
+  },
+  {
+    "id": "f6f8fa77-9e0d-4fdf-a9a9-adeb3d4fba57",
+    "createdAt": "2026-03-17T18:07:27.457Z",
+    "normalizedPrompt": "use released as the relationship clarification 1: album clarification 2: band and person clarification 3: both when it is possible individuals can release an album and so can a band clarification 4: add a new relationship from album to both band and person",
+    "prompt": "use RELEASED as the relationship\nClarification 1: Album\nClarification 2: Band and Person\nClarification 3: both when it is possible individuals can release an album and so can a band\nClarification 4: add a new relationship from Album to both Band and Person",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "569d97fc-e11a-4c60-b381-44e3210d4dd5",
+    "note": "The requested relationship 'RELEASED' is a new relationship not present in the ontology."
+  },
+  {
+    "id": "dcf00466-7ea5-460c-ad6e-9dfd2c8c11dc",
+    "createdAt": "2026-03-17T18:06:55.843Z",
+    "normalizedPrompt": "use released as the relationship clarification 1: album clarification 2: band and person clarification 3: both when it is possible individuals can release an album and so can a band",
+    "prompt": "use RELEASED as the relationship\nClarification 1: Album\nClarification 2: Band and Person\nClarification 3: both when it is possible individuals can release an album and so can a band",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "5cc489e9-81f9-44d3-a336-b0a0a28da68f",
+    "note": "Do you want to add a new relationship from Album to both Band and Person, or should I map your intent to an existing relationship such as FEATURES or CREDITS_PERSON where applicable?"
+  },
+  {
+    "id": "179c76f1-961d-49e7-b62b-aaf9d1464b38",
+    "createdAt": "2026-03-17T18:06:16.750Z",
+    "normalizedPrompt": "use released as the relationship clarification 1: album clarification 2: band and person",
+    "prompt": "use RELEASED as the relationship\nClarification 1: Album\nClarification 2: Band and Person",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "5285eca4-2dbf-4f76-ad17-ac5415cc7042",
+    "note": "Should 'RELEASED' connect Album to Band or Album to Person?"
+  },
+  {
+    "id": "59d4eac2-14d3-4985-b692-74c14f501efb",
+    "createdAt": "2026-03-17T18:05:33.881Z",
+    "normalizedPrompt": "use released as the relationship clarification 1: album",
+    "prompt": "use RELEASED as the relationship\nClarification 1: Album",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "2604cc3a-14a8-4599-88eb-133cc22de4d5",
+    "note": "What target entity type should 'RELEASED' connect Album to?"
+  },
+  {
+    "id": "8f31f1a4-91f3-4a3f-ba8b-fb0c5b64b297",
+    "createdAt": "2026-03-17T18:05:09.899Z",
+    "normalizedPrompt": "use released as the relationship",
+    "prompt": "use RELEASED as the relationship",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "593eb987-12f8-42c0-836c-119dd336dd0a",
+    "note": "What are the source and target entity types for 'RELEASED' in your intended query?"
+  },
+  {
+    "id": "91c458f0-32af-428f-8287-b3f9504bfca4",
+    "createdAt": "2026-03-17T18:00:56.833Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "llm-ontology-compliance",
+    "success": false,
+    "traceId": "03fc4808-53cb-4c7a-8dc5-272667994c0b",
+    "note": "The ontology does not contain a canonical relationship for a band releasing an album. The only discovered Band→Album path is via inbound USED_EQUIPMENT from Album, which does not match the user's intent. | compile_blocked: Unknown relationship type: RELEASED_BY_BAND",
+    "queryState": {
+      "start": {
+        "label": "Band",
+        "propertyKey": "name",
+        "value": "Talking Heads"
+      },
+      "steps": [
+        {
+          "relationshipType": "RELEASED_BY_BAND",
+          "direction": "inbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "4c408d23-35ce-4965-9569-f985e77f995f",
+    "createdAt": "2026-03-17T17:57:49.479Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "llm-ontology-compliance",
+    "success": false,
+    "traceId": "41316896-413c-4c75-9104-ba6430a7bbf6",
+    "note": "The ontology does not contain a canonical relationship for 'Band released Album'. The only discovered Band→Album path is via inbound USED_EQUIPMENT from Album, which does not match the user's intent. | compile_blocked: Unknown relationship type: RELEASED",
+    "queryState": {
+      "start": {
+        "label": "Band",
+        "propertyKey": "name",
+        "value": "Talking Heads"
+      },
+      "steps": [
+        {
+          "relationshipType": "RELEASED",
+          "direction": "inbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "38328ce8-7fed-43b7-8e75-78d2d7557511",
+    "createdAt": "2026-03-17T17:52:54.137Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "llm-ontology-compliance",
+    "success": false,
+    "traceId": "1fb87014-a43a-41f7-8c3f-f3e9145d9636",
+    "note": "The ontology does not contain a relationship for albums released by a band. The only discovered Band→Album path is via USED_EQUIPMENT inbound from Album, which does not match the user's intent. | compile_blocked: Relationship RELEASED_BY cannot connect Band -> Album as inbound",
+    "queryState": {
+      "start": {
+        "label": "Band",
+        "propertyKey": "name",
+        "value": "Talking Heads"
+      },
+      "steps": [
+        {
+          "relationshipType": "RELEASED_BY",
+          "direction": "inbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  },
+  {
+    "id": "1a1ea6e4-0e73-4a3d-95ee-5cca62230baa",
+    "createdAt": "2026-03-17T17:51:25.742Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "eebe50a6-b8d8-4310-99fa-c4d074296926",
+    "note": "Interpretation LLM failed with 400: {\n  \"error\": {\n    \"message\": \"Invalid schema for function 'validate_query_state': In context=('properties', 'queryState'), 'additionalProperties' is required to be supplied and to be false.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"tools[6].parameters\",\n    \"code\": \"invalid_function_parameters\"\n  }\n}"
+  },
+  {
+    "id": "84feb64d-4372-46a2-af23-9aa91642a7d5",
+    "createdAt": "2026-03-17T17:50:34.945Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "8285ed24-a733-41d0-abda-931ea1b95eb5",
+    "note": "Interpretation LLM failed with 400: {\n  \"error\": {\n    \"message\": \"Invalid schema for function 'find_path_between_labels': In context=(), 'required' is required to be supplied and to be an array including every key in properties. Missing 'maxDepth'.\",\n    \"type\": \"invalid_request_error\",\n    \"param\": \"tools[5].parameters\",\n    \"code\": \"invalid_function_parameters\"\n  }\n}"
+  },
+  {
+    "id": "dba4bb37-b335-4be8-8ba4-85ad522a6222",
+    "createdAt": "2026-03-17T17:40:01.628Z",
+    "normalizedPrompt": "what albums were released by the talking heads clarification 1: i want it to be released as in the talking heads released naked ... band released album",
+    "prompt": "what albums were released by the Talking heads\nClarification 1: I want it to be RELEASED as in the Talking Heads RELEASED Naked ... band RELEASED album",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "b927c118-af5c-4d3d-acff-31a08d7654e1",
+    "note": "The clarified intent requires a direct Band-to-Album artist-release relationship, which is not present in the ontology."
+  },
+  {
+    "id": "a37ad353-8a78-4e9f-9b7c-d0ee0626a99b",
+    "createdAt": "2026-03-17T17:38:10.910Z",
+    "normalizedPrompt": "what albums were released by the talking heads",
+    "prompt": "what albums were released by the Talking heads",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "97d2e3dd-f660-49d5-95a3-c029e26afc78",
+    "note": "Do you want albums that feature Talking Heads, or should I use tracks performed by Talking Heads and then find albums those tracks were released on?"
+  },
+  {
+    "id": "7771ee65-62fe-43b2-9f49-b01401c6f8e8",
+    "createdAt": "2026-03-17T17:36:03.061Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification 1: created_by_band",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification 1: CREATED_BY_BAND",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "315686c5-199a-42ed-bcb9-55bdeb193137",
+    "note": "Can you provide an ontology that includes CREATED_BY_BAND, or should I reinterpret this using an existing relationship like FEATURES?"
+  },
+  {
+    "id": "e9ac6dae-6668-4bd8-8a2d-958bd00fc89b",
+    "createdAt": "2026-03-17T17:35:42.914Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club",
+    "prompt": "what albums were put out by the Tom Tom Club",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "db5f5b8e-f161-40b8-aa62-0e7cb95429b4",
+    "note": "Do you want albums that feature Tom Tom Club, or releases issued by a specific label?"
+  },
+  {
+    "id": "071c22e4-63ac-4cd1-bc3f-43c2fffb2d29",
+    "createdAt": "2026-03-17T17:34:43.032Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification 1: artist_released clarification 2: add it to ontology",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification 1: ARTIST_RELEASED\nClarification 2: add it to ontology",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "0d13e561-1109-41fd-8fb6-4f4aa5a1e12a",
+    "note": "After the ontology is updated, should ARTIST_RELEASED connect Album to Band, Release to Band, or both?"
+  },
+  {
+    "id": "bb59cb8b-2a0c-4af6-9f8e-14f834089b27",
+    "createdAt": "2026-03-17T17:34:17.672Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification 1: artist_released",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification 1: ARTIST_RELEASED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "7a1e60db-e8c9-4042-8fa3-25c20cde7800",
+    "note": "Can I interpret this using the existing Album FEATURES Band relationship for Tom Tom Club instead?"
+  },
+  {
+    "id": "ff873341-2736-46b0-9fc2-7adfe41384e5",
+    "createdAt": "2026-03-17T17:33:56.715Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club",
+    "prompt": "what albums were put out by the Tom Tom Club",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "9d894274-9c55-4400-8d9b-82c61ff618bf",
+    "note": "Do you want albums that feature Tom Tom Club, or releases issued by a specific label?"
+  },
+  {
+    "id": "efe220e0-e0cd-4b79-875d-a1cd6f287634",
+    "createdAt": "2026-03-17T17:31:38.318Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification 1: created_by_band clarification 2: add it to ontology",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification 1: CREATED_BY_BAND\nClarification 2: add it to ontology",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "748b1feb-b511-4172-85cd-38f097828e2a",
+    "note": "Please provide the updated ontology payload that includes CREATED_BY_BAND so I can map the query."
+  },
+  {
+    "id": "ee23bfa3-5494-49de-8945-1f56f9322f53",
+    "createdAt": "2026-03-17T17:31:07.625Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification 1: created_by_band",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification 1: CREATED_BY_BAND",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "59a519f3-3574-4929-afce-0114c1d22dd8",
+    "note": "Can you add CREATED_BY_BAND to the ontology, or should I reinterpret the request using an existing relationship such as FEATURES?"
+  },
+  {
+    "id": "63b6147a-9bc2-4f2e-9a76-784d2b7a5525",
+    "createdAt": "2026-03-17T17:30:48.581Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club",
+    "prompt": "what albums were put out by the Tom Tom Club",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "5eeb3aee-9a25-4505-8d01-2e51dd0af0b8",
+    "note": "Do you want albums that feature Tom Tom Club, or albums released by a specific label associated with Tom Tom Club?"
+  },
+  {
+    "id": "8584868d-d209-4178-9f5e-5e6fd220063b",
+    "createdAt": "2026-03-17T17:26:55.831Z",
+    "normalizedPrompt": "what albums did the who put out clarification 1: released clarification 2: released clarification 3: released",
+    "prompt": "What albums did the who put out\nClarification 1: RELEASED\nClarification 2: RELEASED\nClarification 3: RELEASED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "cbd08689-a04e-4f10-a064-78fabfd141e9",
+    "note": "Can you add RELEASED as a valid relationship from Band to Album in the ontology?"
+  },
+  {
+    "id": "0528281d-41da-49dc-9e2b-6b72e2f9c7c7",
+    "createdAt": "2026-03-17T17:26:47.359Z",
+    "normalizedPrompt": "what albums did the who put out clarification 1: released clarification 2: released",
+    "prompt": "What albums did the who put out\nClarification 1: RELEASED\nClarification 2: RELEASED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "372974ef-0f8b-439a-9b58-122b2a53e27f",
+    "note": "Can you update the ontology to include RELEASED between Band and Album?"
+  },
+  {
+    "id": "5bb1c645-f462-4212-8930-9c8ee43277a3",
+    "createdAt": "2026-03-17T17:26:33.459Z",
+    "normalizedPrompt": "what albums did the who put out clarification 1: released",
+    "prompt": "What albums did the who put out\nClarification 1: RELEASED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "1de3b0fe-945b-4386-942c-e292d5343303",
+    "note": "Can you add a Band-to-Album relationship type such as RELEASED to the ontology so I can express this query?"
+  },
+  {
+    "id": "7d863ddc-8a7c-4bc0-9a1e-39cbd82fd301",
+    "createdAt": "2026-03-17T17:26:23.843Z",
+    "normalizedPrompt": "what albums did the who put out",
+    "prompt": "What albums did the who put out",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "607cba13-0d17-4ae0-acb8-7eeb47141345",
+    "note": "Do you want me to interpret \"put out\" as albums released by the band \"The Who\" if a Band-to-Album relationship like RELEASED is added?"
+  },
+  {
+    "id": "73f2b5a8-d98b-4048-97f5-524c3c01aa37",
+    "createdAt": "2026-03-17T15:37:19.021Z",
+    "normalizedPrompt": "i want you to use the new relationship created",
+    "prompt": "I want you to use the new relationship CREATED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "d542adc6-41bd-45bb-9e8a-74b98d0fefc3",
+    "note": "What existing ontology relationship should 'CREATED' map to, such as WRITTEN_BY, PRODUCED_BY, or PERFORMED_BY?"
+  },
+  {
+    "id": "cea351a2-9a68-4ee6-a069-026c55d0201d",
+    "createdAt": "2026-03-17T15:36:11.787Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification: what was my answer to \"should i model this using an existing ontology relationship such as features from album to band for tom tom club albums, or do you want to extend the ontology first?\"",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification: what was my answer to \"Should I model this using an existing ontology relationship such as FEATURES from Album to Band for Tom Tom Club albums, or do you want to extend the ontology first?\"",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "d8dfc685-5ea2-43a7-9188-4cb829239063",
+    "note": "Prompt could not be mapped to a valid ontology-compliant query: missing startValue."
+  },
+  {
+    "id": "07d680a9-ade7-45b0-8e71-429f51e45fd5",
+    "createdAt": "2026-03-17T15:34:57.491Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification: created",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification: CREATED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "d96bb6b8-a507-417e-9443-8fd02e8bc791",
+    "note": "Should I interpret 'put out by' as albums that FEATURE Tom Tom Club, or are you asking for a new band-to-album creation/release relationship?"
+  },
+  {
+    "id": "c0fe2efc-1dce-4da7-bcff-97c8066a25b3",
+    "createdAt": "2026-03-17T15:34:39.663Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification: you should be asking yourself for an answer to \" what albums were put out by the tom tom club\" and then create those nodes and link them to tom tom club with created",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification: you should be asking yourself for an answer to \" what albums were put out by the Tom tom club\" and then create those nodes and link them to Tom Tom Club with CREATED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "adc26d22-0d8b-46d7-ba64-e32c245d20d5",
+    "note": "Should I model this using an existing ontology relationship such as FEATURES from Album to Band for Tom Tom Club albums, or do you want to extend the ontology first?"
+  },
+  {
+    "id": "fe880484-0d43-4a98-b78e-0b30d54c6bb9",
+    "createdAt": "2026-03-17T15:32:34.983Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification: i want albums created by tom tom club search for it",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification: I want albums created by tom tom club search for it",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "b02195ca-76fe-4625-95db-d40356d25c52",
+    "note": "Should I search for albums that FEATURE the band Tom Tom Club as the closest available match in this ontology?"
+  },
+  {
+    "id": "531a03c0-cc19-446b-b3ed-b43a24c1ad63",
+    "createdAt": "2026-03-17T15:31:41.618Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification: created_by",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification: CREATED_BY",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "57d90c55-7548-463a-bc48-76f423940d56",
+    "note": "Do you want albums by Tom Tom Club as the performing/featured band, or albums released by a label named Tom Tom Club?"
+  },
+  {
+    "id": "1b7815c4-5007-4c6d-becb-af9adf709141",
+    "createdAt": "2026-03-17T15:31:28.958Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification: i want created_by",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification: I want CREATED_BY",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "9c85354c-b65b-4479-90d5-21c9d5f753ae",
+    "note": "Which existing ontology relationship should I use instead for albums associated with Tom Tom Club: FEATURES, PRODUCED_BY, RELEASED_BY, or ISSUED_BY_LABEL?"
+  },
+  {
+    "id": "909e4d11-4b61-4d3a-a4d6-2dee5715aa40",
+    "createdAt": "2026-03-17T15:30:16.018Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification: why use' artist' that has been deprecated. more options please",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification: why use' artist'  that has been deprecated. more options please",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "6135a439-aac6-4fdd-bb58-0dedc0037463",
+    "note": "Which ontology relationship should represent Tom Tom Club's connection to the albums: FEATURES, PLAYED_ON, PRODUCED_BY, RELEASED_BY/ISSUED_BY_LABEL, or do you want a new Band-to-Album relationship for the primary act?"
+  },
+  {
+    "id": "87b4616b-cfde-4af1-a727-ef8eb82529b8",
+    "createdAt": "2026-03-17T15:28:43.393Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club clarification: give me more options",
+    "prompt": "what albums were put out by the Tom Tom Club\nClarification: give me more options",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "34cddf3c-00a1-420f-a6ba-22265822a465",
+    "note": "Should I interpret this as albums that feature Tom Tom Club, or are you asking for a new band-to-album release relationship to be added?"
+  },
+  {
+    "id": "84dfe8ef-47a5-4be7-90dc-d22edd96bcf5",
+    "createdAt": "2026-03-17T15:27:40.816Z",
+    "normalizedPrompt": "what albums were put out by the tom tom club",
+    "prompt": "what albums were put out by the Tom Tom Club",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "d69f9666-59e9-4a7a-aadc-4fec11e2eec8",
+    "note": "The ontology does not include a relationship connecting Band to Album/Release for 'put out' in the sense of a band issuing or releasing albums."
+  },
+  {
+    "id": "c4de5cb7-3fd8-4547-883f-c199bb7e1566",
+    "createdAt": "2026-03-17T15:16:15.800Z",
+    "normalizedPrompt": "what albums were put out by tom tom club clarification: created",
+    "prompt": "What albums were put out by Tom Tom Club\nClarification: CREATED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "eb3fe08d-81a0-4665-a47d-aaca5182e24a",
+    "note": "Do you want albums that FEATURE Tom Tom Club, or albums RELEASED_BY / ISSUED_BY_LABEL a label named Tom Tom Club?"
+  },
+  {
+    "id": "190d49aa-85c5-42a1-b00c-bb1c6e6bb2c1",
+    "createdAt": "2026-03-17T15:15:58.317Z",
+    "normalizedPrompt": "what albums were put out by tom tom club clarification: i want to have the relationship created",
+    "prompt": "What albums were put out by Tom Tom Club\nClarification: I want to have the relationship CREATED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "462cd5f8-df03-4580-aad0-e3ef32486fe1",
+    "note": "Which ontology relationship should be used instead to connect Tom Tom Club to Album?"
+  },
+  {
+    "id": "c671270d-643f-4dcc-ba8d-235e983a5337",
+    "createdAt": "2026-03-17T15:15:36.571Z",
+    "normalizedPrompt": "what albums were put out by tom tom club",
+    "prompt": "What albums were put out by Tom Tom Club",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "5b6b63c5-0ab7-4ca5-bf57-57b3eb1f15f2",
+    "note": "Do you want albums that feature Tom Tom Club, or releases issued by a specific label?"
+  },
+  {
+    "id": "d935fa56-46fb-419d-82e9-28eb39ad5949",
+    "createdAt": "2026-03-17T15:11:51.245Z",
+    "normalizedPrompt": "what albums were put out by the jam clarification: i want a new relationship called created that allows any person or band or company to be the creator of a thing or concept",
+    "prompt": "What albums were put out by The Jam\nClarification: I want a new relationship called CREATED that allows any person or band or company to be the creator of a thing or concept",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "289285b7-242d-47ea-b5cb-232d7bf2119d",
+    "note": "Do you want albums featuring The Jam, or albums released by a specific label associated with The Jam?"
+  },
+  {
+    "id": "863d5332-cd00-459b-98b4-641e2d6fb3be",
+    "createdAt": "2026-03-17T15:10:50.466Z",
+    "normalizedPrompt": "what albums were put out by the jam clarification: create that relationship created",
+    "prompt": "What albums were put out by The Jam\nClarification: create that relationship CREATED",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "2c6dc2bc-04f8-4051-9385-def1167649bc",
+    "note": "Which allowed relationship should be used to connect Band 'The Jam' to Album, such as FEATURES or another ontology relationship?"
+  },
+  {
+    "id": "29395057-0337-4164-b718-312207b57090",
+    "createdAt": "2026-03-17T15:10:22.540Z",
+    "normalizedPrompt": "what albums were put out by the jam clarification: i want the ones that were created by the band. the band isn't featured, they are the creators of it",
+    "prompt": "What albums were put out by The Jam\nClarification: I want the ones that were created by the band. the band isn't featured, they are the creators of it",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "03a0e0ad-05eb-488b-8fc2-7d7dbeff446b",
+    "note": "Should I interpret 'created by the band' as albums that FEATURE The Jam, given the ontology has no explicit creator relationship between Band and Album?"
+  },
+  {
+    "id": "acd27eae-6cd7-42f3-8d92-6065a4560ef7",
+    "createdAt": "2026-03-17T15:09:24.912Z",
+    "normalizedPrompt": "what albums were put out by the jam",
+    "prompt": "What albums were put out by The Jam",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "89daa1a3-67eb-4f1f-93f1-1e8e1cd4db36",
+    "note": "Do you want albums that feature The Jam, or releases issued by a specific label?"
+  },
+  {
+    "id": "fdc2f68f-1ba9-4925-83f4-a6efeefbab4c",
+    "createdAt": "2026-03-17T14:37:09.113Z",
+    "normalizedPrompt": "what albums were put out by the jam clarification: i want albums that were released under the bands name",
+    "prompt": "What albums were put out by The Jam\nClarification: I want albums that were released under the bands name",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "2695db0c-ee1d-44a8-bd3a-fd2505c66062",
+    "note": "Does your data model represent albums by an artist via Album FEATURES Artist, or is there another artist-to-album relationship not shown here?"
+  },
+  {
+    "id": "4a218b6d-ca06-462f-8560-cfb51d798e81",
+    "createdAt": "2026-03-17T14:36:20.662Z",
+    "normalizedPrompt": "what albums were put out by the jam",
+    "prompt": "What albums were put out by The Jam",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "5b19c64f-599a-4681-9ca1-77a0afc6a05a",
+    "note": "Do you want albums that contain tracks performed by The Jam?"
+  },
+  {
+    "id": "67151518-4b8e-4ca3-9c07-7c8be6fdb0c3",
+    "createdAt": "2026-03-17T14:28:40.323Z",
+    "normalizedPrompt": "what albums were put out by wilco?",
+    "prompt": "What albums were put out by Wilco?",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "72c7b03b-c7cb-4277-8f03-46fada210d1d",
+    "note": "Do you mean albums that feature Wilco, or albums released by a specific label associated with Wilco?"
+  },
+  {
+    "id": "dc650d89-c8ed-4ca5-be7e-f11f846000d5",
+    "createdAt": "2026-03-17T14:24:08.007Z",
+    "normalizedPrompt": "what albums were put out by dave edmunds clarification: feature",
+    "prompt": "what albums were put out by Dave Edmunds\nClarification: feature",
+    "strategy": "llm-ontology-compliance",
+    "success": false,
+    "traceId": "f18d420b-8394-47cc-a28d-d8a90150ab67",
+    "note": "The clarification specifies the 'feature' relationship, so interpret the request as albums that feature the artist Dave Edmunds. Traverse incoming FEATURES edges from Album to Artist. | compile_blocked: Relationship FEATURES cannot connect Artist -> Album as outbound",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "Dave Edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "FEATURES",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 10
+    }
+  },
+  {
+    "id": "bfec4885-178d-4fca-9a92-7deab41e9b1d",
+    "createdAt": "2026-03-17T14:23:40.250Z",
+    "normalizedPrompt": "what albums were put out by dave edmunds",
+    "prompt": "what albums were put out by Dave Edmunds",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "23da4dee-6a9d-48fc-b594-a8491997c4a9",
+    "note": "Do you mean albums that feature Dave Edmunds, or albums produced by Dave Edmunds?"
+  },
+  {
+    "id": "d13ae846-c487-413d-9040-5d09bfc3c0eb",
+    "createdAt": "2026-03-17T13:48:51.277Z",
+    "normalizedPrompt": "what albums did dave edmunds play on?",
+    "prompt": "What albums did dave edmunds play on?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "dd753c05-7829-4134-b2fd-63000368dbc7",
+    "note": "The user asks for albums that Dave Edmunds played on. The ontology directly supports Artist -> PLAYED_ON -> Album.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "dave edmunds"
+      },
+      "steps": [
+        {
+          "relationshipType": "PLAYED_ON",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 10
+    }
+  },
+  {
+    "id": "fe4ec786-d87c-4df6-8298-56a930358376",
+    "createdAt": "2026-03-17T13:14:35.963Z",
+    "normalizedPrompt": "what albums were put out by dave edmunds? clarification: albums produced by dave edmunds",
+    "prompt": "What albums were put out by Dave Edmunds?\nClarification: albums produced by Dave Edmunds",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "4e0be5d4-4c48-4c83-9464-0331a1e7e719",
+    "note": "Prompt could not be mapped to a valid ontology-compliant query: missing startValue."
+  },
+  {
+    "id": "194b6010-3b75-4d27-a82f-7fe404373f55",
+    "createdAt": "2026-03-17T13:14:33.341Z",
+    "normalizedPrompt": "what albums were put out by dave edmunds?",
+    "prompt": "What albums were put out by Dave Edmunds?",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "33ebe4c5-9d4a-4c07-96d1-b3f19742c8af",
+    "note": "Do you want albums that feature Dave Edmunds, or albums produced by Dave Edmunds?"
+  },
+  {
+    "id": "c2139218-93a0-4290-8515-95f4ee50feec",
+    "createdAt": "2026-03-17T13:04:56.538Z",
+    "normalizedPrompt": "what albums were put out by dave edmunds?",
+    "prompt": "What albums were put out by Dave Edmunds?",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "67aa9343-be44-42bb-a5eb-2f6edadae641",
+    "note": "Do you want albums that feature Dave Edmunds, or albums produced by Dave Edmunds?"
+  },
+  {
+    "id": "a4282faf-c921-431a-a3fd-04992c28ae16",
+    "createdAt": "2026-03-17T13:01:00.043Z",
+    "normalizedPrompt": "what albums were put out by wilco?",
+    "prompt": "What albums were put out by Wilco?",
+    "strategy": "llm-follow-up",
+    "success": false,
+    "traceId": "40ed623f-8c85-4f6a-98b6-e8600075883f",
+    "note": "Do you want albums that feature Wilco, or albums containing tracks performed by Wilco?"
+  },
+  {
+    "id": "0c413638-8c22-44ca-b39a-e48ff3cd5cf6",
+    "createdAt": "2026-03-17T12:57:05.447Z",
+    "normalizedPrompt": "what albums were put out by wilco?",
+    "prompt": "What albums were put out by Wilco?",
+    "strategy": "failed",
+    "success": false,
+    "traceId": "3ed975c2-3fb4-4e5e-aec2-abcdbbae3e97",
+    "note": "No ontology relationship links Artist to Album as 'put out' by an artist."
+  },
+  {
+    "id": "7533afa2-93f1-4f53-8e8a-8e05b282a704",
+    "createdAt": "2026-03-17T12:48:43.916Z",
+    "normalizedPrompt": "what albums were put out by wilco?",
+    "prompt": "What albums were put out by Wilco?",
+    "strategy": "llm-ontology-compliance",
+    "success": true,
+    "traceId": "1d9060ed-fb4d-42ff-adf4-1f0842f27418",
+    "note": "The query asks for albums released by the artist Wilco, so start from the Artist entity and traverse RELEASED to Album.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "Wilco"
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Album",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 10
+    }
+  },
+  {
     "id": "909ca7f8-45af-42e4-a3cd-9876fe777600",
     "createdAt": "2026-03-17T06:19:47.892Z",
     "normalizedPrompt": "what albums did jeff tweedy play on?",

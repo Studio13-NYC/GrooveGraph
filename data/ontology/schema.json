@@ -4,76 +4,14 @@
   "version": "2026-03-15.0",
   "description": "Formal graph schema for music entities, properties, and relationships. Used by the LLM for search and enrichment. Relationship subject/object constraints and container semantics (Album, Playlist CONTAINS Track/SongWork) are defined here.",
   "entities": {
-    "Artist": {
-      "displayName": "Artist",
-      "descriptionNoun": "artist",
-      "description": "A music artist (band, solo act, or group).",
-      "displayPropertyKeys": [
-        "name"
-      ],
-      "properties": [
-        {
-          "key": "name",
-          "type": "string",
-          "required": true,
-          "description": "Primary display name"
-        },
-        {
-          "key": "biography",
-          "type": "string",
-          "required": false
-        },
-        {
-          "key": "country",
-          "type": "string",
-          "required": false
-        },
-        {
-          "key": "active_years",
-          "type": "string",
-          "required": false
-        }
-      ],
-      "allowedRelationshipsAsSubject": [
-        "MEMBER_OF",
-        "COLLABORATED_WITH",
-        "PLAYED_INSTRUMENT",
-        "PART_OF_GENRE",
-        "USED_EQUIPMENT",
-        "PARTICIPATED_IN",
-        "PLAYED_ON",
-        "INFLUENCED_BY",
-        "FEATURES"
-      ],
-      "allowedRelationshipsAsObject": [
-        "PERFORMED_BY",
-        "PRODUCED_BY",
-        "PLAYED_ON",
-        "FEATURES",
-        "RELEASED_BY",
-        "COLLABORATED_WITH",
-        "INFLUENCED_BY",
-        "MEMBER_OF"
-      ],
-      "constraints": {
-        "primaryDisplayProperty": "name"
-      },
-      "synonyms": [
-        "band",
-        "musician",
-        "act",
-        "group",
-        "artist"
-      ],
-      "contextMessage": "Use for bands, solo artists, and groups. For a human who is both a person and an artist, create one node with labels [\"Artist\", \"Person\"]. Use 'name' for the canonical name."
-    },
     "Album": {
       "displayName": "Album",
       "descriptionNoun": "album",
       "description": "A release containing tracks or song works (container).",
       "displayPropertyKeys": [
         "title",
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
@@ -90,6 +28,12 @@
           "key": "release_date",
           "type": "string",
           "required": false
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -108,7 +52,8 @@
         "RELEASED_ON",
         "PRODUCED_BY",
         "FEATURES",
-        "PLAYED_ON"
+        "PLAYED_ON",
+        "RELEASED"
       ],
       "constraints": {
         "primaryDisplayProperty": "title"
@@ -127,7 +72,8 @@
       "description": "A recorded track or song on a release.",
       "displayPropertyKeys": [
         "title",
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
@@ -144,6 +90,12 @@
           "key": "duration_ms",
           "type": "number",
           "required": false
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -192,7 +144,8 @@
       "description": "Abstract composition distinct from a specific recording.",
       "displayPropertyKeys": [
         "title",
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
@@ -204,6 +157,12 @@
           "key": "name",
           "type": "string",
           "required": false
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -231,7 +190,9 @@
       "descriptionNoun": "person",
       "description": "Producers, engineers, songwriters, and other non-performing contributors.",
       "displayPropertyKeys": [
-        "name"
+        "name",
+        "aliases",
+        "roles"
       ],
       "properties": [
         {
@@ -243,6 +204,12 @@
           "key": "roles",
           "type": "array",
           "required": false
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -276,13 +243,20 @@
       "descriptionNoun": "genre",
       "description": "Musical styles and categories.",
       "displayPropertyKeys": [
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
           "key": "name",
           "type": "string",
           "required": true
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [],
@@ -302,13 +276,20 @@
       "descriptionNoun": "label",
       "description": "Music publishing / record companies.",
       "displayPropertyKeys": [
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
           "key": "name",
           "type": "string",
           "required": true
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [],
@@ -329,13 +310,20 @@
       "descriptionNoun": "studio",
       "description": "Recording facilities.",
       "displayPropertyKeys": [
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
           "key": "name",
           "type": "string",
           "required": true
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -357,13 +345,20 @@
       "descriptionNoun": "instrument",
       "description": "Musical instruments (guitars, synths, drums, etc.).",
       "displayPropertyKeys": [
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
           "key": "name",
           "type": "string",
           "required": true
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [],
@@ -385,13 +380,20 @@
       "descriptionNoun": "piece of equipment",
       "description": "Recording gear, outboard, software (non-instrument).",
       "displayPropertyKeys": [
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
           "key": "name",
           "type": "string",
           "required": true
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -416,13 +418,20 @@
       "description": "User- or curator-created collections of tracks (container).",
       "displayPropertyKeys": [
         "name",
-        "title"
+        "title",
+        "aliases"
       ],
       "properties": [
         {
           "key": "name",
           "type": "string",
           "required": true
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -444,13 +453,20 @@
       "description": "Concert venues.",
       "displayPropertyKeys": [
         "venue",
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
           "key": "name",
           "type": "string",
           "required": true
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [],
@@ -470,13 +486,20 @@
       "description": "Live shows / events.",
       "displayPropertyKeys": [
         "name",
-        "title"
+        "title",
+        "aliases"
       ],
       "properties": [
         {
           "key": "venue",
           "type": "string",
           "required": false
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -501,13 +524,20 @@
       "description": "A recording session.",
       "displayPropertyKeys": [
         "name",
-        "title"
+        "title",
+        "aliases"
       ],
       "properties": [
         {
           "key": "name",
           "type": "string",
           "required": false
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -530,13 +560,20 @@
       "description": "A release product (vinyl, CD, digital).",
       "displayPropertyKeys": [
         "title",
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
           "key": "title",
           "type": "string",
           "required": true
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [
@@ -559,13 +596,20 @@
       "descriptionNoun": "effect",
       "description": "Audio effects and processing.",
       "displayPropertyKeys": [
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
           "key": "name",
           "type": "string",
           "required": true
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [],
@@ -585,13 +629,20 @@
       "description": "Role attribution.",
       "displayPropertyKeys": [
         "role_name",
-        "name"
+        "name",
+        "aliases"
       ],
       "properties": [
         {
           "key": "role_name",
           "type": "string",
           "required": false
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
         }
       ],
       "allowedRelationshipsAsSubject": [],
@@ -605,6 +656,77 @@
         "credit",
         "role"
       ]
+    },
+    "Band": {
+      "displayName": "Band",
+      "descriptionNoun": "band",
+      "description": "A music band or group.",
+      "displayPropertyKeys": [
+        "name",
+        "aliases"
+      ],
+      "properties": [
+        {
+          "key": "name",
+          "type": "string",
+          "required": true,
+          "description": "Primary display name"
+        },
+        {
+          "key": "biography",
+          "type": "string",
+          "required": false
+        },
+        {
+          "key": "country",
+          "type": "string",
+          "required": false
+        },
+        {
+          "key": "active_years",
+          "type": "string",
+          "required": false
+        },
+        {
+          "key": "aliases",
+          "type": "array",
+          "required": false,
+          "description": "Alternative names, stage names, and known aliases."
+        }
+      ],
+      "allowedRelationshipsAsSubject": [
+        "MEMBER_OF",
+        "COLLABORATED_WITH",
+        "PLAYED_INSTRUMENT",
+        "PART_OF_GENRE",
+        "USED_EQUIPMENT",
+        "PARTICIPATED_IN",
+        "PLAYED_ON",
+        "INFLUENCED_BY",
+        "FEATURES",
+        "RELEASED"
+      ],
+      "allowedRelationshipsAsObject": [
+        "PERFORMED_BY",
+        "PRODUCED_BY",
+        "PLAYED_ON",
+        "FEATURES",
+        "RELEASED_BY",
+        "COLLABORATED_WITH",
+        "INFLUENCED_BY",
+        "MEMBER_OF"
+      ],
+      "constraints": {
+        "primaryDisplayProperty": "name"
+      },
+      "synonyms": [
+        "band",
+        "musician",
+        "act",
+        "group",
+        "artist"
+      ],
+      "contextMessage": "Use for bands and groups. Use Person for individual humans."
     }
   },
   "relationships": [
@@ -634,7 +756,7 @@
         "SongWork"
       ],
       "objectLabels": [
-        "Artist"
+        "Band"
       ],
       "synonyms": [
         "performed by",
@@ -717,7 +839,7 @@
       "type": "USED_EQUIPMENT",
       "description": "A studio, session, recording, or person used a piece of equipment or instrument.",
       "subjectLabels": [
-        "Artist",
+        "Band",
         "Track",
         "Album",
         "Studio",
@@ -739,7 +861,7 @@
       "description": "A person or artist played an instrument.",
       "subjectLabels": [
         "Person",
-        "Artist"
+        "Band"
       ],
       "objectLabels": [
         "Instrument"
@@ -753,7 +875,7 @@
       "description": "A person or artist performed on a track, album, or release.",
       "subjectLabels": [
         "Person",
-        "Artist"
+        "Band"
       ],
       "objectLabels": [
         "Instrument",
@@ -801,7 +923,7 @@
         "Album"
       ],
       "objectLabels": [
-        "Artist",
+        "Band",
         "Person"
       ],
       "synonyms": [
@@ -844,7 +966,7 @@
         "Person"
       ],
       "objectLabels": [
-        "Artist"
+        "Band"
       ],
       "synonyms": [
         "member of",
@@ -855,10 +977,10 @@
       "type": "COLLABORATED_WITH",
       "description": "Two artists or people collaborated.",
       "subjectLabels": [
-        "Artist"
+        "Band"
       ],
       "objectLabels": [
-        "Artist",
+        "Band",
         "Person"
       ],
       "synonyms": [
@@ -869,10 +991,10 @@
       "type": "INFLUENCED_BY",
       "description": "An entity was influenced by another entity.",
       "subjectLabels": [
-        "Artist"
+        "Band"
       ],
       "objectLabels": [
-        "Artist"
+        "Band"
       ],
       "synonyms": [
         "influenced by"
@@ -941,7 +1063,7 @@
       "type": "PART_OF_GENRE",
       "description": "An entity belongs to a genre.",
       "subjectLabels": [
-        "Artist",
+        "Band",
         "Track",
         "SongWork"
       ],
@@ -970,7 +1092,7 @@
       "type": "PARTICIPATED_IN",
       "description": "A person or artist participated in a performance or session.",
       "subjectLabels": [
-        "Artist",
+        "Band",
         "Person"
       ],
       "objectLabels": [
@@ -994,24 +1116,39 @@
       "synonyms": [
         "uses effect"
       ]
-    }
-  ],
-  "identityRules": [
+    },
     {
-      "labels": [
-        "Artist",
-        "Person"
+      "type": "RELEASED",
+      "description": "User-approved relationship from proposed query interpretation.",
+      "subjectLabels": [
+        "Band"
       ],
-      "note": "If a real-world human is an artist, treat Artist and Person as the same identity. Match or create a single dual-labeled node instead of split duplicates."
+      "objectLabels": [
+        "Album"
+      ],
+      "synonyms": [
+        "released",
+        "RELEASED_ALBUM",
+        "HAS_ALBUM",
+        "DISCOGRAPHY_INCLUDES",
+        "ISSUED_ALBUM"
+      ],
+      "aliases": [
+        "RELEASED_ALBUM",
+        "HAS_ALBUM",
+        "DISCOGRAPHY_INCLUDES",
+        "ISSUED_ALBUM"
+      ]
     }
   ],
+  "identityRules": [],
   "labelSynonyms": {
     "song": "Track",
     "track": "Track",
     "album": "Album",
-    "artist": "Artist",
-    "band": "Artist",
-    "musician": "Artist",
+    "artist": "Band",
+    "band": "Band",
+    "musician": "Band",
     "person": "Person",
     "genre": "Genre",
     "label": "Label",

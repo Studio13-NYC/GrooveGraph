@@ -61,7 +61,7 @@ function buildRuntimeIndex(schema: OntologySchema): RuntimeIndex {
   for (const relationship of schema.relationships) {
     relationshipByType.set(relationship.type, relationship);
     pushLookup(normalizedRelationshipLookup, relationship.type, relationship.type);
-    for (const synonym of relationship.synonyms ?? []) {
+    for (const synonym of [...(relationship.synonyms ?? []), ...(relationship.aliases ?? [])]) {
       pushLookup(normalizedRelationshipLookup, synonym, relationship.type);
     }
   }

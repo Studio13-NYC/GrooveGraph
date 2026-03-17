@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { randomUUID } from "node:crypto";
 import { createTraceLogger, resolveTraceId } from "@/lib/trace";
 import { loadOntologyRuntime } from "@/ontology";
+import { getGraphStore } from "@/load/persist-graph";
+import { getSearchLabelsForEntityType } from "@/lib/entity-identity";
+import { getEntityDisplayPropertyKeys } from "@/lib/entity-config";
 import {
   appendQueryInsight,
   buildHumanSummary,
@@ -13,6 +17,123 @@ import {
 export const dynamic = process.env.NEXT_STATIC_EXPORT === "1" ? undefined : "force-dynamic";
 export const maxDuration = 30;
 
+type ConversationMode = "new_intent" | "clarification";
+type ClarificationAnswer = { questionId: string; answer: string };
+type LlmState = { conversationId?: string; previousResponseId?: string };
+type SessionState = {
+  sessionId: string;
+  rootPrompt: string;
+  clarificationAnswers: ClarificationAnswer[];
+  pendingQuestionId?: string;
+  pendingQuestionPrompt?: string;
+  llmState?: LlmState;
+  updatedAt: number;
+};
+
+const sessionStore = new Map<string, SessionState>();
+
+type NameCandidate = {
+  value: string;
+  score: number;
+};
+
+function normalizeToken(input: string): string {
+  return input
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function toCandidateValues(raw: unknown): string[] {
+  if (typeof raw === "string") {
+    const normalized = raw.trim();
+    return normalized ? [normalized] : [];
+  }
+  if (Array.isArray(raw)) {
+    const values: string[] = [];
+    for (const entry of raw) {
+      if (typeof entry === "string" && entry.trim()) values.push(entry.trim());
+    }
+    return values;
+  }
+  return [];
+}
+
+function scoreCandidate(promptValue: string, candidateValue: string): number {
+  const query = normalizeToken(promptValue);
+  const candidate = normalizeToken(candidateValue);
+  if (!query || !candidate) return 0;
+  if (query === candidate) return 1;
+  if (candidate.startsWith(query) || query.startsWith(candidate)) return 0.86;
+  if (candidate.includes(query) || query.includes(candidate)) return 0.72;
+
+  const queryTokens = new Set(query.split(" "));
+  const candidateTokens = new Set(candidate.split(" "));
+  let overlap = 0;
+  for (const token of queryTokens) {
+    if (candidateTokens.has(token)) overlap += 1;
+  }
+  const tokenScore = overlap / Math.max(queryTokens.size, candidateTokens.size, 1);
+  return tokenScore * 0.65;
+}
+
+async function getStartEntityNameCandidates(startLabel: string, startValue: string): Promise<NameCandidate[]> {
+  const store = await getGraphStore();
+  const searchLabels = [...new Set(getSearchLabelsForEntityType(startLabel))];
+  const candidateMap = new Map<string, number>();
+
+  for (const label of searchLabels) {
+    const nodes = await store.findNodes({ label, maxResults: 500 });
+    const propertyKeys = [...new Set([...getEntityDisplayPropertyKeys(label), "roles", "aliases"])];
+
+    for (const node of nodes) {
+      const seenOnNode = new Set<string>();
+      for (const key of propertyKeys) {
+        const raw = node.properties[key];
+        for (const value of toCandidateValues(raw)) {
+          if (seenOnNode.has(value.toLowerCase())) continue;
+          seenOnNode.add(value.toLowerCase());
+          const score = scoreCandidate(startValue, value);
+          if (score <= 0.42) continue;
+          const existing = candidateMap.get(value) ?? 0;
+          if (score > existing) {
+            candidateMap.set(value, score);
+          }
+        }
+      }
+    }
+  }
+
+  return [...candidateMap.entries()]
+    .map(([value, score]) => ({ value, score }))
+    .sort((a, b) => b.score - a.score || a.value.localeCompare(b.value))
+    .slice(0, 6);
+}
+
+function buildEffectivePrompt(state: SessionState): string {
+  if (state.clarificationAnswers.length === 0) return state.rootPrompt;
+  const clarificationText = state.clarificationAnswers
+    .map((item, index) => `Clarification ${index + 1}: ${item.answer}`)
+    .join("\n");
+  return `${state.rootPrompt}\n${clarificationText}`;
+}
+
+function buildQuestionId(question: string, options?: string[]): string {
+  const normalizedQuestion = normalizeToken(question);
+  const normalizedOptions = (options ?? []).map((item) => normalizeToken(item)).join("|");
+  return `${normalizedQuestion}::${normalizedOptions}`;
+}
+
+function trimSessions(maxAgeMs = 2 * 60 * 60 * 1000): void {
+  const now = Date.now();
+  for (const [key, state] of sessionStore.entries()) {
+    if (now - state.updatedAt > maxAgeMs) sessionStore.delete(key);
+  }
+}
+
 export async function POST(request: NextRequest) {
   const traceId = resolveTraceId(request.headers);
   const trace = createTraceLogger(traceId, "api.query-builder.interpret");
@@ -21,10 +142,47 @@ export async function POST(request: NextRequest) {
 
   trace.log("request.received", { method: request.method, path: "/api/query-builder/interpret" });
   try {
+    trimSessions();
     const rawBody = await request.json().catch(() => ({}));
-    const prompt = typeof rawBody?.prompt === "string" ? rawBody.prompt : "";
-    promptForLog = prompt;
-    if (!prompt.trim()) {
+    const mode: ConversationMode =
+      rawBody?.mode === "clarification" || rawBody?.mode === "new_intent"
+        ? rawBody.mode
+        : typeof rawBody?.clarification === "string" && rawBody.clarification.trim()
+          ? "clarification"
+          : "new_intent";
+    const userMessage =
+      typeof rawBody?.userMessage === "string"
+        ? rawBody.userMessage
+        : mode === "clarification" && typeof rawBody?.clarification === "string"
+          ? rawBody.clarification
+          : typeof rawBody?.prompt === "string"
+            ? rawBody.prompt
+            : "";
+    const requestedSessionId = typeof rawBody?.sessionId === "string" ? rawBody.sessionId.trim() : "";
+    const pendingQuestionId = typeof rawBody?.pendingQuestionId === "string" ? rawBody.pendingQuestionId.trim() : "";
+    const incomingLlmState =
+      rawBody?.llmState && typeof rawBody.llmState === "object"
+        ? {
+            conversationId:
+              typeof rawBody.llmState.conversationId === "string" ? rawBody.llmState.conversationId : undefined,
+            previousResponseId:
+              typeof rawBody.llmState.previousResponseId === "string"
+                ? rawBody.llmState.previousResponseId
+                : undefined,
+          }
+        : undefined;
+
+    const sessionId = requestedSessionId || randomUUID();
+    const current =
+      sessionStore.get(sessionId) ??
+      ({
+        sessionId,
+        rootPrompt: "",
+        clarificationAnswers: [],
+        updatedAt: Date.now(),
+      } satisfies SessionState);
+    const normalizedMessage = userMessage.trim();
+    if (!normalizedMessage) {
       return NextResponse.json(
         {
           traceId,
@@ -34,17 +192,156 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    let nextState: SessionState;
+    if (mode === "new_intent" || !current.rootPrompt.trim()) {
+      nextState = {
+        sessionId,
+        rootPrompt: normalizedMessage,
+        clarificationAnswers: [],
+        pendingQuestionId: undefined,
+        pendingQuestionPrompt: undefined,
+        llmState: incomingLlmState,
+        updatedAt: Date.now(),
+      };
+    } else {
+      const answers = [...current.clarificationAnswers];
+      if (pendingQuestionId && normalizedMessage) {
+        const existing = answers.find((item) => item.questionId === pendingQuestionId);
+        if (existing) {
+          existing.answer = normalizedMessage;
+        } else {
+          answers.push({ questionId: pendingQuestionId, answer: normalizedMessage });
+        }
+      } else if (normalizedMessage) {
+        answers.push({ questionId: `freeform_${answers.length + 1}`, answer: normalizedMessage });
+      }
+      nextState = {
+        ...current,
+        clarificationAnswers: answers,
+        llmState: incomingLlmState ?? current.llmState,
+        updatedAt: Date.now(),
+      };
+    }
+
+    const effectivePrompt = buildEffectivePrompt(nextState);
+    promptForLog = effectivePrompt;
+
     const ontology = loadOntologyRuntime();
-    const interpretation = await interpretQueryPrompt(prompt, ontology);
+    const interpretStartedAt = Date.now();
+    const interpretation = await interpretQueryPrompt(effectivePrompt, ontology, {
+      llmState: nextState.llmState,
+    });
+    const interpretDurationMs = Date.now() - interpretStartedAt;
+    if (interpretation.llmState) {
+      nextState.llmState = interpretation.llmState;
+    }
+    sessionStore.set(sessionId, nextState);
     trace.log("interpretation.completed", {
       strategy: interpretation.strategy,
       usedInsightCount: interpretation.usedInsightIds.length,
       proposedNodeCount: interpretation.proposedAdditions?.nodes.length ?? 0,
       proposedRelationshipCount: interpretation.proposedAdditions?.relationships.length ?? 0,
+      needsFollowUp: interpretation.needsFollowUp === true,
     });
+    if (interpretation.needsFollowUp || !interpretation.queryState) {
+      const followUpQuestion =
+        interpretation.followUpQuestion?.trim() || "I need one clarification before mapping this intent.";
+      const followUpOptions = interpretation.followUpOptions ?? [];
+      const questionId = buildQuestionId(followUpQuestion, followUpOptions);
+      nextState.pendingQuestionId = questionId;
+      nextState.pendingQuestionPrompt = followUpQuestion;
+      nextState.updatedAt = Date.now();
+      sessionStore.set(sessionId, nextState);
+      appendQueryInsight({
+        prompt: effectivePrompt,
+        strategy: interpretation.strategy,
+        success: false,
+        traceId,
+        note: followUpQuestion ?? interpretation.rationale,
+      });
+      return NextResponse.json(
+        {
+          sessionId,
+          llmState: nextState.llmState,
+          traceId,
+          strategy: interpretation.strategy,
+          rationale: interpretation.rationale,
+          needsFollowUp: true,
+          followUpQuestion,
+          followUpOptions,
+          question: {
+            id: questionId,
+            prompt: followUpQuestion,
+            options: followUpOptions,
+            expects: "clarification",
+          },
+          relationshipNamingSuggestion: interpretation.relationshipNamingSuggestion,
+          diagnostics: interpretation.diagnostics,
+          usedInsightIds: interpretation.usedInsightIds,
+          summary: "Need clarification before mapping intent.",
+          metrics: {
+            durationMs: Date.now() - startedAt,
+          },
+        },
+        { headers: { "x-trace-id": traceId } }
+      );
+    }
+
+    const startLabel = interpretation.queryState.start.label;
+    const startValue = interpretation.queryState.start.value?.trim();
+    if (startLabel && startValue) {
+      const candidates = await getStartEntityNameCandidates(startLabel, startValue);
+      if (candidates.length > 1) {
+        const top = candidates[0];
+        const second = candidates[1];
+        const isExactTop = normalizeToken(top.value) === normalizeToken(startValue);
+        const closeScores = second.score >= 0.55;
+        if (!isExactTop && closeScores) {
+          const options = candidates.map((entry) => entry.value);
+          const followUpQuestion = `I found a few close matches for "${startValue}". Which one should I use?`;
+          const questionId = buildQuestionId(followUpQuestion, options);
+          nextState.pendingQuestionId = questionId;
+          nextState.pendingQuestionPrompt = followUpQuestion;
+          nextState.updatedAt = Date.now();
+          sessionStore.set(sessionId, nextState);
+          appendQueryInsight({
+            prompt: effectivePrompt,
+            strategy: interpretation.strategy,
+            success: false,
+            traceId,
+            note: `name_disambiguation_required:${startLabel}:${startValue}`,
+          });
+          return NextResponse.json(
+            {
+              sessionId,
+              llmState: nextState.llmState,
+              traceId,
+              strategy: interpretation.strategy,
+              rationale: interpretation.rationale,
+              needsFollowUp: true,
+              followUpQuestion,
+              followUpOptions: options,
+              question: {
+                id: questionId,
+                prompt: followUpQuestion,
+                options,
+                expects: "entity_disambiguation",
+              },
+              usedInsightIds: interpretation.usedInsightIds,
+              summary: "Need clarification before mapping intent.",
+              metrics: {
+                durationMs: Date.now() - startedAt,
+              },
+            },
+            { headers: { "x-trace-id": traceId } }
+          );
+        }
+      }
+    }
 
     let compiled: { cypher: string; params: Record<string, unknown> };
     let compileBlockedReason: string | undefined;
+    const compileStartedAt = Date.now();
     try {
       compiled = compileQueryStateToCypher(interpretation.queryState, ontology);
     } catch (error) {
@@ -55,15 +352,22 @@ export async function POST(request: NextRequest) {
       };
       trace.log("compile.blocked", { reason: compileBlockedReason });
     }
+    const compileDurationMs = Date.now() - compileStartedAt;
     const nextOptions = getOntologyAwareNextOptions(interpretation.queryState, ontology);
     const summary = buildHumanSummary(interpretation.queryState);
     const research = await synthesizeResearchAnswer({
-      prompt,
+      prompt: effectivePrompt,
       queryState: interpretation.queryState,
       ontology,
       trace,
+      llmState: nextState.llmState,
     });
+    if (research.llmState) {
+      nextState.llmState = research.llmState;
+    }
+    const researchMetrics = research.stageMetrics;
     const unavailable = interpretation.diagnostics?.unavailableRelationships ?? [];
+    const ontologyDiagnostics = interpretation.diagnostics?.ontologyValidationDiagnostics ?? [];
     const unavailableNote =
       unavailable.length > 0
         ? `\n\nProposed unavailable relationships:\n${unavailable
@@ -73,6 +377,19 @@ export async function POST(request: NextRequest) {
                   item.allowedTargets.join(", ") || "none"
                 })`
             )
+            .join("\n")}`
+        : "";
+    const ontologyDiagnosticsNote =
+      ontologyDiagnostics.length > 0
+        ? `\n\nOntology validation checks:\n${ontologyDiagnostics
+            .map((item) => {
+              const atStep = typeof item.stepIndex === "number" ? ` (step ${item.stepIndex + 1})` : "";
+              const allowed =
+                item.allowedTargets && item.allowedTargets.length > 0
+                  ? ` Allowed targets: ${item.allowedTargets.join(", ")}.`
+                  : "";
+              return `- [${item.code}]${atStep} ${item.message}${allowed}`;
+            })
             .join("\n")}`
         : "";
 
@@ -101,20 +418,28 @@ export async function POST(request: NextRequest) {
     }
 
     appendQueryInsight({
-      prompt,
+      prompt: effectivePrompt,
       strategy: interpretation.strategy,
-      success: true,
+      success: !compileBlockedReason,
       traceId,
-      note: interpretation.rationale,
+      note: compileBlockedReason
+        ? `${interpretation.rationale} | compile_blocked: ${compileBlockedReason}`
+        : interpretation.rationale,
       queryState: interpretation.queryState,
     });
+    nextState.pendingQuestionId = undefined;
+    nextState.pendingQuestionPrompt = undefined;
+    nextState.updatedAt = Date.now();
+    sessionStore.set(sessionId, nextState);
 
     return NextResponse.json(
       {
+        sessionId,
+        llmState: nextState.llmState,
         traceId,
         strategy: interpretation.strategy,
         rationale: interpretation.rationale,
-        answerMarkdown: `${research.answerMarkdown}${unavailableNote}`,
+        answerMarkdown: `${research.answerMarkdown}${unavailableNote}${ontologyDiagnosticsNote}`,
         answerStrategy: research.strategy,
         usedInsightIds: interpretation.usedInsightIds,
         diagnostics: interpretation.diagnostics,
@@ -127,6 +452,48 @@ export async function POST(request: NextRequest) {
         summary,
         nextOptions,
         compiled,
+        pipelineSteps: [
+          {
+            id: "interpret",
+            title: "Interpret intent",
+            input: effectivePrompt,
+            output: interpretation.queryState,
+            durationMs: interpretDurationMs,
+            tokenUsage: interpretation.usage,
+          },
+          {
+            id: "compile",
+            title: "Validate and compile query",
+            input: interpretation.queryState,
+            output: compileBlockedReason ? { compileBlockedReason, diagnostics: interpretation.diagnostics } : compiled,
+            durationMs: compileDurationMs,
+            tokenUsage: { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+          },
+          {
+            id: "research",
+            title: "Generate research answer",
+            input: {
+              prompt: effectivePrompt,
+              queryState: interpretation.queryState,
+            },
+            output: research.answerMarkdown,
+            durationMs: researchMetrics?.researchAnswer.durationMs ?? 0,
+            tokenUsage:
+              researchMetrics?.researchAnswer.usage ?? { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+          },
+          {
+            id: "proposal_extraction",
+            title: "Extract proposed graph additions",
+            input: research.answerMarkdown,
+            output: {
+              nodes: [...mergedNodes.values()],
+              relationships: [...mergedRels.values()],
+            },
+            durationMs: researchMetrics?.proposalExtraction.durationMs ?? 0,
+            tokenUsage:
+              researchMetrics?.proposalExtraction.usage ?? { inputTokens: 0, outputTokens: 0, totalTokens: 0 },
+          },
+        ],
         metrics: {
           durationMs: Date.now() - startedAt,
         },
@@ -149,7 +516,9 @@ export async function POST(request: NextRequest) {
     });
     const message = error instanceof Error ? error.message : String(error);
     const status =
-      /valid ontology|unknown|cannot connect|prompt could not be mapped/i.test(message) ? 422 : 500;
+      /valid ontology|unknown|cannot connect|prompt could not be mapped|no ontology relationship/i.test(message)
+        ? 422
+        : 500;
     return NextResponse.json(
       {
         traceId,

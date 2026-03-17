@@ -1,16 +1,12 @@
-import { QueryBuilderSlice } from "./components/query-builder-slice";
+import { DiscoveryPipelineWorkspace } from "./components/discovery-pipeline-workspace";
 
 export default function HomePage() {
   return (
     <section className="space-y-6">
       <header className="space-y-2">
-        <h1 className="text-lg font-semibold">Ontology Query Builder</h1>
-        <p className="max-w-3xl text-sm text-[hsl(var(--muted-foreground))]">
-          A single interface for discovery: compose intent, shape clauses, interpret fuzzy prompts,
-          and inspect graph-ready Cypher in one place.
-        </p>
+        <h1 className="text-lg font-semibold">Music Discovery Assistant</h1>
       </header>
-      <QueryBuilderSlice />
+      <DiscoveryPipelineWorkspace />
     </section>
   );
 }

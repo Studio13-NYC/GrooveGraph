@@ -3,8 +3,9 @@ import { isEntityLabel, type EntityLabel } from "./entity-config";
 const RESERVED_GRAPH_LABELS = new Set(["GraphEntity", "EntityType"]);
 
 export function getSearchLabelsForEntityType(entityType: string): string[] {
-  if (entityType === "Artist" || entityType === "Person") {
-    return ["Artist", "Person"];
+  if (entityType === "Band") {
+    // Transitional compatibility while Neo4j data cleanup migrates Artist -> Band.
+    return ["Band", "Artist"];
   }
   return [entityType];
 }
@@ -19,7 +20,8 @@ export function getGraphEntityLabels(labels: string[]): string[] {
 
 export function getPrimaryEntityLabel(labels: string[]): string {
   const normalized = getGraphEntityLabels(labels);
-  if (normalized.includes("Artist")) return "Artist";
+  if (normalized.includes("Band")) return "Band";
+  if (normalized.includes("Artist")) return "Band";
   if (normalized.includes("Person")) return "Person";
 
   const firstKnown = normalized.find((label): label is EntityLabel => isEntityLabel(label));
@@ -29,10 +31,6 @@ export function getPrimaryEntityLabel(labels: string[]): string {
 }
 
 export function coerceArtistPersonIdentity(labels: string[]): string[] {
-  const next = normalizeEntityLabels(labels);
-  if (next.includes("Artist") || next.includes("Person")) {
-    if (!next.includes("Artist")) next.push("Artist");
-    if (!next.includes("Person")) next.push("Person");
-  }
-  return next;
+  // Keep legacy function name for compatibility; no forced dual-label coercion.
+  return normalizeEntityLabels(labels);
 }

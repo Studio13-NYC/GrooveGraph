@@ -1,5 +1,80 @@
 [
   {
+    "id": "e9a4ec04-3601-4312-90e7-932e205abf52",
+    "createdAt": "2026-03-17T18:13:51.956Z",
+    "updatedAt": "2026-03-17T18:17:01.546Z",
+    "relationshipType": "RELEASED",
+    "sourcePhrase": "released by",
+    "recommendedType": "RELEASED_ALBUM",
+    "aliasCandidates": [
+      "RELEASED_ALBUM",
+      "HAS_ALBUM",
+      "DISCOGRAPHY_INCLUDES",
+      "ISSUED_ALBUM"
+    ],
+    "direction": "outbound",
+    "fromLabel": "Band",
+    "toLabel": "Album",
+    "status": "accepted",
+    "approvedAt": "2026-03-17T18:17:01.546Z"
+  },
+  {
+    "id": "3794b88f-a831-42c1-b50a-112e141e1cb1",
+    "createdAt": "2026-03-17T18:00:46.429Z",
+    "updatedAt": "2026-03-17T18:00:46.429Z",
+    "relationshipType": "RELEASED_BY_BAND",
+    "sourcePhrase": "released by",
+    "recommendedType": "RELEASED_BY_BAND",
+    "aliasCandidates": [
+      "ARTIST_RELEASED_ALBUM",
+      "PERFORMER_RELEASED",
+      "DISCOGRAPHY_ENTRY_OF"
+    ],
+    "direction": "inbound",
+    "fromLabel": "Band",
+    "toLabel": "Album",
+    "status": "proposed"
+  },
+  {
+    "id": "0ec6f862-9faa-4498-a037-fb072c868a44",
+    "createdAt": "2026-03-17T17:57:41.170Z",
+    "updatedAt": "2026-03-17T17:57:41.170Z",
+    "relationshipType": "RELEASED",
+    "sourcePhrase": "released by",
+    "recommendedType": "RELEASED_BY_ARTIST",
+    "aliasCandidates": [
+      "RELEASED_BY_ARTIST",
+      "BY_ARTIST",
+      "PRIMARY_ARTIST_ON_RELEASE",
+      "ARTIST_RELEASED",
+      "DISCOGRAPHY_OF_ARTIST"
+    ],
+    "direction": "inbound",
+    "fromLabel": "Band",
+    "toLabel": "Album",
+    "status": "proposed"
+  },
+  {
+    "id": "675fd32d-18f9-4f58-8313-7bd1c0ffc2a1",
+    "createdAt": "2026-03-17T14:23:49.607Z",
+    "updatedAt": "2026-03-17T14:23:49.607Z",
+    "relationshipType": "FEATURES",
+    "direction": "outbound",
+    "fromLabel": "Artist",
+    "toLabel": "Album",
+    "status": "proposed"
+  },
+  {
+    "id": "8445a7f7-99de-4a23-9552-de9286b946bd",
+    "createdAt": "2026-03-17T12:48:30.319Z",
+    "updatedAt": "2026-03-17T12:48:30.319Z",
+    "relationshipType": "INFLUENCED_BY",
+    "direction": "outbound",
+    "fromLabel": "Artist",
+    "toLabel": "Album",
+    "status": "proposed"
+  },
+  {
     "id": "4ea7af58-16bc-4193-b3ca-979b99a7273d",
     "createdAt": "2026-03-17T06:00:52.899Z",
     "updatedAt": "2026-03-17T06:01:22.446Z",

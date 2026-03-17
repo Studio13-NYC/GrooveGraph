@@ -27,6 +27,7 @@ export interface OntologyRelationshipSchema {
   subjectLabels: string[];
   objectLabels: string[];
   synonyms?: string[];
+  aliases?: string[];
   contextMessage?: string;
 }
 
@@ -46,6 +47,49 @@ export interface OntologySchema {
 }
 
 let cachedOntology: OntologySchema | null = null;
+
+function ensureEntityProperty(
+  entity: OntologyEntitySchema,
+  property: OntologyPropertySchema
+): OntologyEntitySchema {
+  const properties = [...(entity.properties ?? [])];
+  const hasProperty = properties.some((entry) => entry.key === property.key);
+  if (!hasProperty) properties.push(property);
+  return {
+    ...entity,
+    properties,
+  };
+}
+
+function enrichOntologySchema(schema: OntologySchema): OntologySchema {
+  const nextEntities: Record<string, OntologyEntitySchema> = {};
+  for (const [label, entity] of Object.entries(schema.entities)) {
+    let nextEntity: OntologyEntitySchema = {
+      ...entity,
+      displayPropertyKeys: [...new Set([...(entity.displayPropertyKeys ?? []), "aliases"])],
+    };
+    nextEntity = ensureEntityProperty(nextEntity, {
+      key: "aliases",
+      type: "array",
+      required: false,
+      description: "Alternative names, stage names, and known aliases.",
+    });
+    if (label === "Person") {
+      nextEntity = ensureEntityProperty(nextEntity, {
+        key: "roles",
+        type: "array",
+        required: false,
+        description: "One or more roles such as artist, producer, engineer, songwriter.",
+      });
+      nextEntity.displayPropertyKeys = [...new Set([...(nextEntity.displayPropertyKeys ?? []), "roles"])];
+    }
+    nextEntities[label] = nextEntity;
+  }
+  return {
+    ...schema,
+    entities: nextEntities,
+  };
+}
 
 function ensureOntologySchema(raw: unknown): OntologySchema {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
@@ -70,6 +114,6 @@ export function loadOntologySchema(options?: { forceReload?: boolean }): Ontolog
   const schemaPath = getOntologySchemaPath();
   const raw = readFileSync(schemaPath, "utf8");
   const parsed = JSON.parse(raw) as unknown;
-  cachedOntology = ensureOntologySchema(parsed);
+  cachedOntology = enrichOntologySchema(ensureOntologySchema(parsed));
   return cachedOntology;
 }

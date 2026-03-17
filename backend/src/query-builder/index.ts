@@ -20,6 +20,7 @@ export {
 export {
   upsertRelationshipProposal,
   markRelationshipProposalAccepted,
+  getRelationshipProposalById,
   loadRelationshipProposals,
   type RelationshipProposal,
   type RelationshipProposalStatus,

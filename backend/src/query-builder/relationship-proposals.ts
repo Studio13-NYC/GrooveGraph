@@ -10,6 +10,9 @@ export interface RelationshipProposal {
   createdAt: string;
   updatedAt: string;
   relationshipType: string;
+  sourcePhrase?: string;
+  recommendedType?: string;
+  aliasCandidates?: string[];
   direction: QueryDirection;
   fromLabel: string;
   toLabel: string;
@@ -60,6 +63,9 @@ function saveRelationshipProposals(items: RelationshipProposal[]): void {
 
 export function upsertRelationshipProposal(input: {
   relationshipType: string;
+  sourcePhrase?: string;
+  recommendedType?: string;
+  aliasCandidates?: string[];
   direction: QueryDirection;
   fromLabel: string;
   toLabel: string;
@@ -69,6 +75,9 @@ export function upsertRelationshipProposal(input: {
   if (existing) {
     const updated: RelationshipProposal = {
       ...existing,
+      sourcePhrase: input.sourcePhrase ?? existing.sourcePhrase,
+      recommendedType: input.recommendedType ?? existing.recommendedType,
+      aliasCandidates: Array.from(new Set([...(existing.aliasCandidates ?? []), ...(input.aliasCandidates ?? [])])),
       updatedAt: new Date().toISOString(),
     };
     const next = current.map((item) => (item.id === updated.id ? updated : item));
@@ -81,6 +90,9 @@ export function upsertRelationshipProposal(input: {
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     relationshipType: input.relationshipType,
+    sourcePhrase: input.sourcePhrase,
+    recommendedType: input.recommendedType,
+    aliasCandidates: input.aliasCandidates ? Array.from(new Set(input.aliasCandidates)) : undefined,
     direction: input.direction,
     fromLabel: input.fromLabel,
     toLabel: input.toLabel,
@@ -88,6 +100,10 @@ export function upsertRelationshipProposal(input: {
   };
   saveRelationshipProposals([created, ...current].slice(0, 2000));
   return created;
+}
+
+export function getRelationshipProposalById(id: string): RelationshipProposal | null {
+  return loadRelationshipProposals().find((item) => item.id === id) ?? null;
 }
 
 export function markRelationshipProposalAccepted(id: string): RelationshipProposal | null {

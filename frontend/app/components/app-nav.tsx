@@ -35,13 +35,6 @@ export function AppNav({ isAdmin: serverAdmin }: AppNavProps) {
 
   return (
     <nav className="flex items-center gap-6" data-testid="app-nav">
-      <Link
-        href="/"
-        data-testid="nav-query"
-        className="text-sm text-[hsl(var(--muted-foreground))] transition-colors hover:text-[hsl(var(--foreground))]"
-      >
-        Query
-      </Link>
       {isAdmin && (
         <>
           <Link

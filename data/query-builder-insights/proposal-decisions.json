@@ -1,0 +1,458 @@
+[
+  {
+    "id": "35a79e71-62e8-4ec7-9376-da5e50b80e8f",
+    "createdAt": "2026-03-17T18:18:14.099Z",
+    "updatedAt": "2026-03-17T18:39:57.040Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:naked",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "9732a142-423e-4c30-9ae4-e240eb9bd6ae",
+    "createdAt": "2026-03-17T18:18:13.902Z",
+    "updatedAt": "2026-03-17T18:39:56.883Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:true stories",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "a7caf000-81d4-4016-acd9-a980738321b1",
+    "createdAt": "2026-03-17T18:18:13.705Z",
+    "updatedAt": "2026-03-17T18:39:56.736Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:little creatures",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "875218bf-eae0-4364-a267-c094e6a86a8f",
+    "createdAt": "2026-03-17T18:18:13.504Z",
+    "updatedAt": "2026-03-17T18:39:56.591Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:speaking in tongues",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "a1878c54-d585-4001-a162-5ee7c1443af6",
+    "createdAt": "2026-03-17T18:18:13.306Z",
+    "updatedAt": "2026-03-17T18:39:56.447Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:remain in light",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "42a10d9e-d063-44da-bd52-8eb295bb74b7",
+    "createdAt": "2026-03-17T18:18:13.085Z",
+    "updatedAt": "2026-03-17T18:39:56.304Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:fear of music",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "7f689eab-e801-4777-8b9c-5fe6de839a00",
+    "createdAt": "2026-03-17T18:18:12.880Z",
+    "updatedAt": "2026-03-17T18:39:56.152Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:more songs about buildings and food",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "0bfdc025-fc94-4986-a9dd-b7f7e89c2c11",
+    "createdAt": "2026-03-17T18:18:12.653Z",
+    "updatedAt": "2026-03-17T18:39:56.005Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:talking heads: 77",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "7d870bac-0bf3-4dba-8d09-87ec783a054a",
+    "createdAt": "2026-03-17T18:18:00.720Z",
+    "updatedAt": "2026-03-17T18:39:51.284Z",
+    "canonicalKey": "Album:naked",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "79a586a7-4cae-4472-b771-90deb98578dd",
+    "createdAt": "2026-03-17T18:18:00.614Z",
+    "updatedAt": "2026-03-17T18:39:51.193Z",
+    "canonicalKey": "Album:true stories",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "1bdf8466-cb42-44d0-84c6-fc4245c5ff14",
+    "createdAt": "2026-03-17T18:18:00.551Z",
+    "updatedAt": "2026-03-17T18:39:51.101Z",
+    "canonicalKey": "Album:little creatures",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "d2703742-d7b9-4535-ad81-c65d41ef1a19",
+    "createdAt": "2026-03-17T18:18:00.485Z",
+    "updatedAt": "2026-03-17T18:39:51.039Z",
+    "canonicalKey": "Album:speaking in tongues",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "71df74b6-e84d-4b5d-8643-35b3401563bb",
+    "createdAt": "2026-03-17T18:18:00.420Z",
+    "updatedAt": "2026-03-17T18:39:50.973Z",
+    "canonicalKey": "Album:remain in light",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "dbdad6f2-134b-477f-847c-87e1eae1a496",
+    "createdAt": "2026-03-17T18:18:00.354Z",
+    "updatedAt": "2026-03-17T18:39:50.908Z",
+    "canonicalKey": "Album:fear of music",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "486b8a97-779e-43bc-ae73-5bad53212022",
+    "createdAt": "2026-03-17T18:18:00.283Z",
+    "updatedAt": "2026-03-17T18:39:50.845Z",
+    "canonicalKey": "Album:more songs about buildings and food",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "c9313193-e120-49c3-acae-f9a45b1f55e1",
+    "createdAt": "2026-03-17T18:18:00.209Z",
+    "updatedAt": "2026-03-17T18:39:50.780Z",
+    "canonicalKey": "Album:talking heads: 77",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "07f92590-c2c8-4836-9fa3-551567140570",
+    "createdAt": "2026-03-17T18:18:00.095Z",
+    "updatedAt": "2026-03-17T18:39:50.713Z",
+    "canonicalKey": "Band:talking heads",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "30f53356-d5f0-45b4-932b-c3365fb9d001",
+    "createdAt": "2026-03-17T18:18:14.501Z",
+    "updatedAt": "2026-03-17T18:18:14.501Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:stop making sense",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "26695412-73d5-4983-aa42-a974574805a3",
+    "createdAt": "2026-03-17T18:18:14.287Z",
+    "updatedAt": "2026-03-17T18:18:14.287Z",
+    "canonicalKey": "Band:talking heads-outbound:RELEASED->Album:the name of this band is talking heads",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "8aa4248d-3235-4d62-90a8-70d7d277a9ae",
+    "createdAt": "2026-03-17T18:18:00.858Z",
+    "updatedAt": "2026-03-17T18:18:00.858Z",
+    "canonicalKey": "Album:stop making sense",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "20a910a8-3e08-4cec-b995-637ee0e51e7a",
+    "createdAt": "2026-03-17T18:18:00.786Z",
+    "updatedAt": "2026-03-17T18:18:00.786Z",
+    "canonicalKey": "Album:the name of this band is talking heads",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "1eda3c30-db2b-41c4-9f9a-e99fd6503451",
+    "createdAt": "2026-03-17T14:24:41.757Z",
+    "updatedAt": "2026-03-17T14:24:41.757Z",
+    "canonicalKey": "Album:many sides of dave edmunds: the greatest hits and more-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "c9cb828c-faa3-49c9-bc13-5847bf6fa011",
+    "createdAt": "2026-03-17T14:24:41.353Z",
+    "updatedAt": "2026-03-17T14:24:41.353Z",
+    "canonicalKey": "Album:a pile of rock: live-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "71b80943-1f40-4ecf-b736-f4aef489ac15",
+    "createdAt": "2026-03-17T14:24:41.012Z",
+    "updatedAt": "2026-03-17T14:24:41.012Z",
+    "canonicalKey": "Album:hand picked: musical fantasies-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "576181e1-8bc6-4ece-af9f-5e2402598418",
+    "createdAt": "2026-03-17T14:24:40.668Z",
+    "updatedAt": "2026-03-17T14:24:40.668Z",
+    "canonicalKey": "Album:from small things: the best of dave edmunds-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "db0bacc9-b82f-4260-bce8-6edfac5e8a7a",
+    "createdAt": "2026-03-17T14:24:40.322Z",
+    "updatedAt": "2026-03-17T14:24:40.322Z",
+    "canonicalKey": "Album:the best of dave edmunds-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "7ebb5e8b-220c-4f49-bbf9-f3262fc2757c",
+    "createdAt": "2026-03-17T14:24:39.915Z",
+    "updatedAt": "2026-03-17T14:24:39.915Z",
+    "canonicalKey": "Album:…again-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "37313774-7ec6-4ae7-b2d6-637ae0711566",
+    "createdAt": "2026-03-17T14:24:39.553Z",
+    "updatedAt": "2026-03-17T14:24:39.553Z",
+    "canonicalKey": "Album:i hear you rockin'-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "cf55acf6-46c8-40a1-81be-9cf3b902cf8f",
+    "createdAt": "2026-03-17T14:24:39.182Z",
+    "updatedAt": "2026-03-17T14:24:39.182Z",
+    "canonicalKey": "Album:plugged in-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "c4b645ce-7cd5-4a4b-854a-39655887d0de",
+    "createdAt": "2026-03-17T14:24:38.856Z",
+    "updatedAt": "2026-03-17T14:24:38.856Z",
+    "canonicalKey": "Album:closer to the flame-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "8b3c9844-4bdc-490a-a350-63854bf37c26",
+    "createdAt": "2026-03-17T14:24:38.535Z",
+    "updatedAt": "2026-03-17T14:24:38.535Z",
+    "canonicalKey": "Album:riff raff-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "7a6bdd39-20d0-4066-9950-d35fc83a4010",
+    "createdAt": "2026-03-17T14:24:38.207Z",
+    "updatedAt": "2026-03-17T14:24:38.207Z",
+    "canonicalKey": "Album:information-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "2bf02a2b-a8f4-4eae-9eab-a62b7b2cabfb",
+    "createdAt": "2026-03-17T14:24:37.865Z",
+    "updatedAt": "2026-03-17T14:24:37.865Z",
+    "canonicalKey": "Album:twangin...-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "2b8204f6-a569-40b4-801f-50d99f8a868d",
+    "createdAt": "2026-03-17T14:24:37.525Z",
+    "updatedAt": "2026-03-17T14:24:37.525Z",
+    "canonicalKey": "Album:repeat when necessary-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "fc6615de-459b-4e02-ace3-bfa1051fb93a",
+    "createdAt": "2026-03-17T14:24:37.168Z",
+    "updatedAt": "2026-03-17T14:24:37.168Z",
+    "canonicalKey": "Album:tracks on wax 4-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "983cf200-cc69-4c27-9a99-963571b1f9d3",
+    "createdAt": "2026-03-17T14:24:36.836Z",
+    "updatedAt": "2026-03-17T14:24:36.836Z",
+    "canonicalKey": "Album:get it-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "fffde678-eca9-4cc4-91fc-65fa6b5c51bb",
+    "createdAt": "2026-03-17T14:24:36.705Z",
+    "updatedAt": "2026-03-17T14:24:36.705Z",
+    "canonicalKey": "Album:many sides of dave edmunds: the greatest hits and more",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "6ef17497-b0ef-43a8-84cf-89269c67f375",
+    "createdAt": "2026-03-17T14:24:36.490Z",
+    "updatedAt": "2026-03-17T14:24:36.490Z",
+    "canonicalKey": "Album:subtle as a flying mallet-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "392711c5-b839-4e1a-9c92-1c6e91ea298e",
+    "createdAt": "2026-03-17T14:24:36.402Z",
+    "updatedAt": "2026-03-17T14:24:36.402Z",
+    "canonicalKey": "Album:a pile of rock: live",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "cff55627-af50-4287-ba70-cf80a987fcca",
+    "createdAt": "2026-03-17T14:24:36.082Z",
+    "updatedAt": "2026-03-17T14:24:36.082Z",
+    "canonicalKey": "Album:hand picked: musical fantasies",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "4941893f-8cfc-4cde-9fa9-df5af8150294",
+    "createdAt": "2026-03-17T14:24:36.017Z",
+    "updatedAt": "2026-03-17T14:24:36.017Z",
+    "canonicalKey": "Album:rockpile-outbound:FEATURES->Artist:dave edmunds",
+    "kind": "relationship",
+    "action": "accepted"
+  },
+  {
+    "id": "b3e31a72-bee9-4255-98a0-e134511f6454",
+    "createdAt": "2026-03-17T14:24:35.797Z",
+    "updatedAt": "2026-03-17T14:24:35.797Z",
+    "canonicalKey": "Album:from small things: the best of dave edmunds",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "3c27a47c-fcd8-446e-a18e-cd20e5b0a9ed",
+    "createdAt": "2026-03-17T14:24:35.523Z",
+    "updatedAt": "2026-03-17T14:24:35.523Z",
+    "canonicalKey": "Album:the best of dave edmunds",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "7b5cabd3-9c81-40f3-81d6-dde2a84c1373",
+    "createdAt": "2026-03-17T14:24:35.238Z",
+    "updatedAt": "2026-03-17T14:24:35.238Z",
+    "canonicalKey": "Album:…again",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "323471ff-64c9-466a-953f-ef6a7748c7ab",
+    "createdAt": "2026-03-17T14:24:34.960Z",
+    "updatedAt": "2026-03-17T14:24:34.960Z",
+    "canonicalKey": "Album:i hear you rockin'",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "b6d46fdc-081d-46bd-94d6-7ddfc0aee4dd",
+    "createdAt": "2026-03-17T14:24:34.893Z",
+    "updatedAt": "2026-03-17T14:24:34.893Z",
+    "canonicalKey": "Album:plugged in",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "e87d26be-357a-492f-beb7-98f04959486d",
+    "createdAt": "2026-03-17T14:24:34.826Z",
+    "updatedAt": "2026-03-17T14:24:34.826Z",
+    "canonicalKey": "Album:closer to the flame",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "b9ab9c03-a071-4f01-bf7a-464555c2325e",
+    "createdAt": "2026-03-17T14:24:34.546Z",
+    "updatedAt": "2026-03-17T14:24:34.546Z",
+    "canonicalKey": "Album:riff raff",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "cb4845cb-4722-4aa7-83d6-8615e445aa34",
+    "createdAt": "2026-03-17T14:24:34.254Z",
+    "updatedAt": "2026-03-17T14:24:34.254Z",
+    "canonicalKey": "Album:information",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "5f9b7276-d0ef-44ef-9e24-912f6764b875",
+    "createdAt": "2026-03-17T14:24:33.964Z",
+    "updatedAt": "2026-03-17T14:24:33.964Z",
+    "canonicalKey": "Album:twangin...",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "5d7f1ab5-99e5-4479-962a-e64ef14fecbf",
+    "createdAt": "2026-03-17T14:24:33.680Z",
+    "updatedAt": "2026-03-17T14:24:33.680Z",
+    "canonicalKey": "Album:repeat when necessary",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "1e565457-db2a-44b5-832e-3b51b85f8b16",
+    "createdAt": "2026-03-17T14:24:33.609Z",
+    "updatedAt": "2026-03-17T14:24:33.609Z",
+    "canonicalKey": "Album:tracks on wax 4",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "c12e6bdd-54d8-4020-952d-5033a52e3b40",
+    "createdAt": "2026-03-17T14:24:33.296Z",
+    "updatedAt": "2026-03-17T14:24:33.296Z",
+    "canonicalKey": "Album:get it",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "2f52a334-a942-4580-8eb5-181a6080d68e",
+    "createdAt": "2026-03-17T14:24:32.953Z",
+    "updatedAt": "2026-03-17T14:24:32.953Z",
+    "canonicalKey": "Album:subtle as a flying mallet",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "792bd9c6-ab7e-44ff-8be1-be5c76e8986b",
+    "createdAt": "2026-03-17T14:24:32.567Z",
+    "updatedAt": "2026-03-17T14:24:32.567Z",
+    "canonicalKey": "Album:rockpile",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "13285a19-c7e2-4a6c-a86a-e8e1e2c176de",
+    "createdAt": "2026-03-17T13:48:51.692Z",
+    "updatedAt": "2026-03-17T14:24:32.444Z",
+    "canonicalKey": "Artist:dave edmunds",
+    "kind": "node",
+    "action": "accepted"
+  },
+  {
+    "id": "6300278b-03ec-49c1-a53c-3aeb8de33b6f",
+    "createdAt": "2026-03-17T13:48:51.721Z",
+    "updatedAt": "2026-03-17T13:48:51.721Z",
+    "canonicalKey": "Artist:dave edmunds-outbound:PLAYED_ON->Album:rockpile",
+    "kind": "relationship",
+    "action": "rejected"
+  }
+]

@@ -1,5 +1,5 @@
 export const ENTITY_LABELS = [
-  "Artist",
+  "Band",
   "Album",
   "Track",
   "Equipment",
@@ -30,12 +30,12 @@ type EntityConfig = {
 };
 
 const ENTITY_CONFIG: Record<EntityLabel, EntityConfig> = {
-  Artist: {
-    displayName: "Artist",
+  Band: {
+    displayName: "Band",
     displayPropertyKeys: ["name"],
     placeholder: "e.g. The Who",
-    descriptionNoun: "artist",
-    emptyHint: "Search for an artist to load their connected neighborhood.",
+    descriptionNoun: "band",
+    emptyHint: "Search for a band to load its connected neighborhood.",
     example: "The Who",
   },
   Album: {
@@ -80,7 +80,7 @@ const ENTITY_CONFIG: Record<EntityLabel, EntityConfig> = {
   },
   Person: {
     displayName: "Person",
-    displayPropertyKeys: ["name"],
+    displayPropertyKeys: ["name", "roles"],
     placeholder: "e.g. Pete Townshend",
     descriptionNoun: "person",
     emptyHint: "Search for a person to trace their credits, works, and collaborators.",
@@ -193,7 +193,9 @@ export function getEntityDisplayName(label: string): string {
 }
 
 export function getEntityDisplayPropertyKeys(label: string): string[] {
-  return getEntityConfig(label).displayPropertyKeys;
+  const configured = getEntityConfig(label).displayPropertyKeys;
+  // Keep name resolution forgiving across all entities.
+  return [...new Set([...configured, "aliases"])];
 }
 
 export function getEntityDescriptionNoun(label: string): string {
@@ -213,8 +215,10 @@ export function getNodeDisplayName(node: {
   labels: string[];
   properties: Record<string, unknown>;
 }): string {
-  const label = node.labels.includes("Artist")
-    ? "Artist"
+  const label = node.labels.includes("Band")
+    ? "Band"
+    : node.labels.includes("Artist")
+      ? "Band"
     : node.labels.includes("Person")
       ? "Person"
       : node.labels[0] ?? "";
@@ -223,6 +227,10 @@ export function getNodeDisplayName(node: {
     const value = node.properties[key];
     if (typeof value === "string" && value.trim()) {
       return value;
+    }
+    if (Array.isArray(value)) {
+      const first = value.find((entry) => typeof entry === "string" && entry.trim());
+      if (typeof first === "string") return first;
     }
   }
   for (const fallbackKey of ["name", "title", "venue"]) {

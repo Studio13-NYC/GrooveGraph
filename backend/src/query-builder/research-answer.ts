@@ -2,7 +2,14 @@ import type { OntologyRuntime } from "../ontology";
 import type { QueryState, QueryDirection } from "./types";
 import { fetchSummaryByName } from "../enrichment/adapters/wikipedia";
 import { fetchArtistByName } from "../enrichment/adapters/musicbrainz";
-import { getTextFromResponsesOutput, type ResponsesApiPayload } from "../enrichment/llm/responses-api";
+import {
+  getConversationIdFromResponsesPayload,
+  getTextFromResponsesOutput,
+  getUsageFromResponsesPayload,
+  type ResponsesApiPayload,
+  type ResponsesConversationState,
+  type ResponsesTokenUsage,
+} from "../enrichment/llm/responses-api";
 
 type TraceLike = {
   log(event: string, data?: Record<string, unknown>): void;
@@ -43,6 +50,18 @@ export type ResearchAnswerResult = {
     relationships: ProposedRelationship[];
   };
   strategy: "llm-research-answer";
+  llmState?: ResponsesConversationState;
+  stageMetrics?: {
+    researchAnswer: { durationMs: number; usage: ResponsesTokenUsage };
+    proposalExtraction: { durationMs: number; usage: ResponsesTokenUsage };
+  };
+};
+
+type ResponsesFunctionCallItem = {
+  type?: string;
+  name?: string;
+  call_id?: string;
+  arguments?: string;
 };
 
 function cleanText(value: string): string {
@@ -61,6 +80,115 @@ function extractJson(text: string): unknown {
     }
     throw new Error("Research answer response was not valid JSON.");
   }
+}
+
+function parseJsonObject(value: string): Record<string, unknown> {
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : {};
+  } catch {
+    return {};
+  }
+}
+
+function extractFunctionCalls(payload: ResponsesApiPayload): ResponsesFunctionCallItem[] {
+  const output = (payload as { output?: unknown[] }).output;
+  if (!Array.isArray(output)) return [];
+  return output
+    .filter((item): item is ResponsesFunctionCallItem => Boolean(item && typeof item === "object"))
+    .filter((item) => item.type === "function_call" && typeof item.name === "string");
+}
+
+async function runResponsesToolLoop(params: {
+  apiKey: string;
+  model: string;
+  baseUrl: string;
+  systemPrompt: string;
+  userPrompt: string;
+  tools: Array<Record<string, unknown>>;
+  executeTool: (call: ResponsesFunctionCallItem) => Record<string, unknown>;
+  llmState?: ResponsesConversationState;
+  jsonOutput?: boolean;
+  maxTurns?: number;
+}): Promise<{ outputText: string; llmState?: ResponsesConversationState; usage: ResponsesTokenUsage; durationMs: number }> {
+  const startedAt = Date.now();
+  const url = `${params.baseUrl.replace(/\/$/, "")}/responses`;
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${params.apiKey}`,
+  };
+
+  const requestOnce = async (body: Record<string, unknown>): Promise<ResponsesApiPayload & { output_text?: string }> => {
+    const response = await fetch(url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+      const details = await response.text();
+      throw new Error(`Responses call failed with ${response.status}${details ? `: ${details}` : ""}`);
+    }
+    return (await response.json()) as ResponsesApiPayload & { output_text?: string };
+  };
+
+  let llmState: ResponsesConversationState | undefined = params.llmState ? { ...params.llmState } : undefined;
+  let payload: (ResponsesApiPayload & { output_text?: string }) | null = null;
+  const usage: ResponsesTokenUsage = { inputTokens: 0, outputTokens: 0, totalTokens: 0 };
+  let body: Record<string, unknown> = {
+    model: params.model,
+    input: [
+      { role: "system", content: params.systemPrompt },
+      { role: "user", content: params.userPrompt },
+    ],
+    tools: params.tools,
+    tool_choice: "auto",
+    parallel_tool_calls: false,
+    store: true,
+  };
+  if (params.jsonOutput) {
+    body.text = { format: { type: "json_object" } };
+  }
+  if (llmState?.conversationId) body.conversation = llmState.conversationId;
+  if (llmState?.previousResponseId) body.previous_response_id = llmState.previousResponseId;
+
+  const maxTurns = params.maxTurns ?? 6;
+  for (let turn = 0; turn < maxTurns; turn += 1) {
+    payload = await requestOnce(body);
+    const currentUsage = getUsageFromResponsesPayload(payload);
+    usage.inputTokens += currentUsage.inputTokens;
+    usage.outputTokens += currentUsage.outputTokens;
+    usage.totalTokens += currentUsage.totalTokens;
+    llmState = {
+      conversationId: getConversationIdFromResponsesPayload(payload) ?? llmState?.conversationId,
+      previousResponseId: payload.id,
+    };
+    const functionCalls = extractFunctionCalls(payload);
+    if (functionCalls.length === 0) break;
+    const toolOutputs = functionCalls.map((call, index) => ({
+      type: "function_call_output",
+      call_id: call.call_id ?? `${call.name ?? "tool"}_${index}`,
+      output: JSON.stringify(params.executeTool(call)),
+    }));
+    body = {
+      model: params.model,
+      previous_response_id: payload.id,
+      input: toolOutputs,
+      tools: params.tools,
+      tool_choice: "auto",
+      parallel_tool_calls: false,
+      store: true,
+    };
+    if (params.jsonOutput) {
+      body.text = { format: { type: "json_object" } };
+    }
+    if (llmState?.conversationId) body.conversation = llmState.conversationId;
+  }
+
+  if (!payload) {
+    throw new Error("Responses loop ended without payload.");
+  }
+  const outputText = getTextFromResponsesOutput(payload) || payload.output_text || JSON.stringify(payload);
+  return { outputText, llmState, usage, durationMs: Date.now() - startedAt };
 }
 
 function getSeedValues(prompt: string, queryState: QueryState): string[] {
@@ -132,11 +260,18 @@ async function extractProposalsFromAnswer(params: {
   queryState: QueryState;
   ontology: OntologyRuntime;
   trace?: TraceLike;
-}): Promise<{ nodes: ProposedNode[]; relationships: ProposedRelationship[] }> {
-  const url = `${params.baseUrl.replace(/\/$/, "")}/responses`;
+  llmState?: ResponsesConversationState;
+}): Promise<{
+  nodes: ProposedNode[];
+  relationships: ProposedRelationship[];
+  llmState?: ResponsesConversationState;
+  usage: ResponsesTokenUsage;
+  durationMs: number;
+}> {
   const system = [
-    "You extract graph candidates from music research text.",
-    "Use only ontology labels and relationship types provided.",
+    "Pipeline stage: proposal_extraction.",
+    "You extract graph candidates from music research text and may call tools whenever needed.",
+    "Use only ontology labels and relationship types discovered via tools or provided context.",
     "Return strict JSON with keys: nodes, relationships.",
     "nodes: [{ label, value }].",
     "relationships: [{ type, fromValue, toValue, direction, fromLabel, toLabel }].",
@@ -168,27 +303,73 @@ async function extractProposalsFromAnswer(params: {
     2
   );
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${params.apiKey}`,
+  const tools: Array<Record<string, unknown>> = [
+    {
+      type: "function",
+      name: "get_ontology_snapshot",
+      description: "Get the ontology entities and relationships for extraction validation.",
+      strict: true,
+      parameters: { type: "object", properties: {}, additionalProperties: false },
     },
-    body: JSON.stringify({
-      model: params.model,
-      input: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-    }),
-  });
-  if (!response.ok) {
-    const details = await response.text();
-    throw new Error(`Proposal extraction LLM failed with ${response.status}${details ? `: ${details}` : ""}`);
-  }
+    {
+      type: "function",
+      name: "resolve_entity_label",
+      description: "Resolve candidate entity label to canonical ontology label.",
+      strict: true,
+      parameters: {
+        type: "object",
+        properties: { label: { type: "string" } },
+        required: ["label"],
+        additionalProperties: false,
+      },
+    },
+    {
+      type: "function",
+      name: "resolve_relationship_type",
+      description: "Resolve candidate relationship type to canonical ontology type.",
+      strict: true,
+      parameters: {
+        type: "object",
+        properties: { relationshipType: { type: "string" } },
+        required: ["relationshipType"],
+        additionalProperties: false,
+      },
+    },
+    {
+      type: "function",
+      name: "get_answer_text",
+      description: "Get the latest research answer text to extract from.",
+      strict: true,
+      parameters: { type: "object", properties: {}, additionalProperties: false },
+    },
+  ];
 
-  const payload = (await response.json()) as ResponsesApiPayload & { output_text?: string };
-  const outputText = getTextFromResponsesOutput(payload) || payload.output_text || "";
+  const extractionRun = await runResponsesToolLoop({
+    apiKey: params.apiKey,
+    model: params.model,
+    baseUrl: params.baseUrl,
+    systemPrompt: system,
+    userPrompt: user,
+    llmState: params.llmState,
+    jsonOutput: true,
+    tools,
+    executeTool: (call) => {
+      const args = parseJsonObject(call.arguments ?? "{}");
+      if (call.name === "get_ontology_snapshot") return ontologySnapshot;
+      if (call.name === "resolve_entity_label") {
+        const label = typeof args.label === "string" ? args.label : "";
+        return { input: label, resolved: params.ontology.resolveEntityLabel(label) ?? null };
+      }
+      if (call.name === "resolve_relationship_type") {
+        const relationshipType = typeof args.relationshipType === "string" ? args.relationshipType : "";
+        return { input: relationshipType, resolved: params.ontology.resolveRelationshipType(relationshipType) ?? null };
+      }
+      if (call.name === "get_answer_text") return { answerText: params.answerText };
+      return { error: `Unknown tool: ${call.name ?? "unknown"}` };
+    },
+  });
+
+  const outputText = extractionRun.outputText;
   const parsed = extractJson(outputText) as ProposalExtractionPayload;
 
   const nodes = new Map<string, ProposedNode>();
@@ -256,7 +437,13 @@ async function extractProposalsFromAnswer(params: {
     relationshipCount: relationships.size,
   });
 
-  return { nodes: [...nodes.values()], relationships: [...relationships.values()] };
+  return {
+    nodes: [...nodes.values()],
+    relationships: [...relationships.values()],
+    llmState: extractionRun.llmState,
+    usage: extractionRun.usage,
+    durationMs: extractionRun.durationMs,
+  };
 }
 
 export async function synthesizeResearchAnswer(params: {
@@ -264,6 +451,7 @@ export async function synthesizeResearchAnswer(params: {
   queryState: QueryState;
   ontology: OntologyRuntime;
   trace?: TraceLike;
+  llmState?: ResponsesConversationState;
 }): Promise<ResearchAnswerResult> {
   const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) {
@@ -272,8 +460,6 @@ export async function synthesizeResearchAnswer(params: {
 
   const model = process.env.OPENAI_MODEL?.trim() || process.env.OPENAI_MODEL_ENRICHMENT?.trim() || "gpt-5.4";
   const baseUrl = process.env.OPENAI_BASE_URL?.trim() || "https://api.openai.com/v1";
-  const url = `${baseUrl.replace(/\/$/, "")}/responses`;
-
   const seeds = getSeedValues(params.prompt, params.queryState);
   const evidence = await collectEvidence(seeds, params.trace);
   params.trace?.log("research.evidence.collected", {
@@ -282,7 +468,8 @@ export async function synthesizeResearchAnswer(params: {
   });
 
   const system = [
-    "You are a music research assistant.",
+    "Pipeline stage: research_answer.",
+    "You are a music research assistant and may call tools whenever needed.",
     "Answer the user question directly in concise markdown.",
     "Do not output JSON.",
   ].join(" ");
@@ -293,28 +480,64 @@ export async function synthesizeResearchAnswer(params: {
     seedCount: seeds.length,
     evidenceCount: evidence.length,
   });
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+  const tools: Array<Record<string, unknown>> = [
+    {
+      type: "function",
+      name: "get_query_context",
+      description: "Get current query state and user prompt context.",
+      strict: true,
+      parameters: { type: "object", properties: {}, additionalProperties: false },
     },
-    body: JSON.stringify({
-      model,
-      input: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
+    {
+      type: "function",
+      name: "get_evidence_bundle",
+      description: "Get collected external evidence snippets for this query.",
+      strict: true,
+      parameters: { type: "object", properties: {}, additionalProperties: false },
+    },
+    {
+      type: "function",
+      name: "get_ontology_snapshot",
+      description: "Get ontology entities and relationship schemas.",
+      strict: true,
+      parameters: { type: "object", properties: {}, additionalProperties: false },
+    },
+  ];
+  const ontologySnapshot = {
+    entities: params.ontology.entityLabels,
+    relationships: params.ontology.relationshipTypes.map((type) => {
+      const rel = params.ontology.getRelationship(type);
+      return {
+        type,
+        subjectLabels: rel?.subjectLabels ?? [],
+        objectLabels: rel?.objectLabels ?? [],
+        synonyms: rel?.synonyms ?? [],
+      };
     }),
+  };
+
+  const researchRun = await runResponsesToolLoop({
+    apiKey,
+    model,
+    baseUrl,
+    systemPrompt: system,
+    userPrompt: user,
+    llmState: params.llmState,
+    tools,
+    executeTool: (call) => {
+      if (call.name === "get_query_context") {
+        return { prompt: params.prompt, queryState: params.queryState, seeds };
+      }
+      if (call.name === "get_evidence_bundle") {
+        return { evidence };
+      }
+      if (call.name === "get_ontology_snapshot") {
+        return ontologySnapshot;
+      }
+      return { error: `Unknown tool: ${call.name ?? "unknown"}` };
+    },
   });
-
-  if (!response.ok) {
-    const details = await response.text();
-    throw new Error(`Research answer LLM failed with ${response.status}${details ? `: ${details}` : ""}`);
-  }
-
-  const payload = (await response.json()) as ResponsesApiPayload & { output_text?: string };
-  const outputText = getTextFromResponsesOutput(payload) || payload.output_text || JSON.stringify(payload);
+  const outputText = researchRun.outputText;
   let parsed: ResearchAnswerPayload = {};
   try {
     parsed = extractJson(outputText) as ResearchAnswerPayload;
@@ -334,6 +557,7 @@ export async function synthesizeResearchAnswer(params: {
     queryState: params.queryState,
     ontology: params.ontology,
     trace: params.trace,
+    llmState: researchRun.llmState,
   });
   params.trace?.log("research.llm.completed", {
     answerLength: answerMarkdown.length,
@@ -343,7 +567,21 @@ export async function synthesizeResearchAnswer(params: {
 
   return {
     answerMarkdown,
-    proposedAdditions,
+    proposedAdditions: {
+      nodes: proposedAdditions.nodes,
+      relationships: proposedAdditions.relationships,
+    },
     strategy: "llm-research-answer",
+    llmState: proposedAdditions.llmState,
+    stageMetrics: {
+      researchAnswer: {
+        durationMs: researchRun.durationMs,
+        usage: researchRun.usage,
+      },
+      proposalExtraction: {
+        durationMs: proposedAdditions.durationMs,
+        usage: proposedAdditions.usage,
+      },
+    },
   };
 }

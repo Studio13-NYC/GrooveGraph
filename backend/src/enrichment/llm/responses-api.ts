@@ -13,7 +13,63 @@ type OutputMessage = {
 export type ResponsesApiPayload = {
   output?: OutputMessage[];
   id?: string;
+  conversation?: string | { id?: string };
+  usage?: Record<string, unknown>;
 };
+
+export type ResponsesConversationState = {
+  conversationId?: string;
+  previousResponseId?: string;
+};
+
+export type ResponsesTokenUsage = {
+  inputTokens: number;
+  outputTokens: number;
+  totalTokens: number;
+};
+
+function toNumber(value: unknown): number {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim()) {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return 0;
+}
+
+export function getUsageFromResponsesPayload(payload: ResponsesApiPayload): ResponsesTokenUsage {
+  const usage = payload?.usage ?? {};
+  const inputTokens = toNumber(
+    usage.input_tokens ??
+      usage.prompt_tokens ??
+      usage.promptTokens
+  );
+  const outputTokens = toNumber(
+    usage.output_tokens ??
+      usage.completion_tokens ??
+      usage.completionTokens
+  );
+  const totalTokens = toNumber(
+    usage.total_tokens ??
+      usage.totalTokens
+  );
+  return {
+    inputTokens,
+    outputTokens,
+    totalTokens: totalTokens || inputTokens + outputTokens,
+  };
+}
+
+export function getConversationIdFromResponsesPayload(payload: ResponsesApiPayload): string | undefined {
+  if (typeof payload.conversation === "string" && payload.conversation.trim()) {
+    return payload.conversation.trim();
+  }
+  if (payload.conversation && typeof payload.conversation === "object") {
+    const id = payload.conversation.id;
+    if (typeof id === "string" && id.trim()) return id.trim();
+  }
+  return undefined;
+}
 
 /**
  * Extract the combined text from a Responses API response.

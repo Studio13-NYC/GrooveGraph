@@ -1,6 +1,6 @@
 import { GraphNode } from "../GraphNode";
 
-const LABEL = "Artist";
+const LABEL = "Band";
 
 export interface ArtistProps {
   name: string;
