@@ -11,6 +11,10 @@ import { Input } from "./ui/input";
 
 type QueryBuilderFormState = {
   entityType: EntityLabel;
+  propertyFilter: string;
+};
+
+type QueryBuilderStepState = {
   relationship: RelationshipType;
   targetEntity: EntityLabel;
   propertyFilter: string;
@@ -27,6 +31,10 @@ type QueryBuilderCompileResponse = {
 
 const DEFAULT_FORM_STATE: QueryBuilderFormState = {
   entityType: "Artist",
+  propertyFilter: "",
+};
+
+const DEFAULT_STEP: QueryBuilderStepState = {
   relationship: "PLAYED_INSTRUMENT",
   targetEntity: "Instrument",
   propertyFilter: "",
@@ -38,39 +46,65 @@ function getPropertyKeyForLabel(label: EntityLabel): string {
 
 export function QueryBuilderSlice() {
   const [formState, setFormState] = useState<QueryBuilderFormState>(DEFAULT_FORM_STATE);
+  const [steps, setSteps] = useState<QueryBuilderStepState[]>([{ ...DEFAULT_STEP }]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<QueryBuilderCompileResponse | null>(null);
 
   const userSummary = useMemo(() => {
-    const filterLabel = formState.propertyFilter.trim()
-      ? ` filtered by "${formState.propertyFilter.trim()}"`
-      : " with no property filter";
-    return `${formState.entityType} ${formState.relationship} ${formState.targetEntity}${filterLabel}`;
-  }, [formState.entityType, formState.relationship, formState.targetEntity, formState.propertyFilter]);
+    const startFilter = formState.propertyFilter.trim();
+    const startText = startFilter
+      ? `${formState.entityType} contains "${startFilter}"`
+      : `${formState.entityType} with no property filter`;
+    const segments = steps.map((step, index) => {
+      const filter = step.propertyFilter.trim();
+      const filterText = filter
+        ? ` contains "${filter}"`
+        : " with no property filter";
+      return `step ${index + 1}: ${step.relationship} -> ${step.targetEntity}${filterText}`;
+    });
+
+    return `${startText}${segments.length > 0 ? `, then ${segments.join(", then ")}` : ""}`;
+  }, [formState.entityType, formState.propertyFilter, steps]);
+
+  const canRemoveStep = steps.length > 1;
+
+  function updateStep(index: number, patch: Partial<QueryBuilderStepState>) {
+    setSteps((current) =>
+      current.map((step, stepIndex) => (stepIndex === index ? { ...step, ...patch } : step))
+    );
+  }
+
+  function addStep() {
+    setSteps((current) => [...current, { ...DEFAULT_STEP }]);
+  }
+
+  function removeStep(index: number) {
+    setSteps((current) => {
+      if (current.length <= 1) return current;
+      return current.filter((_, stepIndex) => stepIndex !== index);
+    });
+  }
 
   async function handleCompile() {
     setLoading(true);
     setError(null);
 
-    const propertyFilter = formState.propertyFilter.trim();
     const queryState = {
       start: {
         label: formState.entityType,
         propertyKey: getPropertyKeyForLabel(formState.entityType),
-        value: propertyFilter,
+        value: formState.propertyFilter.trim(),
       },
-      steps: [
-        {
-          relationshipType: formState.relationship,
-          direction: "outbound" as const,
-          target: {
-            label: formState.targetEntity,
-            propertyKey: getPropertyKeyForLabel(formState.targetEntity),
-            value: propertyFilter,
-          },
+      steps: steps.map((step) => ({
+        relationshipType: step.relationship,
+        direction: "outbound" as const,
+        target: {
+          label: step.targetEntity,
+          propertyKey: getPropertyKeyForLabel(step.targetEntity),
+          value: step.propertyFilter.trim(),
         },
-      ],
+      })),
       limit: 25,
     };
 
@@ -101,6 +135,7 @@ export function QueryBuilderSlice() {
 
   function resetForm() {
     setFormState(DEFAULT_FORM_STATE);
+    setSteps([{ ...DEFAULT_STEP }]);
     setResult(null);
     setError(null);
   }
@@ -109,14 +144,14 @@ export function QueryBuilderSlice() {
     <div className="grid gap-4 md:grid-cols-5">
       <Card className="md:col-span-2">
         <CardHeader>
-          <CardTitle>Query Builder (First Slice)</CardTitle>
+          <CardTitle>Query Builder (Multi-row Slice)</CardTitle>
           <p className="text-sm text-[hsl(var(--muted-foreground))]">
-            Compose one ontology-aware row and compile a live Cypher preview.
+            Compose chained ontology-aware rows and compile a live Cypher preview.
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
           <label className="block space-y-2">
-            <span className="text-sm font-medium">Entity type</span>
+            <span className="text-sm font-medium">Start entity type</span>
             <select
               value={formState.entityType}
               onChange={(event) =>
@@ -133,55 +168,88 @@ export function QueryBuilderSlice() {
           </label>
 
           <label className="block space-y-2">
-            <span className="text-sm font-medium">Relationship</span>
-            <select
-              value={formState.relationship}
-              onChange={(event) =>
-                setFormState((current) => ({ ...current, relationship: event.target.value as RelationshipType }))
-              }
-              className="h-10 w-full rounded-md border border-[hsl(var(--border))] bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
-            >
-              {RELATIONSHIP_TYPES.map((relationship) => (
-                <option key={relationship} value={relationship}>
-                  {relationship}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="block space-y-2">
-            <span className="text-sm font-medium">Target entity</span>
-            <select
-              value={formState.targetEntity}
-              onChange={(event) =>
-                setFormState((current) => ({ ...current, targetEntity: event.target.value as EntityLabel }))
-              }
-              className="h-10 w-full rounded-md border border-[hsl(var(--border))] bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
-            >
-              {ENTITY_LABELS.map((label) => (
-                <option key={label} value={label}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="block space-y-2">
-            <span className="text-sm font-medium">Optional property filter</span>
+            <span className="text-sm font-medium">Start property filter (optional)</span>
             <Input
               value={formState.propertyFilter}
               onChange={(event) => setFormState((current) => ({ ...current, propertyFilter: event.target.value }))}
-              placeholder="e.g. guitar"
+              placeholder="e.g. adrian"
             />
           </label>
 
-          <div className="flex items-center gap-2">
+          <div className="space-y-3">
+            {steps.map((step, index) => (
+              <div key={`row-${index}`} className="space-y-3 rounded-md border border-[hsl(var(--border))] p-3">
+                <p className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
+                  Row {index + 1}
+                </p>
+
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium">Relationship</span>
+                  <select
+                    value={step.relationship}
+                    onChange={(event) =>
+                      updateStep(index, { relationship: event.target.value as RelationshipType })
+                    }
+                    className="h-10 w-full rounded-md border border-[hsl(var(--border))] bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
+                  >
+                    {RELATIONSHIP_TYPES.map((relationship) => (
+                      <option key={relationship} value={relationship}>
+                        {relationship}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium">Target entity</span>
+                  <select
+                    value={step.targetEntity}
+                    onChange={(event) =>
+                      updateStep(index, { targetEntity: event.target.value as EntityLabel })
+                    }
+                    className="h-10 w-full rounded-md border border-[hsl(var(--border))] bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
+                  >
+                    {ENTITY_LABELS.map((label) => (
+                      <option key={label} value={label}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium">Target property filter (optional)</span>
+                  <Input
+                    value={step.propertyFilter}
+                    onChange={(event) => updateStep(index, { propertyFilter: event.target.value })}
+                    placeholder="e.g. guitar"
+                  />
+                </label>
+
+                <div className="flex items-center justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => removeStep(index)}
+                    disabled={loading || !canRemoveStep}
+                  >
+                    Remove row
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Button type="button" variant="outline" onClick={addStep} disabled={loading}>
+              Add Row
+            </Button>
             <Button type="button" onClick={() => void handleCompile()} disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Compile Cypher Preview
             </Button>
             <Button type="button" variant="outline" onClick={resetForm} disabled={loading}>
-              Reset Row
+              Reset
             </Button>
           </div>
         </CardContent>
