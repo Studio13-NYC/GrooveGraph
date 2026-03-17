@@ -16,6 +16,7 @@ type QueryBuilderFormState = {
 
 type QueryBuilderStepState = {
   relationship: RelationshipType;
+  direction: "outbound" | "inbound";
   targetEntity: EntityLabel;
   propertyFilter: string;
 };
@@ -23,6 +24,11 @@ type QueryBuilderStepState = {
 type QueryBuilderCompileResponse = {
   traceId: string;
   summary: string;
+  nextOptions?: Array<{
+    relationshipType: string;
+    direction: "outbound" | "inbound";
+    targetLabels: string[];
+  }>;
   compiled: {
     cypher: string;
     params: Record<string, unknown>;
@@ -36,12 +42,21 @@ const DEFAULT_FORM_STATE: QueryBuilderFormState = {
 
 const DEFAULT_STEP: QueryBuilderStepState = {
   relationship: "PLAYED_INSTRUMENT",
+  direction: "outbound",
   targetEntity: "Instrument",
   propertyFilter: "",
 };
 
 function getPropertyKeyForLabel(label: EntityLabel): string {
   return label === "Venue" ? "venue" : "name";
+}
+
+function toEntityLabel(value: string): EntityLabel | null {
+  return ENTITY_LABELS.includes(value as EntityLabel) ? (value as EntityLabel) : null;
+}
+
+function toRelationshipType(value: string): RelationshipType | null {
+  return RELATIONSHIP_TYPES.includes(value as RelationshipType) ? (value as RelationshipType) : null;
 }
 
 export function QueryBuilderSlice() {
@@ -61,7 +76,8 @@ export function QueryBuilderSlice() {
       const filterText = filter
         ? ` contains "${filter}"`
         : " with no property filter";
-      return `step ${index + 1}: ${step.relationship} -> ${step.targetEntity}${filterText}`;
+      const arrow = step.direction === "outbound" ? "->" : "<-";
+      return `step ${index + 1}: ${arrow} ${step.relationship} ${step.targetEntity}${filterText}`;
     });
 
     return `${startText}${segments.length > 0 ? `, then ${segments.join(", then ")}` : ""}`;
@@ -77,6 +93,29 @@ export function QueryBuilderSlice() {
 
   function addStep() {
     setSteps((current) => [...current, { ...DEFAULT_STEP }]);
+  }
+
+  function addSuggestedStep() {
+    const suggestion = result?.nextOptions?.[0];
+    if (!suggestion) {
+      addStep();
+      return;
+    }
+
+    const relationship = toRelationshipType(suggestion.relationshipType) ?? DEFAULT_STEP.relationship;
+    const targetEntity =
+      suggestion.targetLabels.map(toEntityLabel).find((label): label is EntityLabel => Boolean(label)) ??
+      DEFAULT_STEP.targetEntity;
+
+    setSteps((current) => [
+      ...current,
+      {
+        relationship,
+        direction: suggestion.direction,
+        targetEntity,
+        propertyFilter: "",
+      },
+    ]);
   }
 
   function removeStep(index: number) {
@@ -98,7 +137,7 @@ export function QueryBuilderSlice() {
       },
       steps: steps.map((step) => ({
         relationshipType: step.relationship,
-        direction: "outbound" as const,
+        direction: step.direction,
         target: {
           label: step.targetEntity,
           propertyKey: getPropertyKeyForLabel(step.targetEntity),
@@ -201,6 +240,20 @@ export function QueryBuilderSlice() {
                 </label>
 
                 <label className="block space-y-2">
+                  <span className="text-sm font-medium">Direction</span>
+                  <select
+                    value={step.direction}
+                    onChange={(event) =>
+                      updateStep(index, { direction: event.target.value as "outbound" | "inbound" })
+                    }
+                    className="h-10 w-full rounded-md border border-[hsl(var(--border))] bg-transparent px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring))]"
+                  >
+                    <option value="outbound">outbound (current -&gt; target)</option>
+                    <option value="inbound">inbound (target -&gt; current)</option>
+                  </select>
+                </label>
+
+                <label className="block space-y-2">
                   <span className="text-sm font-medium">Target entity</span>
                   <select
                     value={step.targetEntity}
@@ -244,6 +297,9 @@ export function QueryBuilderSlice() {
             <Button type="button" variant="outline" onClick={addStep} disabled={loading}>
               Add Row
             </Button>
+            <Button type="button" variant="outline" onClick={addSuggestedStep} disabled={loading}>
+              Add Suggested Row
+            </Button>
             <Button type="button" onClick={() => void handleCompile()} disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Compile Cypher Preview
@@ -266,6 +322,22 @@ export function QueryBuilderSlice() {
             </p>
             <p className="mt-2 text-sm">{result?.summary ?? userSummary}</p>
           </div>
+
+          {result?.nextOptions && result.nextOptions.length > 0 ? (
+            <div className="rounded-md border border-[hsl(var(--border))] p-3">
+              <p className="text-xs font-medium uppercase tracking-wide text-[hsl(var(--muted-foreground))]">
+                Suggested next connections
+              </p>
+              <div className="mt-2 space-y-1">
+                {result.nextOptions.slice(0, 5).map((option, index) => (
+                  <p key={`${option.relationshipType}-${index}`} className="text-xs">
+                    {option.direction === "outbound" ? "->" : "<-"} {option.relationshipType} to{" "}
+                    {option.targetLabels.join(", ")}
+                  </p>
+                ))}
+              </div>
+            </div>
+          ) : null}
 
           {error ? (
             <div className="rounded-md border border-red-300 bg-red-50 p-3 text-sm text-red-700">

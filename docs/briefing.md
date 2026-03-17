@@ -63,7 +63,7 @@ Software is built forward with **Fuzzy Functions**:
 
 1. Runtime ontology loader + context integration.
 2. Headless query-builder core (first live slice complete).
-3. Query-builder UI with Cypher preview (multi-row live composition complete).
+3. Query-builder UI with Cypher preview (multi-row composition + guided next-row direction complete).
 4. Fuzzy interpretation orchestrator.
 5. Logging expansion and analysis artifacts.
 

@@ -49,6 +49,7 @@ This index catalogs every document in `docs/` and how it relates to the codebase
 | [posts/2026-03-16-fuzzy-foundation.md](posts/2026-03-16-fuzzy-foundation.md) | First milestone narrative for the fuzzy rebuild and execution model. |
 | [posts/2026-03-16-live-query-builder-slice.md](posts/2026-03-16-live-query-builder-slice.md) | Milestone narrative for the first live ontology-driven query-builder compile slice. |
 | [posts/2026-03-16-multi-row-composition-live.md](posts/2026-03-16-multi-row-composition-live.md) | Milestone narrative for live multi-row query composition and validation-driven chaining. |
+| [posts/2026-03-16-guided-next-rows-and-direction.md](posts/2026-03-16-guided-next-rows-and-direction.md) | Milestone narrative for ontology-guided next-row suggestions and direction-aware chaining in the query builder. |
 | [UI_TESTING.md](UI_TESTING.md) | **Playwright e2e:** local and deployed UI tests; when to run which; link to ui-testing and runtime-hygiene subagents. |
 | [uat.md](uat.md) | User acceptance testing: scope, test cases, results, and recommendations for the unified exploration page. |
 | [BROWSER_TEST_EXPLORE_ENRICHMENT.md](BROWSER_TEST_EXPLORE_ENRICHMENT.md) | How to run Explore and Enrichment browser tests with Cursor automation; screenshot locations and params. |
