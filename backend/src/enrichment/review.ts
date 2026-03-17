@@ -1136,74 +1136,6 @@ export async function importResearchBundle(
   return nextSession;
 }
 
-function toCandidateProvenance(record: VerifiedEnrichmentRecord): CandidateProvenance[] {
-  return [
-    {
-      source_id: record.source_id,
-      source_name: record.source_name,
-      source_type: record.source_type,
-      url: record.url,
-      retrieved_at: record.retrieved_at,
-      ...(record.excerpt ? { excerpt: record.excerpt } : {}),
-      confidence: record.confidence,
-    },
-  ];
-}
-
-function toCandidateEvidence(
-  record: VerifiedEnrichmentRecord,
-  evidenceId: string,
-  notes?: string
-): CandidateEvidence[] {
-  return [
-    {
-      evidenceId,
-      source_id: record.source_id,
-      source_name: record.source_name,
-      source_type: record.source_type,
-      url: record.url,
-      retrieved_at: record.retrieved_at,
-      ...(record.excerpt ? { excerpt: record.excerpt } : {}),
-      confidence: record.confidence,
-      ...(notes ? { notes } : {}),
-      structuredFacts: {
-        properties: record.properties,
-        relatedNodes: record.relatedNodes ?? [],
-        relatedEdges: record.relatedEdges ?? [],
-      },
-    },
-  ];
-}
-
-function getMutationDisplayName(properties: Record<string, unknown>, fallbackId: string): string {
-  const value = properties.name ?? properties.title ?? properties.venue;
-  return typeof value === "string" && value.trim() ? value : fallbackId;
-}
-
-function isNarrativePropertyKey(key: string): boolean {
-  return key === "biography" || key === "summary" || key === "notes";
-}
-
-function mergePropertyValue(existing: unknown, incoming: unknown, key: string): unknown {
-  if (isNarrativePropertyKey(key)) {
-    const segments = [existing, incoming]
-      .flatMap((value) => (typeof value === "string" ? value.split(/\n{2,}/) : []))
-      .map((value) => value.trim())
-      .filter(Boolean);
-    return [...new Set(segments)].join("\n\n");
-  }
-  if (Array.isArray(existing) || Array.isArray(incoming)) {
-    const merged = [...(Array.isArray(existing) ? existing : []), ...(Array.isArray(incoming) ? incoming : [])]
-      .map((value) => String(value).trim())
-      .filter(Boolean);
-    return [...new Set(merged)];
-  }
-  if (existing === undefined || existing === null || existing === "") {
-    return incoming;
-  }
-  return existing;
-}
-
 function buildEvidenceId(targetId: string, record: VerifiedEnrichmentRecord, recordIndex: number): string {
   return `${slugify(targetId)}-${record.source_id}-${recordIndex}`;
 }
@@ -1247,116 +1179,6 @@ function createResearchPacket(
         sourceDisplayName: preview.displayName,
       })),
     })),
-  };
-}
-
-function toAutomatedBundle(
-  session: EnrichmentReviewSession,
-  previewResults: EnrichmentPreviewResult[]
-): ResearchBundle {
-  const nodeCandidateIds = new Map<string, string>();
-  const propertyChanges = new Map<string, CandidatePropertyChange>();
-  const nodeCandidates: CandidateNode[] = [];
-  const edgeCandidates: CandidateEdge[] = [];
-
-  for (const preview of previewResults) {
-    for (const [recordIndex, record] of preview.verifiedRecords.entries()) {
-      const provenance = toCandidateProvenance(record);
-      const evidenceId = buildEvidenceId(preview.nodeId, record, recordIndex);
-      const evidence = toCandidateEvidence(record, evidenceId, "Deterministic fallback derived from one verified evidence record.");
-      for (const [key, value] of Object.entries(record.properties)) {
-        const propertyKey = `${preview.nodeId}:${key}`;
-        const existing = propertyChanges.get(propertyKey);
-        propertyChanges.set(propertyKey, {
-          candidateId: existing?.candidateId ?? `auto-prop-${preview.nodeId}-${slugify(key)}`,
-          targetId: preview.nodeId,
-          key,
-          value: mergePropertyValue(existing?.value, value, key),
-          confidence: existing?.confidence === "high" || record.confidence === "high"
-            ? "high"
-            : existing?.confidence === "medium" || record.confidence === "medium"
-              ? "medium"
-              : "low",
-          provenance: dedupeProvenance([...(existing?.provenance ?? []), ...provenance]),
-          evidence: existing?.evidence ? [...existing.evidence, ...evidence] : evidence,
-          matchStatus: "updates_existing_target",
-          reviewStatus: "pending",
-          notes: `Automatically gathered after subset approval from catalog sources.`,
-          justification: "Deterministic fallback combined verified source properties for the approved target.",
-        });
-      }
-
-      for (const [nodeIndex, node] of (record.relatedNodes ?? []).entries()) {
-        const normalizedLabels = normalizeCandidateLabels(node.labels[0] ?? "Node", node.labels);
-        const candidateId = `auto-node-${preview.nodeId}-${recordIndex}-${nodeIndex}-${slugify(node.id)}`;
-        nodeCandidateIds.set(node.id, candidateId);
-        nodeCandidates.push({
-          candidateId,
-          label: normalizedLabels.label,
-          labels: normalizedLabels.labels,
-          name: getMutationDisplayName(node.properties, node.id),
-          canonicalKey: deriveCanonicalKey(
-            normalizedLabels.label,
-            getMutationDisplayName(node.properties, node.id)
-          ),
-          properties: node.properties,
-          confidence: record.confidence,
-          provenance,
-          evidence,
-          matchStatus: "create_new",
-          reviewStatus: "pending",
-          notes: `Automatically gathered after subset approval from ${record.source_name}.`,
-          justification: `Deterministic fallback staged a related ${normalizedLabels.label} mentioned in verified source evidence.`,
-        });
-      }
-
-      for (const [edgeIndex, edge] of (record.relatedEdges ?? []).entries()) {
-        const fromIsTarget = session.targets.some((target) => target.id === edge.fromNodeId);
-        const toIsTarget = session.targets.some((target) => target.id === edge.toNodeId);
-        edgeCandidates.push({
-          candidateId: `auto-edge-${preview.nodeId}-${recordIndex}-${edgeIndex}-${slugify(edge.id)}`,
-          type: edge.type,
-          fromRef: fromIsTarget
-            ? { kind: "target", id: edge.fromNodeId }
-            : nodeCandidateIds.has(edge.fromNodeId)
-              ? { kind: "candidate", id: nodeCandidateIds.get(edge.fromNodeId)! }
-              : { kind: "existing", id: edge.fromNodeId },
-          toRef: toIsTarget
-            ? { kind: "target", id: edge.toNodeId }
-            : nodeCandidateIds.has(edge.toNodeId)
-              ? { kind: "candidate", id: nodeCandidateIds.get(edge.toNodeId)! }
-              : { kind: "existing", id: edge.toNodeId },
-          ...(edge.properties ? { properties: edge.properties } : {}),
-          confidence: record.confidence,
-          provenance,
-          evidence,
-          matchStatus: "create_new",
-          reviewStatus: "pending",
-          notes: `Automatically gathered after subset approval from ${record.source_name}.`,
-          justification: `Deterministic fallback staged a ${edge.type} relationship from verified source evidence.`,
-        });
-      }
-    }
-  }
-
-  return {
-    sessionId: session.id,
-    generatedAt: nowIso(),
-    summary:
-      previewResults.length > 0
-        ? `Automatically staged enrichment from ${previewResults.map((item) => item.sourcesUsed.join(", ")).filter(Boolean).join(", ")}.`
-        : "No automated enrichment candidates were found for the approved subset.",
-    targets: session.targets,
-    propertyChanges: [...propertyChanges.values()],
-    nodeCandidates,
-    edgeCandidates,
-    metadata: {
-      generator: "deterministic",
-      promptVersion: ENRICHMENT_PROMPT_VERSION,
-      evidenceRecordCount: previewResults.reduce((sum, preview) => sum + preview.verifiedRecords.length, 0),
-      sourceCount: new Set(previewResults.flatMap((preview) => preview.checkedSourceIds)).size,
-      notes: "Fallback path used because the enrichment LLM was not configured.",
-    },
   };
 }
 
@@ -1425,7 +1247,7 @@ export async function startAutomatedReviewSession(
   });
 
   let automatedBundle: ResearchBundle;
-  let importedFrom = "auto-preview";
+  let importedFrom = "llm-auto-preview";
   const llmConfigured = isEnrichmentLlmConfigured();
   // #region agent log
   fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
@@ -1437,58 +1259,53 @@ export async function startAutomatedReviewSession(
       hypothesisId: "H2",
       location: "review.ts:startAutomatedReviewSession:branch",
       message: "LLM configured? which path taken",
-      data: { sessionId: session.id, llmConfigured, path: llmConfigured ? "llm" : "deterministic" },
+      data: { sessionId: session.id, llmConfigured, path: llmConfigured ? "llm" : "blocked_no_llm" },
       timestamp: Date.now(),
     }),
   }).catch(() => {});
   // #endregion
-  if (llmConfigured) {
-    try {
-      const llmResult = await synthesizeResearchBundle(researchPacket);
-      automatedBundle = llmResult.bundle;
-      importedFrom = "llm-auto-preview";
-      // #region agent log
-      fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
-        body: JSON.stringify({
-          sessionId: "e8d527",
-          runId: "run1",
-          hypothesisId: "H3",
-          location: "review.ts:startAutomatedReviewSession:llm-success",
-          message: "LLM synthesis succeeded",
-          data: { model: llmResult.metadata?.model, importedFrom },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
-    } catch (error) {
-      // #region agent log
-      fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
-        body: JSON.stringify({
-          sessionId: "e8d527",
-          runId: "run1",
-          hypothesisId: "H3",
-          location: "review.ts:startAutomatedReviewSession:llm-catch",
-          message: "LLM synthesis failed, using deterministic fallback",
-          data: {
-            errorMessage: error instanceof Error ? error.message : String(error),
-            errorName: error instanceof Error ? error.name : undefined,
-          },
-          timestamp: Date.now(),
-        }),
-      }).catch(() => {});
-      // #endregion
-      automatedBundle = toAutomatedBundle(session, previewResults);
-      automatedBundle.metadata = {
-        ...(automatedBundle.metadata ?? { generator: "deterministic" }),
-        notes: `LLM synthesis failed and deterministic fallback was used instead. ${error instanceof Error ? error.message : ""}`.trim(),
-      };
-    }
-  } else {
-    automatedBundle = toAutomatedBundle(session, previewResults);
+  if (!llmConfigured) {
+    throw new Error("Enrichment LLM is required. Deterministic fallback is disabled.");
+  }
+
+  try {
+    const llmResult = await synthesizeResearchBundle(researchPacket);
+    automatedBundle = llmResult.bundle;
+    // #region agent log
+    fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
+      body: JSON.stringify({
+        sessionId: "e8d527",
+        runId: "run1",
+        hypothesisId: "H3",
+        location: "review.ts:startAutomatedReviewSession:llm-success",
+        message: "LLM synthesis succeeded",
+        data: { model: llmResult.metadata?.model, importedFrom },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+  } catch (error) {
+    // #region agent log
+    fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
+      body: JSON.stringify({
+        sessionId: "e8d527",
+        runId: "run1",
+        hypothesisId: "H3",
+        location: "review.ts:startAutomatedReviewSession:llm-catch",
+        message: "LLM synthesis failed; deterministic fallback disabled",
+        data: {
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorName: error instanceof Error ? error.name : undefined,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {});
+    // #endregion
+    throw error instanceof Error ? error : new Error(String(error));
   }
 
   const importedSession = await importResearchBundle(store, session.id, automatedBundle, importedFrom);

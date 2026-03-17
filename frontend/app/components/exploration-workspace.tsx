@@ -211,6 +211,11 @@ export function ExplorationWorkspace() {
   const graphContainerRef = useRef<HTMLDivElement | null>(null);
   const graphRef = useRef<GraphViewHandle | null>(null);
   const lastGraphContainerSizeRef = useRef<{ width: number; height: number }>({ width: 0, height: 0 });
+  const debugSessionIdRef = useRef<string>(
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`
+  );
 
   const initialEntityType = normalizeEntityType(searchParams.get("entityType"));
   const initialQuery = searchParams.get("query") ?? searchParams.get("q") ?? searchParams.get("artist") ?? "";
@@ -341,17 +346,15 @@ export function ExplorationWorkspace() {
         const graphParams = new URLSearchParams({ entityType: nextEntityType });
         if (trimmedQuery) {
           graphParams.set("query", trimmedQuery);
-        } else {
-          graphParams.set("random", "1");
         }
         const apiBase = getApiBase();
         const graphUrl = `${apiBase}/api/graph?${graphParams.toString()}`;
         // #region agent log
         fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
+          headers: { "Content-Type": "application/json", "X-Debug-Session-Id": debugSessionIdRef.current },
           body: JSON.stringify({
-            sessionId: "e8d527",
+            sessionId: debugSessionIdRef.current,
             runId: "graph-fetch",
             hypothesisId: "A",
             location: "exploration-workspace.tsx:graph-request",
@@ -429,9 +432,9 @@ export function ExplorationWorkspace() {
           // #region agent log
           fetch("http://127.0.0.1:7290/ingest/d02d8ae0-2fcc-4270-9ab1-7e7cc64f475b", {
             method: "POST",
-            headers: { "Content-Type": "application/json", "X-Debug-Session-Id": "e8d527" },
+            headers: { "Content-Type": "application/json", "X-Debug-Session-Id": debugSessionIdRef.current },
             body: JSON.stringify({
-              sessionId: "e8d527",
+              sessionId: debugSessionIdRef.current,
               runId: "graph-fetch",
               hypothesisId: "D",
               location: "exploration-workspace.tsx:graph-rejected",

@@ -2,9 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
 import { createTraceLogger, resolveTraceId } from "@/lib/trace";
 import { loadOntologyRuntime } from "@/ontology";
-import { getGraphStore } from "@/load/persist-graph";
-import { getSearchLabelsForEntityType } from "@/lib/entity-identity";
-import { getEntityDisplayPropertyKeys } from "@/lib/entity-config";
 import {
   appendQueryInsight,
   buildHumanSummary,
@@ -31,87 +28,6 @@ type SessionState = {
 };
 
 const sessionStore = new Map<string, SessionState>();
-
-type NameCandidate = {
-  value: string;
-  score: number;
-};
-
-function normalizeToken(input: string): string {
-  return input
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9\s]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function toCandidateValues(raw: unknown): string[] {
-  if (typeof raw === "string") {
-    const normalized = raw.trim();
-    return normalized ? [normalized] : [];
-  }
-  if (Array.isArray(raw)) {
-    const values: string[] = [];
-    for (const entry of raw) {
-      if (typeof entry === "string" && entry.trim()) values.push(entry.trim());
-    }
-    return values;
-  }
-  return [];
-}
-
-function scoreCandidate(promptValue: string, candidateValue: string): number {
-  const query = normalizeToken(promptValue);
-  const candidate = normalizeToken(candidateValue);
-  if (!query || !candidate) return 0;
-  if (query === candidate) return 1;
-  if (candidate.startsWith(query) || query.startsWith(candidate)) return 0.86;
-  if (candidate.includes(query) || query.includes(candidate)) return 0.72;
-
-  const queryTokens = new Set(query.split(" "));
-  const candidateTokens = new Set(candidate.split(" "));
-  let overlap = 0;
-  for (const token of queryTokens) {
-    if (candidateTokens.has(token)) overlap += 1;
-  }
-  const tokenScore = overlap / Math.max(queryTokens.size, candidateTokens.size, 1);
-  return tokenScore * 0.65;
-}
-
-async function getStartEntityNameCandidates(startLabel: string, startValue: string): Promise<NameCandidate[]> {
-  const store = await getGraphStore();
-  const searchLabels = [...new Set(getSearchLabelsForEntityType(startLabel))];
-  const candidateMap = new Map<string, number>();
-
-  for (const label of searchLabels) {
-    const nodes = await store.findNodes({ label, maxResults: 500 });
-    const propertyKeys = [...new Set([...getEntityDisplayPropertyKeys(label), "roles", "aliases"])];
-
-    for (const node of nodes) {
-      const seenOnNode = new Set<string>();
-      for (const key of propertyKeys) {
-        const raw = node.properties[key];
-        for (const value of toCandidateValues(raw)) {
-          if (seenOnNode.has(value.toLowerCase())) continue;
-          seenOnNode.add(value.toLowerCase());
-          const score = scoreCandidate(startValue, value);
-          if (score <= 0.42) continue;
-          const existing = candidateMap.get(value) ?? 0;
-          if (score > existing) {
-            candidateMap.set(value, score);
-          }
-        }
-      }
-    }
-  }
-
-  return [...candidateMap.entries()]
-    .map(([value, score]) => ({ value, score }))
-    .sort((a, b) => b.score - a.score || a.value.localeCompare(b.value))
-    .slice(0, 6);
-}
 
 function buildEffectivePrompt(state: SessionState): string {
   if (state.clarificationAnswers.length === 0) return state.rootPrompt;
@@ -285,58 +201,6 @@ export async function POST(request: NextRequest) {
         },
         { headers: { "x-trace-id": traceId } }
       );
-    }
-
-    const startLabel = interpretation.queryState.start.label;
-    const startValue = interpretation.queryState.start.value?.trim();
-    if (startLabel && startValue) {
-      const candidates = await getStartEntityNameCandidates(startLabel, startValue);
-      if (candidates.length > 1) {
-        const top = candidates[0];
-        const second = candidates[1];
-        const isExactTop = normalizeToken(top.value) === normalizeToken(startValue);
-        const closeScores = second.score >= 0.55;
-        if (!isExactTop && closeScores) {
-          const options = candidates.map((entry) => entry.value);
-          const followUpQuestion = `I found a few close matches for "${startValue}". Which one should I use?`;
-          const questionId = buildQuestionId(followUpQuestion, options);
-          nextState.pendingQuestionId = questionId;
-          nextState.pendingQuestionPrompt = followUpQuestion;
-          nextState.updatedAt = Date.now();
-          sessionStore.set(sessionId, nextState);
-          appendQueryInsight({
-            prompt: effectivePrompt,
-            strategy: interpretation.strategy,
-            success: false,
-            traceId,
-            note: `name_disambiguation_required:${startLabel}:${startValue}`,
-          });
-          return NextResponse.json(
-            {
-              sessionId,
-              llmState: nextState.llmState,
-              traceId,
-              strategy: interpretation.strategy,
-              rationale: interpretation.rationale,
-              needsFollowUp: true,
-              followUpQuestion,
-              followUpOptions: options,
-              question: {
-                id: questionId,
-                prompt: followUpQuestion,
-                options,
-                expects: "entity_disambiguation",
-              },
-              usedInsightIds: interpretation.usedInsightIds,
-              summary: "Need clarification before mapping intent.",
-              metrics: {
-                durationMs: Date.now() - startedAt,
-              },
-            },
-            { headers: { "x-trace-id": traceId } }
-          );
-        }
-      }
     }
 
     let compiled: { cypher: string; params: Record<string, unknown> };

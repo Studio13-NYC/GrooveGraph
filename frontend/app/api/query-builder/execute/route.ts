@@ -197,57 +197,12 @@ export async function POST(request: NextRequest) {
     const runParams: Record<string, unknown> = { ...compiled.params, limit: asNeo4jLimit(compiled.params.limit) };
 
     const result = await session.run(compiled.cypher, runParams);
-    let built = buildGraphFromRecords(result.records, payload.queryState.steps.length);
-    let fallback:
-      | {
-          applied: boolean;
-          reason: string;
-          candidate: string;
-          resultCount: number;
-        }
-      | undefined;
-
-    if (result.records.length === 0 && payload.queryState.steps.length > 0) {
-      const candidates = [
-        payload.queryState.start.value,
-        ...payload.queryState.steps.map((step) => step.target.value),
-      ]
-        .map((value) => value.trim())
-        .filter((value, index, arr) => value.length > 0 && arr.indexOf(value) === index);
-
-      for (const candidate of candidates) {
-        const fallbackState: QueryState = {
-          start: {
-            ...payload.queryState.start,
-            value: candidate,
-          },
-          steps: [],
-          limit: payload.queryState.limit ?? 25,
-        };
-        const fallbackCompiled = compileQueryStateToCypher(fallbackState, ontology);
-        const fallbackParams: Record<string, unknown> = {
-          ...fallbackCompiled.params,
-          limit: asNeo4jLimit(fallbackCompiled.params.limit),
-        };
-        const fallbackResult = await session.run(fallbackCompiled.cypher, fallbackParams);
-        if (fallbackResult.records.length > 0) {
-          built = buildGraphFromRecords(fallbackResult.records, 0);
-          fallback = {
-            applied: true,
-            reason: "No full-path matches; showing broad start-entity matches.",
-            candidate,
-            resultCount: fallbackResult.records.length,
-          };
-          break;
-        }
-      }
-    }
+    const built = buildGraphFromRecords(result.records, payload.queryState.steps.length);
 
     trace.log("execute.completed", {
       recordCount: result.records.length,
       nodeCount: built.graph.nodes.length,
       linkCount: built.graph.links.length,
-      fallbackApplied: Boolean(fallback?.applied),
       durationMs: Date.now() - startedAt,
     });
 
@@ -258,7 +213,6 @@ export async function POST(request: NextRequest) {
         graph: built.graph,
         resultCount: result.records.length,
         sampleMatches: built.sampleMatches,
-        fallback,
         metrics: { durationMs: Date.now() - startedAt },
       },
       { headers: { "x-trace-id": traceId } }

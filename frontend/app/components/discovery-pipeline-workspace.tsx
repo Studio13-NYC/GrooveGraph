@@ -229,31 +229,8 @@ function toGuidedErrorMessage(errorMessage: string): {
   content: string;
   quickReplies?: string[];
 } {
-  const normalized = errorMessage.toLowerCase();
-  if (
-    normalized.includes("no ontology relationship") ||
-    normalized.includes("cannot connect") ||
-    normalized.includes("unknown relationship")
-  ) {
-    return {
-      content:
-        "I could not map that intent to a valid ontology relationship yet. Clarify the relationship you want, or use proposal actions when unavailable relationships are shown.",
-      quickReplies: ["albums produced by this artist", "albums featuring this artist", "albums performed by this artist"],
-    };
-  }
-  if (
-    normalized.includes("missing startlabel") ||
-    normalized.includes("missing targetlabel") ||
-    normalized.includes("prompt could not be mapped")
-  ) {
-    return {
-      content:
-        "I need one more precise mapping detail (entity or relationship) before I can build the query state. Please answer with the exact relationship intent.",
-      quickReplies: ["produced by", "released on", "influenced by"],
-    };
-  }
   return {
-    content: `I hit an error: ${errorMessage}. Please refine the prompt or choose a quick clarification.`,
+    content: `I hit an error: ${errorMessage}. Please continue with your own wording and I will pass it through.`,
   };
 }
 
@@ -333,9 +310,9 @@ export function DiscoveryPipelineWorkspace() {
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
   const [feedbackStatus, setFeedbackStatus] = useState<string | null>(null);
   const [proposalActionByKey, setProposalActionByKey] = useState<Record<string, ProposalActionState>>({});
-  const [selectedContinuationByActionId, setSelectedContinuationByActionId] = useState<
-    Record<string, { label: string; option: NextOption }>
-  >({});
+  const [selectedContinuation, setSelectedContinuation] = useState<
+    { actionId: string; label: string; option: NextOption } | undefined
+  >(undefined);
   const [intentChat, setIntentChat] = useState<IntentChatMessage[]>([]);
   const graphContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -471,7 +448,7 @@ export function DiscoveryPipelineWorkspace() {
   async function handleExecute() {
     setLoading(true);
     setError(null);
-    const queryState = buildQueryState();
+    const queryState = result?.queryState ?? buildQueryState();
 
     try {
       const response = await fetch(`${getApiBase()}/api/query-builder/execute`, {
@@ -507,7 +484,8 @@ export function DiscoveryPipelineWorkspace() {
   }
 
   async function submitChatMessage(rawMessage: string) {
-    const message = rawMessage.trim();
+    const chosenContinuation = selectedContinuation;
+    const message = rawMessage.trim() || chosenContinuation?.label?.trim() || "";
     if (!message) return;
     setLoading(true);
     setError(null);
@@ -520,8 +498,10 @@ export function DiscoveryPipelineWorkspace() {
     );
     setIntentChat((current) => [...current, { role: "user", content: message }]);
     setChatInput("");
+    setSelectedContinuation(undefined);
     try {
-      const isNewRootPrompt = !pendingFollowUp || !rootPrompt.trim();
+      const isContinuationFollowUp = Boolean(chosenContinuation);
+      const isNewRootPrompt = !rootPrompt.trim() || (!pendingFollowUp && !isContinuationFollowUp);
       if (isNewRootPrompt) {
         // Always start fresh before mapping new top-level intent.
         setFormState(DEFAULT_FORM_STATE);
@@ -531,7 +511,7 @@ export function DiscoveryPipelineWorkspace() {
         setSelectedNodeId(null);
         setFeedbackStatus(null);
         setProposalActionByKey({});
-        setSelectedContinuationByActionId({});
+        setSelectedContinuation(undefined);
         setRootPrompt(message);
         setPendingQuestionId("");
         setSessionId("");
@@ -567,7 +547,7 @@ export function DiscoveryPipelineWorkspace() {
         throw new Error("error" in payload && payload.error ? payload.error : "Failed to interpret prompt");
       }
       const interpreted = payload as QueryBuilderCompileResponse;
-      setSelectedContinuationByActionId({});
+      setSelectedContinuation(undefined);
       if (interpreted.sessionId) {
         setSessionId(interpreted.sessionId);
       }
@@ -712,7 +692,7 @@ export function DiscoveryPipelineWorkspace() {
           ...current,
           {
             role: "assistant",
-            content: "Suggested continuations (multi-select): choose one or more.",
+            content: "Suggested continuation: choose one.",
             actions: interpreted.nextOptions.slice(0, 8).map((option, index) => ({
               id: `suggested-${index}-${option.relationshipType}-${option.direction}`,
               kind: "add_suggested_step",
@@ -758,27 +738,24 @@ export function DiscoveryPipelineWorkspace() {
     setError(null);
     setFeedbackStatus(null);
     setProposalActionByKey({});
-    setSelectedContinuationByActionId({});
+    setSelectedContinuation(undefined);
     setIntentChat([]);
   }
 
   function selectSuggestedContinuation(actionId: string, label: string, option?: NextOption) {
     if (!option) return;
-    if (selectedContinuationByActionId[actionId]) return;
+    if (selectedContinuation?.actionId === actionId) return;
     addSuggestedStep(option);
-    setSelectedContinuationByActionId((current) => ({
-      ...current,
-      [actionId]: { label, option },
-    }));
+    setSelectedContinuation({ actionId, label, option });
+    setChatInput(label);
   }
 
   function removeSelectedContinuation(actionId: string) {
-    setSelectedContinuationByActionId((current) => {
-      if (!current[actionId]) return current;
-      const next = { ...current };
-      delete next[actionId];
-      return next;
+    setSelectedContinuation((current) => {
+      if (!current || current.actionId !== actionId) return current;
+      return undefined;
     });
+    setChatInput("");
   }
 
   async function sendFeedback(params: {
@@ -1068,7 +1045,7 @@ export function DiscoveryPipelineWorkspace() {
                     <div className="mt-2 flex flex-wrap gap-2">
                       {message.actions.map((action) => {
                         const isSelected =
-                          action.kind === "add_suggested_step" && Boolean(selectedContinuationByActionId[action.id]);
+                          action.kind === "add_suggested_step" && selectedContinuation?.actionId === action.id;
                         return (
                           <Button
                             key={`chat-action-${index}-${action.id}`}
@@ -1101,28 +1078,25 @@ export function DiscoveryPipelineWorkspace() {
               ))}
             </div>
           ) : null}
-          {Object.entries(selectedContinuationByActionId).length > 0 ? (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {Object.entries(selectedContinuationByActionId).map(([actionId, selected]) => (
+          <div className="mt-3 flex gap-2">
+            {selectedContinuation ? (
+              <div className="flex items-center">
                 <span
-                  key={`selected-continuation-${actionId}`}
                   className="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--border))] bg-[hsl(var(--muted))] px-3 py-1 text-xs text-[hsl(var(--foreground))]"
                 >
-                  {selected.label}
+                  {selectedContinuation.label}
                   <button
                     type="button"
                     className="rounded px-1 text-[hsl(var(--muted-foreground))] transition hover:text-[hsl(var(--foreground))]"
-                    onClick={() => removeSelectedContinuation(actionId)}
+                    onClick={() => removeSelectedContinuation(selectedContinuation.actionId)}
                     disabled={loading}
-                    aria-label={`Remove ${selected.label}`}
+                    aria-label={`Remove ${selectedContinuation.label}`}
                   >
                     x
                   </button>
                 </span>
-              ))}
-            </div>
-          ) : null}
-          <div className="mt-3 flex gap-2">
+              </div>
+            ) : null}
             <Input
               value={chatInput}
               onChange={(event) => setChatInput(event.target.value)}
@@ -1132,9 +1106,13 @@ export function DiscoveryPipelineWorkspace() {
                   void submitChatMessage(chatInput);
                 }
               }}
-              placeholder={pendingFollowUp ? "Answer here..." : "Start your search here. What can I find for you?"}
+              placeholder={pendingFollowUp ? "Answer here..." : intentChat.length > 0 ? "" : "Start your search here. What can I find for you?"}
             />
-            <Button type="button" onClick={() => void submitChatMessage(chatInput)} disabled={loading || !chatInput.trim()}>
+            <Button
+              type="button"
+              onClick={() => void submitChatMessage(chatInput)}
+              disabled={loading || (!chatInput.trim() && !selectedContinuation)}
+            >
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
               Send
             </Button>
