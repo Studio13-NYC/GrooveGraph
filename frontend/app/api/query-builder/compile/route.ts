@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createTraceLogger, resolveTraceId } from "@/lib/trace";
 import { loadOntologyRuntime } from "@/ontology";
 import {
+  buildHumanSummary,
   compileQueryStateToCypher,
   getOntologyAwareNextOptions,
   type QueryState,
@@ -47,19 +48,6 @@ function isQueryState(value: unknown): value is QueryState {
     if (!isQueryNodeSelector(step.target)) return false;
   }
   return true;
-}
-
-function buildHumanSummary(queryState: QueryState): string {
-  const startConstraint = queryState.start.value.trim()
-    ? `contains "${queryState.start.value}"`
-    : "has no property filter";
-  const segments = queryState.steps.map(
-    (step) =>
-      `${step.direction === "outbound" ? "->" : "<-"} ${step.relationshipType} ${step.target.label} ${
-        step.target.value.trim() ? `contains "${step.target.value}"` : "has no property filter"
-      }`
-  );
-  return `${queryState.start.label} ${startConstraint}${segments.length > 0 ? `, then ${segments.join(", then ")}` : ""}.`;
 }
 
 export async function POST(request: NextRequest) {

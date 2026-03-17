@@ -33,6 +33,20 @@ type QueryBuilderCompileResponse = {
     cypher: string;
     params: Record<string, unknown>;
   };
+  queryState?: {
+    start: {
+      label: string;
+      value: string;
+    };
+    steps: Array<{
+      relationshipType: string;
+      direction: "outbound" | "inbound";
+      target: {
+        label: string;
+        value: string;
+      };
+    }>;
+  };
 };
 
 const DEFAULT_FORM_STATE: QueryBuilderFormState = {
@@ -62,6 +76,7 @@ function toRelationshipType(value: string): RelationshipType | null {
 export function QueryBuilderSlice() {
   const [formState, setFormState] = useState<QueryBuilderFormState>(DEFAULT_FORM_STATE);
   const [steps, setSteps] = useState<QueryBuilderStepState[]>([{ ...DEFAULT_STEP }]);
+  const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<QueryBuilderCompileResponse | null>(null);
@@ -172,6 +187,56 @@ export function QueryBuilderSlice() {
     }
   }
 
+  async function handleInterpret() {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${getApiBase()}/api/query-builder/interpret`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...getAuthHeaders(),
+        },
+        body: JSON.stringify({ prompt }),
+      });
+
+      const payload = (await response.json()) as QueryBuilderCompileResponse | { error?: string };
+      if (!response.ok) {
+        const message = "error" in payload && payload.error ? payload.error : "Failed to interpret prompt";
+        throw new Error(message);
+      }
+
+      const interpreted = payload as QueryBuilderCompileResponse;
+      if (interpreted.queryState) {
+        const startLabel = toEntityLabel(interpreted.queryState.start.label) ?? DEFAULT_FORM_STATE.entityType;
+        setFormState({
+          entityType: startLabel,
+          propertyFilter: interpreted.queryState.start.value ?? "",
+        });
+        const interpretedSteps = interpreted.queryState.steps
+          .map((step) => {
+            const relationship = toRelationshipType(step.relationshipType);
+            const targetEntity = toEntityLabel(step.target.label);
+            if (!relationship || !targetEntity) return null;
+            return {
+              relationship,
+              direction: step.direction === "inbound" ? "inbound" : "outbound",
+              targetEntity,
+              propertyFilter: step.target.value ?? "",
+            } satisfies QueryBuilderStepState;
+          })
+          .filter((step): step is QueryBuilderStepState => Boolean(step));
+        setSteps(interpretedSteps.length > 0 ? interpretedSteps : [{ ...DEFAULT_STEP }]);
+      }
+      setResult(interpreted);
+    } catch (interpretError) {
+      setResult(null);
+      setError(interpretError instanceof Error ? interpretError.message : "Failed to interpret prompt");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function resetForm() {
     setFormState(DEFAULT_FORM_STATE);
     setSteps([{ ...DEFAULT_STEP }]);
@@ -212,6 +277,15 @@ export function QueryBuilderSlice() {
               value={formState.propertyFilter}
               onChange={(event) => setFormState((current) => ({ ...current, propertyFilter: event.target.value }))}
               placeholder="e.g. adrian"
+            />
+          </label>
+
+          <label className="block space-y-2">
+            <span className="text-sm font-medium">Fuzzy prompt (optional)</span>
+            <Input
+              value={prompt}
+              onChange={(event) => setPrompt(event.target.value)}
+              placeholder='e.g. artists influenced by adrian with guitar context'
             />
           </label>
 
@@ -299,6 +373,9 @@ export function QueryBuilderSlice() {
             </Button>
             <Button type="button" variant="outline" onClick={addSuggestedStep} disabled={loading}>
               Add Suggested Row
+            </Button>
+            <Button type="button" variant="outline" onClick={() => void handleInterpret()} disabled={loading || !prompt.trim()}>
+              Interpret Prompt
             </Button>
             <Button type="button" onClick={() => void handleCompile()} disabled={loading}>
               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}

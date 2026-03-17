@@ -1,0 +1,31 @@
+[
+  {
+    "id": "c924df4f-dcc8-4d6c-ab35-239aec48f30f",
+    "createdAt": "2026-03-17T00:54:32.305Z",
+    "normalizedPrompt": "artists influenced by adrian",
+    "prompt": "artists influenced by adrian",
+    "strategy": "heuristic-fallback",
+    "success": true,
+    "traceId": "e8836e0d-6d2b-4737-8f42-f6a6e42e73b6",
+    "note": "Used fallback heuristic interpretation from ontology labels and relationship hints in prompt.",
+    "queryState": {
+      "start": {
+        "label": "Artist",
+        "propertyKey": "name",
+        "value": "influenced by adrian"
+      },
+      "steps": [
+        {
+          "relationshipType": "INFLUENCED_BY",
+          "direction": "outbound",
+          "target": {
+            "label": "Artist",
+            "propertyKey": "name",
+            "value": ""
+          }
+        }
+      ],
+      "limit": 25
+    }
+  }
+]
