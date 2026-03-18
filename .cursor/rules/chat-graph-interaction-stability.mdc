@@ -1,0 +1,30 @@
+# Chat Graph Interaction Stability Rule
+
+For chat-first graph UX, preserve interaction quality and avoid regression loops.
+
+## 1. Never let typing move the graph
+
+- Typing in chat inputs, textareas, and contenteditable controls must not trigger Cytoscape movement or relayout.
+- Keep keyboard events scoped to editable controls.
+- Do not rely on broad interaction disablement (for example turning off drag/zoom/pan) as a workaround.
+
+## 2. Preserve core graph interactions
+
+- Node dragging must remain enabled.
+- Mouse zoom and pan must remain enabled unless the user explicitly asks to disable them.
+- If keyboard handling is adjusted, verify mouse interactions still work end-to-end.
+
+## 3. Avoid relayout churn from unrelated React renders
+
+- Do not pass newly allocated props (for example `new Set()` or new object literals) each render when values are logically static.
+- Memoize static references and avoid triggering Cytoscape re-sync on chat-input updates.
+- Relayout should run when graph data changes, not when unrelated UI state changes.
+
+## 4. Validation expectation
+
+- After graph interaction changes, validate this workflow on `http://localhost:3000`:
+  1. Type in chat input continuously.
+  2. Confirm graph viewport and node positions remain stable.
+  3. Drag a node with mouse.
+  4. Zoom and pan with mouse.
+

@@ -27,3 +27,11 @@
 ## 7) Transition-aware data checks prevent false negatives
 - **Lesson:** Mixed ontology/data states (for example `Artist` vs `Band`) can invalidate naive checks.
 - **Going forward:** Use compatibility-aware verification during transitions and document transitional assumptions directly in checks.
+
+## 8) Interaction regressions often come from render churn, not event wiring
+- **Lesson:** Graph movement during chat typing was primarily caused by unnecessary Cytoscape resync/re-layout from unstable prop identities (for example passing a new empty set each render).
+- **Going forward:** Keep static graph props memoized, trigger layout only when graph data changes, and treat keystroke-induced graph motion as a state-lifecycle bug first.
+
+## 9) Fixes must preserve user capability, not trade one break for another
+- **Lesson:** Hard stops that suppress movement can accidentally remove expected graph controls (drag, zoom, pan), producing another critical UX failure.
+- **Going forward:** Validate typing isolation and mouse interactions together in one workflow before declaring graph behavior fixed.

@@ -54,6 +54,7 @@ This index catalogs every document in `docs/` and how it relates to the codebase
 | [posts/2026-03-16-fuzzy-interpretation-first-loop.md](posts/2026-03-16-fuzzy-interpretation-first-loop.md) | Milestone narrative for first live fuzzy interpretation loop with reusable insight artifacts. |
 | [posts/2026-03-17-query-builder-near-complete-wrap.md](posts/2026-03-17-query-builder-near-complete-wrap.md) | End-of-day milestone narrative: proposal approval loop, ontology acceptance path, and live persistence to Neo4j. |
 | [posts/2026-03-17-llm-pipeline-retrospective.md](posts/2026-03-17-llm-pipeline-retrospective.md) | Session retrospective: architectural shift to LLM-first orchestration, explicit diagnostics, and pipeline observability UI. |
+| [posts/2026-03-18-chat-first-hardening-and-cleanup.md](posts/2026-03-18-chat-first-hardening-and-cleanup.md) | Session retrospective: interaction hardening, removal of legacy builder leftovers, and stabilization toward a functional chat-first app loop. |
 | [UI_TESTING.md](UI_TESTING.md) | **Playwright e2e:** local and deployed UI tests; when to run which; link to ui-testing and runtime-hygiene subagents. |
 | [uat.md](uat.md) | User acceptance testing: scope, test cases, results, and recommendations for the unified exploration page. |
 | [BROWSER_TEST_EXPLORE_ENRICHMENT.md](BROWSER_TEST_EXPLORE_ENRICHMENT.md) | How to run Explore and Enrichment browser tests with Cursor automation; screenshot locations and params. |

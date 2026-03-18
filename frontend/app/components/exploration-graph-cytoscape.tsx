@@ -9,8 +9,6 @@ const GRAPH_FIT_PADDING = 120;
 /** Slightly larger for readability and hierarchy (repair plan §5 polish). */
 const NODE_SIZE_FOCUS = 16;
 const NODE_SIZE_DEFAULT = 12;
-/** Min hit area for node proxy buttons (a11y / automation). */
-const NODE_PROXY_HIT_SIZE = 28;
 
 const CYTOSCAPE_STYLE = [
   {
@@ -24,6 +22,8 @@ const CYTOSCAPE_STYLE = [
       "text-halign": "center",
       "font-size": "12px",
       "text-margin-y": 6,
+      "text-wrap": "wrap",
+      "text-max-width": "140px",
       "border-width": 1,
       // Cytoscape cannot resolve CSS variables inside style strings.
       "border-color": "#64748b",
@@ -110,6 +110,13 @@ function hasPresetNodePositions(nodes: GraphViewProps["graphData"]["nodes"]): bo
   });
 }
 
+function isEditableEventTarget(target: EventTarget | null): target is HTMLElement {
+  if (!(target instanceof HTMLElement)) return false;
+  if (target.isContentEditable) return true;
+  const tag = target.tagName.toLowerCase();
+  return tag === "input" || tag === "textarea" || tag === "select";
+}
+
 /**
  * 2D graph view using Cytoscape.js. Implements the GraphViewProps contract so the
  * exploration workspace can swap this for a future 3D view without changing the workspace.
@@ -125,8 +132,8 @@ export function ExplorationGraphCytoscape(
   const propsRef = useRef(props);
   const lastFitTimeRef = useRef<number | null>(null);
   const lastCytoscapeContainerSizeRef = useRef<{ width: number; height: number }>({ width: 0, height: 0 });
-  /** Viewport positions for a11y/automation node proxy buttons (updated on render). */
-  const [nodeProxyPositions, setNodeProxyPositions] = useState<Array<{ id: string; x: number; y: number }>>([]);
+  const [cyLoadError, setCyLoadError] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   propsRef.current = props;
 
   const fitView = useCallback((padding: number = GRAPH_FIT_PADDING) => {
@@ -180,10 +187,14 @@ export function ExplorationGraphCytoscape(
           : {
               name: "cose",
               animate: false,
-              padding: 36,
-              nodeRepulsion: 8000,
-              idealEdgeLength: 140,
-              edgeElasticity: 120,
+              fit: true,
+              padding: 64,
+              nodeDimensionsIncludeLabels: true,
+              nodeRepulsion: 18000,
+              idealEdgeLength: 220,
+              edgeElasticity: 200,
+              gravity: 0.4,
+              nestingFactor: 0.8,
             }
       );
       layout.run();
@@ -195,89 +206,98 @@ export function ExplorationGraphCytoscape(
     []
   );
 
-  const proxyUpdateTimeoutRef = useRef<number | null>(null);
+  useEffect(() => {
+    const swallowKeyboardForEditableTargets = (event: KeyboardEvent) => {
+      if (!isEditableEventTarget(event.target)) return;
+      // Keep typing/navigation events scoped to form controls, never graph handlers.
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+    };
+    window.addEventListener("keydown", swallowKeyboardForEditableTargets, true);
+    window.addEventListener("keypress", swallowKeyboardForEditableTargets, true);
+    window.addEventListener("keyup", swallowKeyboardForEditableTargets, true);
+    return () => {
+      window.removeEventListener("keydown", swallowKeyboardForEditableTargets, true);
+      window.removeEventListener("keypress", swallowKeyboardForEditableTargets, true);
+      window.removeEventListener("keyup", swallowKeyboardForEditableTargets, true);
+    };
+  }, []);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     let destroyed = false;
-    import("cytoscape").then((cytoscape) => {
-      if (destroyed) return;
-      const container = containerRef.current;
-      if (!container) return;
-      const cy = cytoscape.default({
-        container,
-        elements: [],
-        style: CYTOSCAPE_STYLE as import("cytoscape").CytoscapeOptions["style"],
-        layout: { name: "preset" },
-        userZoomingEnabled: true,
-        userPanningEnabled: true,
-        boxSelectionEnabled: false,
-      });
-      cyRef.current = cy;
-      syncGraphDataToCy(cy);
-
-      cy.on("tap", "node", (evt) => {
-        const target = evt.target;
-        if (!target.isNode()) return;
-        const id = target.id();
-        const p = propsRef.current;
-        const node = p.graphData.nodes.find((n) => n.id === id);
-        if (node) p.onNodeClick(node);
-      });
-
-      cy.on("dragfree", "node", (evt) => {
-        const target = evt.target;
-        if (!target.isNode()) return;
-        const pos = target.position();
-        propsRef.current.onNodeDragEnd(target.id(), pos.x, pos.y);
-      });
-
-      cy.on("mouseover", "node", (evt) => {
-        const id = evt.target.id();
-        const node = propsRef.current.graphData.nodes.find((n) => n.id === id);
-        if (propsRef.current.onNodeHover && node) propsRef.current.onNodeHover(node);
-      });
-      cy.on("mouseout", "node", () => {
-        if (propsRef.current.onNodeHover) propsRef.current.onNodeHover(null);
-      });
-
-      let rafScheduled = false;
-      const updateProxyPositions = () => {
-        if (destroyed) return;
+    async function initCytoscape() {
+      const MAX_RETRIES = 2;
+      for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
         try {
-          const positions = cy.nodes().map((n) => {
-            const r = n.renderedPosition();
-            return { id: n.id(), x: r.x, y: r.y };
-          });
-          setNodeProxyPositions(positions);
-        } catch {
-          if (!destroyed) setNodeProxyPositions([]);
-        }
-      };
-      const onRender = () => {
-        if (rafScheduled) return;
-        rafScheduled = true;
-        requestAnimationFrame(() => {
-          rafScheduled = false;
+          const cytoscape = await import("cytoscape");
           if (destroyed) return;
-          updateProxyPositions();
-        });
-      };
-      cy.on("render", onRender);
-      proxyUpdateTimeoutRef.current = window.setTimeout(updateProxyPositions, 600);
-    });
+          setCyLoadError(null);
+          const container = containerRef.current;
+          if (!container) return;
+          const cy = cytoscape.default({
+            container,
+            elements: [],
+            style: CYTOSCAPE_STYLE as import("cytoscape").CytoscapeOptions["style"],
+            layout: { name: "preset" },
+            userZoomingEnabled: true,
+            zoomingEnabled: true,
+            userPanningEnabled: true,
+            panningEnabled: true,
+            boxSelectionEnabled: false,
+          });
+          cyRef.current = cy;
+          syncGraphDataToCy(cy);
+
+          cy.on("tap", "node", (evt) => {
+            const target = evt.target;
+            if (!target.isNode()) return;
+            const id = target.id();
+            const p = propsRef.current;
+            const node = p.graphData.nodes.find((n) => n.id === id);
+            if (node) p.onNodeClick(node);
+          });
+
+          cy.on("dragfree", "node", (evt) => {
+            const target = evt.target;
+            if (!target.isNode()) return;
+            const pos = target.position();
+            propsRef.current.onNodeDragEnd(target.id(), pos.x, pos.y);
+          });
+
+          cy.on("mouseover", "node", (evt) => {
+            const id = evt.target.id();
+            const node = propsRef.current.graphData.nodes.find((n) => n.id === id);
+            if (propsRef.current.onNodeHover && node) propsRef.current.onNodeHover(node);
+          });
+          cy.on("mouseout", "node", () => {
+            if (propsRef.current.onNodeHover) propsRef.current.onNodeHover(null);
+          });
+
+          return;
+        } catch (error) {
+          if (attempt === MAX_RETRIES) {
+            const message = error instanceof Error ? error.message : "Unknown chunk loading error";
+            if (!destroyed) {
+              setCyLoadError(`Graph runtime failed to load: ${message}`);
+            }
+            return;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
+        }
+      }
+    }
+
+    void initCytoscape();
     return () => {
       destroyed = true;
-      if (proxyUpdateTimeoutRef.current != null) {
-        clearTimeout(proxyUpdateTimeoutRef.current);
-        proxyUpdateTimeoutRef.current = null;
-      }
       const cy = cyRef.current;
       if (cy) {
         cy.destroy();
         cyRef.current = null;
       }
     };
-  }, [syncGraphDataToCy]);
+  }, [syncGraphDataToCy, loadAttempt]);
 
   useEffect(() => {
     const cy = cyRef.current;
@@ -308,10 +328,14 @@ export function ExplorationGraphCytoscape(
         : {
             name: "cose",
             animate: false,
-            padding: 36,
-            nodeRepulsion: 8000,
-            idealEdgeLength: 140,
-            edgeElasticity: 120,
+            fit: true,
+            padding: 64,
+            nodeDimensionsIncludeLabels: true,
+            nodeRepulsion: 18000,
+            idealEdgeLength: 220,
+            edgeElasticity: 200,
+            gravity: 0.4,
+            nestingFactor: 0.8,
           }
     );
     layout.run();
@@ -346,52 +370,28 @@ export function ExplorationGraphCytoscape(
     return () => observer.disconnect();
   }, [graphData.nodes.length]);
 
-  const half = NODE_PROXY_HIT_SIZE / 2;
   return (
     <div
       className="relative h-full w-full"
       style={{ minHeight: 300 }}
       data-testid="exploration-graph-cytoscape"
     >
+      {cyLoadError ? (
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[hsl(var(--card))]/90 p-4 text-center">
+          <p className="text-xs text-red-600">{cyLoadError}</p>
+          <button
+            type="button"
+            className="rounded border border-[hsl(var(--border))] px-3 py-1 text-xs hover:bg-[hsl(var(--muted))]"
+            onClick={() => {
+              setCyLoadError(null);
+              setLoadAttempt((value) => value + 1);
+            }}
+          >
+            Retry graph load
+          </button>
+        </div>
+      ) : null}
       <div ref={containerRef} className="absolute inset-0 h-full w-full" />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        role="application"
-        aria-label="Graph nodes; use Tab to move between nodes, Enter or click to select"
-      >
-        {graphData.nodes.map((node) => {
-          const pos = nodeProxyPositions.find((p) => p.id === node.id);
-          if (pos == null) return null;
-          const kindLabel =
-            node.nodeKind === "focus"
-              ? "focus node"
-              : node.nodeKind === "type_hub"
-                ? "type hub"
-                : "entity";
-          return (
-            <button
-              key={node.id}
-              type="button"
-              className="absolute rounded-full border-0 bg-transparent outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-offset-2 pointer-events-auto"
-              style={{
-                left: pos.x - half,
-                top: pos.y - half,
-                width: NODE_PROXY_HIT_SIZE,
-                height: NODE_PROXY_HIT_SIZE,
-              }}
-              data-node-id={node.id}
-              data-testid={`graph-node-${node.id}`}
-              aria-label={`${node.name}, ${kindLabel}. Click to select.`}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const n = graphData.nodes.find((nd) => nd.id === node.id);
-                if (n) propsRef.current.onNodeClick(n);
-              }}
-            />
-          );
-        })}
-      </div>
     </div>
   );
 }

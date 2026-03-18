@@ -275,6 +275,9 @@ async function extractProposalsFromAnswer(params: {
     "Return strict JSON with keys: nodes, relationships.",
     "nodes: [{ label, value }].",
     "relationships: [{ type, fromValue, toValue, direction, fromLabel, toLabel }].",
+    "The queryState.start entity is canonical: include it exactly once in nodes using the exact same label and value.",
+    "Reuse the same label+value pair everywhere for the same real-world entity; do not emit alias duplicates.",
+    "When relationships reference the start entity, use the exact queryState.start value/label.",
     "Avoid duplicates and keep only concrete entities from the answer text.",
     "Do not invent entities not supported by the text.",
   ].join(" ");

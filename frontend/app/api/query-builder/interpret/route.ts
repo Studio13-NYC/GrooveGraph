@@ -29,12 +29,114 @@ type SessionState = {
 
 const sessionStore = new Map<string, SessionState>();
 
+type GraphNodePayload = {
+  id: string;
+  label: string;
+  name: string;
+  labels?: string[];
+  nodeKind?: "focus" | "entity";
+  entityLabel?: string;
+};
+
+type GraphLinkPayload = {
+  source: string;
+  target: string;
+  type: string;
+};
+
+function buildLlmGraphPayload(params: {
+  start: { label: string; value: string };
+  proposedNodes: Array<{ label: string; value: string; canonicalKey: string }>;
+  proposedRelationships: Array<{
+    type: string;
+    fromCanonicalKey: string;
+    toCanonicalKey: string;
+    direction: "outbound" | "inbound";
+  }>;
+}): { nodes: GraphNodePayload[]; links: GraphLinkPayload[]; focusNodeId: string } | null {
+  if (params.proposedNodes.length === 0 && params.proposedRelationships.length === 0) return null;
+
+  const nodeMap = new Map<string, GraphNodePayload>();
+  const startCanonicalKey = `${params.start.label}:${params.start.value.toLowerCase()}`;
+  let focusNodeId: string | null = null;
+  for (const node of params.proposedNodes) {
+    const isFocus = node.canonicalKey === startCanonicalKey;
+    if (isFocus) focusNodeId = node.canonicalKey;
+    nodeMap.set(node.canonicalKey, {
+      id: node.canonicalKey,
+      label: node.label,
+      name: node.value,
+      labels: [node.label],
+      nodeKind: isFocus ? "focus" : "entity",
+      entityLabel: node.label,
+    });
+  }
+
+  if (!focusNodeId) {
+    focusNodeId = `focus:${params.start.label}:${params.start.value}`;
+    nodeMap.set(focusNodeId, {
+      id: focusNodeId,
+      label: params.start.label,
+      name: params.start.value,
+      labels: [params.start.label],
+      nodeKind: "focus",
+      entityLabel: params.start.label,
+    });
+  }
+
+  const links: GraphLinkPayload[] = [];
+  for (const rel of params.proposedRelationships) {
+    const source = rel.direction === "outbound" ? rel.fromCanonicalKey : rel.toCanonicalKey;
+    const target = rel.direction === "outbound" ? rel.toCanonicalKey : rel.fromCanonicalKey;
+    if (!nodeMap.has(source)) {
+      nodeMap.set(source, {
+        id: source,
+        label: "Entity",
+        name: source,
+        labels: ["Entity"],
+        nodeKind: "entity",
+        entityLabel: "Entity",
+      });
+    }
+    if (!nodeMap.has(target)) {
+      nodeMap.set(target, {
+        id: target,
+        label: "Entity",
+        name: target,
+        labels: ["Entity"],
+        nodeKind: "entity",
+        entityLabel: "Entity",
+      });
+    }
+    links.push({ source, target, type: rel.type });
+  }
+
+  const focusConnected = links.some((link) => link.source === focusNodeId || link.target === focusNodeId);
+  if (!focusConnected && params.proposedNodes.length > 0) {
+    links.push({
+      source: focusNodeId,
+      target: params.proposedNodes[0].canonicalKey,
+      type: "PROPOSED",
+    });
+  }
+
+  return {
+    nodes: [...nodeMap.values()],
+    links,
+    focusNodeId,
+  };
+}
+
 function buildEffectivePrompt(state: SessionState): string {
   if (state.clarificationAnswers.length === 0) return state.rootPrompt;
   const clarificationText = state.clarificationAnswers
     .map((item, index) => `Clarification ${index + 1}: ${item.answer}`)
     .join("\n");
   return `${state.rootPrompt}\n${clarificationText}`;
+}
+
+function normalizeToken(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
 function buildQuestionId(question: string, options?: string[]): string {
@@ -312,6 +414,11 @@ export async function POST(request: NextRequest) {
           nodes: [...mergedNodes.values()],
           relationships: [...mergedRels.values()],
         },
+        llmGraph: buildLlmGraphPayload({
+          start: interpretation.queryState.start,
+          proposedNodes: [...mergedNodes.values()],
+          proposedRelationships: [...mergedRels.values()],
+        }),
         queryState: interpretation.queryState,
         summary,
         nextOptions,
