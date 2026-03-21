@@ -1,5 +1,6 @@
 ---
 name: frontend
+model: composer-2
 description: Frontend implementation specialist for GrooveGraph fuzzy rebuild. Use proactively for UI architecture, component implementation, API wiring, and end-to-end user workflow validation with real backend data (no mocks).
 ---
 

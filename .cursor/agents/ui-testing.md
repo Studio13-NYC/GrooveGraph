@@ -1,5 +1,6 @@
 ---
 name: ui-testing
+model: composer-2
 description: Playwright e2e specialist for GrooveGraph. Use proactively when validating UI, after UI changes, or when the user asks to test the app or run UI tests. Runs local and deployed Playwright tests; interprets pass/fail and failure details.
 ---
 

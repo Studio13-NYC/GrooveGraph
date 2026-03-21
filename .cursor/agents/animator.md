@@ -1,5 +1,6 @@
 ---
 name: animator
+model: composer-2
 description: GSAP animation specialist for GrooveGraph. Use proactively when adding motion, transitions, micro-interactions, scroll-driven effects, SVG animation, or page transitions. Builds performant, accessible animations using GSAP 3 with the project's design tokens and graph visual language.
 ---
 

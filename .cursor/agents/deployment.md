@@ -1,5 +1,6 @@
 ---
 name: deployment
+model: composer-2
 description: GrooveGraph build and deploy specialist (Azure SWA + App Service). Use proactively when the user asks to deploy, push front/back, or ship to production. Follows DEPLOY.md Option C; handles tokens and env.
 ---
 

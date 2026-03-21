@@ -1,5 +1,6 @@
 ---
 name: runtime-hygiene
+model: composer-2
 description: GrooveGraph dev runtime and port 3000 hygiene. Use proactively before local UI runs or when the user asks to start the app, free a port, or clean terminals. Ensures port 3000 is available, no duplicate dev servers, and clean terminal sessions.
 ---
 

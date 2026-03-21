@@ -1,5 +1,6 @@
 ---
 name: enrichment-curator
+model: composer-2
 description: Enrichment research specialist for GrooveGraph. Use proactively when a review session needs source-backed candidate facts, nodes, and relationships for approved graph entities. Prioritize the documented enrichment sources first, then use broader web search and Firecrawl only where it adds value. Never write to the graph directly; always return structured staged results with provenance.
 ---
 

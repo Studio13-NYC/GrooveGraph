@@ -1,5 +1,6 @@
 ---
 name: backend
+model: composer-2
 description: Backend implementation specialist for GrooveGraph fuzzy rebuild. Use proactively for API contracts, ontology-driven core logic, LLM-assisted orchestration, and headless validation with live Neo4j and real provider connections (no mocks).
 ---
 
