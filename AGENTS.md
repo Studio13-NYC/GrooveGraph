@@ -31,3 +31,38 @@
 - Pipeline traceability now expects stage-level input/output visibility plus latency and token usage for LLM-driven steps.
 - `frontend/app/components/exploration-graph-cytoscape.tsx` is the interaction-critical graph surface; keyboard leakage from chat inputs must never drive graph movement.
 - In chat mode, `GraphView2D` should receive stable references for static props (for example empty sets) to avoid unnecessary Cytoscape re-layout.
+
+## Cursor Cloud specific instructions
+
+### Services overview
+
+This is a single Next.js 14 fullstack app (no Docker, no separate microservices). The dev server (`npm run dev`) serves both the UI and all `/api/*` routes on port 3000.
+
+### Required secrets
+
+The app requires **Neo4j Aura** credentials in `.env.local` (or as environment variables): `NEO4J_URI`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, `NEO4J_DATABASE`. Without these, API routes that touch the graph store will throw. See `docs/neo4j.md`.
+
+For enrichment/LLM workflows, `OPENAI_API_KEY` (or `ENRICHMENT_LLM_API_KEY`) is also needed. Without it the chat-first discovery pipeline returns an error, but the UI itself still loads.
+
+### Running the dev server
+
+```
+npm run dev
+```
+
+This invokes the port guard (`frontend/scripts/ensure-port-3000.mjs`) then starts `next dev frontend -p 3000`. Always use this command (not `npx next dev` directly) to ensure port 3000 is free first.
+
+### Running tests
+
+- **Node test runner** (unit/integration): `npm run test` — requires `npm run build` first (compiles TS to `dist/`). Note: `npm run build` has pre-existing TS errors in `backend/src/enrichment/pipelines/album-contains-track.ts`, so some test files fail to resolve their compiled modules. 24 of 30 tests pass.
+- **Playwright e2e**: `npx playwright test -c frontend/playwright.config.ts` — starts the dev server automatically if not running. Needs Playwright browsers installed (`npx playwright install --with-deps chromium`).
+
+### Lint / type-check
+
+There is no dedicated lint script in `package.json`. The Next.js build (`npm run build:web`) runs type-checking. The production build currently has a pre-existing type error in `backend/src/enrichment/adapters/musicbrainz.ts` (Set iteration requires `--downlevelIteration`).
+
+### Key caveats
+
+- The `.env.local` file is git-ignored. Each new VM session needs it recreated or credentials provided via environment variables.
+- The CLI build (`npm run build` / `tsc -p tsconfig.cli.json`) has pre-existing errors; this is upstream and does not affect the dev server.
+- `npm run build:web` (Next.js production build) also has a pre-existing type error; this does not block `npm run dev`.

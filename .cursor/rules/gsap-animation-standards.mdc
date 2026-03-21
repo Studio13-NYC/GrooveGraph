@@ -1,0 +1,44 @@
+# GSAP Animation Standards
+
+Apply this rule when editing files that import `gsap` or contain animation logic.
+
+## Required patterns
+
+1. **Scope all animations** with `gsap.context(scope, containerRef)` and revert on unmount.
+2. **Register plugins** at module level before use: `gsap.registerPlugin(ScrollTrigger, Flip)`.
+3. **Respect reduced motion**: check `prefers-reduced-motion` and skip or simplify.
+4. **Animate composited properties only** (`transform`, `opacity`) unless layout animation is intentional and justified.
+5. **Use design tokens** from CSS custom properties — never hardcode `hsl(...)` or `#hex` values for themed colors.
+6. **Use entity colors** from `getNodeColor()` / `getLinkColor()` in `frontend/app/lib/graph-viz.ts` for graph-related animation.
+
+## Forbidden patterns
+
+- Do NOT use `setInterval` or `setTimeout` for animation — use `gsap.ticker` or `gsap.delayedCall`.
+- Do NOT animate Cytoscape internals with GSAP — use Cytoscape's native animation API.
+- Do NOT create animations outside a `useEffect` or `useLayoutEffect` in React components.
+- Do NOT forget cleanup — every `gsap.context()` must have a matching `ctx.revert()` in the cleanup function.
+
+## Standard eases
+
+| Context | Ease | Duration |
+|---------|------|----------|
+| Entrance | `power2.out` | 0.4–0.6s |
+| Exit | `power2.in` | 0.2–0.3s |
+| Bounce | `back.out(1.7)` | 0.3–0.5s |
+| Scroll | `power1.inOut` | 0.6–1.0s |
+
+## ScrollTrigger cleanup
+
+In Next.js App Router, kill all triggers on route change:
+
+```ts
+useEffect(() => {
+  return () => ScrollTrigger.getAll().forEach(t => t.kill());
+}, []);
+```
+
+## Debugging aids (dev only, remove before commit)
+
+- `gsap.globalTimeline.timeScale(0.2)` — slow motion
+- `ScrollTrigger.defaults({ markers: true })` — visible markers
+- `GSDevTools.create()` — timeline scrubber

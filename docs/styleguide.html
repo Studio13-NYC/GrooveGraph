@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GrooveGraph — Style Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   0. RESET & ROOT
+   ================================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  /* — Semantic tokens (light) — */
+  --background: hsl(0 0% 98%);
+  --foreground: hsl(240 10% 4%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(240 10% 4%);
+  --primary: hsl(240 6% 10%);
+  --primary-foreground: hsl(0 0% 98%);
+  --muted: hsl(240 5% 96%);
+  --muted-foreground: hsl(240 4% 46%);
+  --border: hsl(240 6% 90%);
+  --ring: hsl(240 6% 10%);
+  --accent: hsl(240 5% 92%);
+  --accent-foreground: hsl(240 6% 10%);
+
+  /* — Utility / feedback — */
+  --blue-50: #eff6ff; --blue-100: #dbeafe; --blue-200: #bfdbfe;
+  --blue-600: #2563eb; --blue-900: #1e3a5f;
+  --amber-50: #fffbeb; --amber-100: #fef3c7; --amber-300: #fcd34d;
+  --amber-800: #92400e;
+  --red-50: #fef2f2; --red-300: #fca5a5; --red-600: #dc2626;
+  --red-700: #b91c1c;
+  --green-50: #f0fdf4; --green-600: #16a34a; --green-700: #15803d;
+
+  /* — Graph palette — */
+  --node-artist: hsl(262 80% 50%);
+  --node-album: hsl(142 70% 40%);
+  --node-track: hsl(210 70% 45%);
+  --node-instrument: hsl(28 85% 48%);
+  --node-equipment: hsl(25 45% 38%);
+  --node-studio: hsl(172 65% 38%);
+  --node-person: hsl(243 65% 52%);
+  --node-credit: hsl(215 20% 45%);
+  --node-label: hsl(158 55% 35%);
+  --node-performance: hsl(330 65% 50%);
+  --node-effect: hsl(192 75% 42%);
+  --node-genre: hsl(280 60% 50%);
+  --node-playlist: hsl(85 55% 42%);
+  --node-venue: hsl(38 75% 45%);
+  --node-songwork: hsl(200 70% 48%);
+  --node-session: hsl(215 25% 50%);
+  --node-release: hsl(310 60% 48%);
+
+  /* — Layout — */
+  --max-w: 72rem;
+  --header-h: 3.5rem;
+
+  /* — Font — */
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Dark mode */
+.dark {
+  --background: hsl(240 10% 4%);
+  --foreground: hsl(0 0% 98%);
+  --card: hsl(240 6% 10%);
+  --card-foreground: hsl(0 0% 98%);
+  --primary: hsl(0 0% 98%);
+  --primary-foreground: hsl(240 6% 10%);
+  --muted: hsl(240 4% 16%);
+  --muted-foreground: hsl(240 5% 65%);
+  --border: hsl(240 4% 16%);
+  --ring: hsl(240 5% 84%);
+  --accent: hsl(240 4% 18%);
+  --accent-foreground: hsl(0 0% 98%);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--background);
+  color: var(--foreground);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ================================================================
+   1. LAYOUT CHROME
+   ================================================================ */
+.sg-header {
+  position: sticky; top: 0; z-index: 50;
+  height: var(--header-h);
+  border-bottom: 1px solid var(--border);
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center;
+}
+.sg-header-inner {
+  max-width: var(--max-w); width: 100%;
+  margin: 0 auto; padding: 0 1rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sg-header h1 { font-size: 1.125rem; font-weight: 700; letter-spacing: -0.01em; }
+.sg-header nav { display: flex; gap: .75rem; font-size: .8125rem; font-weight: 500; }
+.sg-header nav a {
+  color: var(--muted-foreground); text-decoration: none;
+  transition: color .15s;
+}
+.sg-header nav a:hover { color: var(--foreground); }
+
+main { max-width: var(--max-w); margin: 0 auto; padding: 2rem 1rem 4rem; }
+
+section { margin-bottom: 4rem; }
+section > h2 {
+  font-size: .6875rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted-foreground);
+  margin-bottom: 1.5rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-intro {
+  max-width: 40rem; color: var(--muted-foreground);
+  font-size: .875rem; margin-bottom: 2rem; line-height: 1.7;
+}
+
+/* dark toggle */
+.toggle-dark {
+  appearance: none; border: none; cursor: pointer;
+  width: 2.25rem; height: 2.25rem; border-radius: .5rem;
+  display: grid; place-items: center;
+  background: var(--muted); color: var(--foreground);
+  transition: background .15s;
+}
+.toggle-dark:hover { background: var(--border); }
+.toggle-dark svg { width: 1.125rem; height: 1.125rem; }
+
+/* ================================================================
+   2. TYPOGRAPHY
+   ================================================================ */
+.type-specimen { margin-bottom: 2.5rem; }
+.type-specimen p.label {
+  font-size: .6875rem; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--muted-foreground); margin-bottom: .25rem;
+}
+.type-row {
+  display: flex; align-items: baseline; gap: 1.5rem;
+  padding: .75rem 0; border-bottom: 1px solid var(--border);
+}
+.type-row .meta {
+  flex-shrink: 0; width: 10rem;
+  font-size: .75rem; color: var(--muted-foreground); font-family: var(--font-mono);
+}
+.type-row .sample { flex: 1; }
+
+.font-card {
+  display: flex; gap: 2rem; flex-wrap: wrap; margin-top: 1.5rem;
+}
+.font-card > div {
+  flex: 1 1 280px; padding: 1.5rem;
+  border: 1px solid var(--border); border-radius: .75rem;
+  background: var(--card);
+}
+.font-card > div h3 {
+  font-size: .8125rem; font-weight: 700; margin-bottom: .5rem;
+}
+.font-card .big-sample {
+  font-size: 2.5rem; line-height: 1.15; font-weight: 700;
+  margin-bottom: .75rem; letter-spacing: -.02em;
+}
+.font-card .charset {
+  font-size: .8125rem; color: var(--muted-foreground); line-height: 1.8;
+  word-break: break-all;
+}
+
+/* ================================================================
+   3. COLOR SWATCHES
+   ================================================================ */
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.swatch {
+  border: 1px solid var(--border); border-radius: .75rem;
+  overflow: hidden; background: var(--card);
+}
+.swatch-block {
+  height: 5rem; display: flex; align-items: flex-end;
+  padding: .5rem .75rem;
+}
+.swatch-block span {
+  font-size: .6875rem; font-weight: 600; letter-spacing: .02em;
+  text-shadow: 0 1px 2px rgba(0,0,0,.3);
+  color: #fff;
+}
+.swatch-info {
+  padding: .625rem .75rem;
+  font-size: .75rem; color: var(--muted-foreground);
+  font-family: var(--font-mono);
+}
+.swatch-info .name { font-family: var(--font-sans); font-weight: 600; color: var(--foreground); }
+
+/* node palette — horizontal scrollable */
+.node-palette {
+  display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1rem;
+}
+.node-chip {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .375rem .75rem .375rem .375rem;
+  border-radius: 2rem; border: 1px solid var(--border);
+  background: var(--card); font-size: .75rem; font-weight: 600;
+  white-space: nowrap;
+}
+.node-chip .dot {
+  width: 1.25rem; height: 1.25rem; border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* link color groups */
+.link-group {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: .75rem; margin-top: 1rem;
+}
+.link-row {
+  display: flex; align-items: center; gap: .625rem;
+  padding: .5rem .75rem; border-radius: .5rem;
+  border: 1px solid var(--border); background: var(--card);
+  font-size: .75rem;
+}
+.link-row .bar {
+  width: 2.5rem; height: .25rem; border-radius: 1px; flex-shrink: 0;
+}
+.link-row .rel-name { font-weight: 600; }
+.link-row .rel-hsl { color: var(--muted-foreground); font-family: var(--font-mono); font-size: .6875rem; }
+
+/* ================================================================
+   4. UI COMPONENTS
+   ================================================================ */
+.comp-row {
+  display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;
+  margin-bottom: 1.5rem;
+}
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  font-family: var(--font-sans); font-weight: 600; font-size: .875rem;
+  border: none; border-radius: .375rem; cursor: pointer;
+  transition: background .15s, box-shadow .15s;
+  text-decoration: none;
+}
+.btn-md { height: 2.5rem; padding: 0 1rem; }
+.btn-sm { height: 2.25rem; padding: 0 .75rem; font-size: .8125rem; }
+.btn-lg { height: 2.75rem; padding: 0 1.25rem; }
+.btn-primary {
+  background: var(--primary); color: var(--primary-foreground);
+}
+.btn-primary:hover { opacity: .9; }
+.btn-secondary {
+  background: var(--muted); color: var(--foreground);
+}
+.btn-secondary:hover { background: var(--border); }
+.btn-destructive {
+  background: var(--red-600); color: #fff;
+}
+.btn-destructive:hover { background: var(--red-700); }
+.btn-outline {
+  background: transparent; color: var(--foreground);
+  border: 1px solid var(--border);
+}
+.btn-outline:hover { background: var(--muted); }
+.btn-ghost {
+  background: transparent; color: var(--foreground);
+}
+.btn-ghost:hover { background: var(--muted); }
+
+.input-demo {
+  height: 2.5rem; border-radius: .375rem;
+  border: 1px solid var(--border); padding: 0 .75rem;
+  font-family: var(--font-sans); font-size: .875rem;
+  background: var(--card); color: var(--foreground);
+  outline: none; transition: border-color .15s, box-shadow .15s;
+  width: 260px; max-width: 100%;
+}
+.input-demo:focus {
+  border-color: var(--ring);
+  box-shadow: 0 0 0 2px var(--ring);
+}
+.input-demo::placeholder { color: var(--muted-foreground); }
+
+.badge {
+  display: inline-flex; align-items: center;
+  padding: .125rem .625rem; border-radius: 9999px;
+  font-size: .625rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.badge-primary { background: var(--primary); color: var(--primary-foreground); }
+.badge-muted { background: var(--muted); color: var(--muted-foreground); }
+.badge-blue { background: var(--blue-100); color: var(--blue-900); }
+.badge-amber { background: var(--amber-100); color: var(--amber-800); }
+.badge-red { background: var(--red-50); color: var(--red-700); border: 1px solid var(--red-300); }
+.badge-green { background: var(--green-50); color: var(--green-700); }
+
+.card-demo {
+  border: 1px solid var(--border); border-radius: .75rem;
+  background: var(--card); overflow: hidden;
+  transition: box-shadow .15s;
+}
+.card-demo:hover { box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+.card-demo .card-body { padding: 1.25rem; }
+.card-demo .card-body h3 { font-size: .9375rem; font-weight: 700; margin-bottom: .25rem; }
+.card-demo .card-body p { font-size: .8125rem; color: var(--muted-foreground); }
+
+.card-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+/* ================================================================
+   5. VECTOR GRAPHICS / SVG
+   ================================================================ */
+.svg-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+}
+.svg-cell {
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  padding: 1rem .5rem; border: 1px solid var(--border); border-radius: .5rem;
+  background: var(--card); transition: background .15s;
+}
+.svg-cell:hover { background: var(--muted); }
+.svg-cell svg { width: 1.5rem; height: 1.5rem; color: var(--foreground); }
+.svg-cell span { font-size: .625rem; font-weight: 500; color: var(--muted-foreground); text-align: center; }
+
+.logo-showcase {
+  display: flex; flex-wrap: wrap; gap: 2rem; align-items: center;
+  margin: 1.5rem 0;
+}
+.logo-card {
+  padding: 2rem; border-radius: .75rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-card.on-light { background: var(--card); border: 1px solid var(--border); }
+.logo-card.on-dark { background: hsl(240 10% 4%); }
+.logo-card.on-brand { background: var(--node-artist); }
+
+/* hero / wordmark lockup */
+.hero-wordmark {
+  display: flex; align-items: center; gap: 1rem;
+}
+.hero-wordmark .mark-text {
+  font-size: 1.75rem; font-weight: 800; letter-spacing: -.03em;
+  background: linear-gradient(135deg, var(--node-artist) 0%, var(--node-track) 50%, var(--node-album) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* illustration panels */
+.illustration-row {
+  display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 1.5rem;
+}
+.illustration-panel {
+  flex: 1 1 320px; min-height: 220px;
+  border: 1px solid var(--border); border-radius: .75rem;
+  background: var(--card); overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+
+/* spacing demo */
+.spacing-grid {
+  display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;
+}
+.spacing-box {
+  display: flex; flex-direction: column; align-items: center; gap: .25rem;
+}
+.spacing-box .block {
+  background: var(--node-track); border-radius: .25rem; opacity: .7;
+}
+.spacing-box span {
+  font-size: .625rem; font-weight: 600; font-family: var(--font-mono);
+  color: var(--muted-foreground);
+}
+
+/* ================================================================
+   6. RESPONSIVE
+   ================================================================ */
+@media (max-width: 640px) {
+  .sg-header nav { display: none; }
+  .type-row { flex-direction: column; gap: .25rem; }
+  .type-row .meta { width: auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ─── -->
+<header class="sg-header">
+  <div class="sg-header-inner">
+    <h1>GrooveGraph Style Guide</h1>
+    <nav>
+      <a href="#typography">Typography</a>
+      <a href="#colors">Colors</a>
+      <a href="#components">Components</a>
+      <a href="#graphics">Graphics</a>
+      <a href="#vectors">Vectors</a>
+      <a href="#spacing">Spacing</a>
+    </nav>
+    <button class="toggle-dark" onclick="document.documentElement.classList.toggle('dark')" title="Toggle dark mode">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 8.002-5.998Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 1: TYPOGRAPHY
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="typography">
+  <h2>Typography</h2>
+  <p class="section-intro">
+    GrooveGraph uses <strong>Plus Jakarta Sans</strong> as its primary typeface — a geometric sans-serif with
+    excellent legibility at small sizes and distinctive character at display weights. Monospace code uses
+    <strong>JetBrains Mono</strong>.
+  </p>
+
+  <!-- Font cards -->
+  <div class="font-card">
+    <div>
+      <h3>Plus Jakarta Sans</h3>
+      <div class="big-sample">Aa Bb Cc</div>
+      <div class="charset">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&amp;*</div>
+    </div>
+    <div>
+      <h3 style="font-family:var(--font-mono)">JetBrains Mono</h3>
+      <div class="big-sample" style="font-family:var(--font-mono)">0x1F 42</div>
+      <div class="charset" style="font-family:var(--font-mono)">ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789{}[]()=></div>
+    </div>
+  </div>
+
+  <!-- Scale -->
+  <div class="type-specimen" style="margin-top:2rem">
+    <p class="label">Type Scale</p>
+
+    <div class="type-row">
+      <div class="meta">2.25rem / 800<br>Hero heading</div>
+      <div class="sample" style="font-size:2.25rem;font-weight:800;letter-spacing:-.03em;line-height:1.15">
+        One graph for recorded music
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="meta">1.5rem / 700<br>Page heading</div>
+      <div class="sample" style="font-size:1.5rem;font-weight:700;letter-spacing:-.02em;line-height:1.25">
+        Music Discovery Assistant
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="meta">1.125rem / 700<br>Section heading</div>
+      <div class="sample" style="font-size:1.125rem;font-weight:700;line-height:1.35">
+        Enrichment Review
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="meta">0.9375rem / 700<br>Card title</div>
+      <div class="sample" style="font-size:.9375rem;font-weight:700">
+        Kacey Musgraves — Golden Hour
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="meta">0.875rem / 400<br>Body text</div>
+      <div class="sample" style="font-size:.875rem">
+        Search for entities, build and approve the subset, review staged candidates,
+        and apply only deduped approved changes to Neo4j.
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="meta">0.8125rem / 500<br>Secondary text</div>
+      <div class="sample" style="font-size:.8125rem;font-weight:500;color:var(--muted-foreground)">
+        Stages are ready and will populate after your first prompt.
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="meta">0.75rem / 400<br>Caption</div>
+      <div class="sample" style="font-size:.75rem;color:var(--muted-foreground)">
+        Retrieved from MusicBrainz • Confidence: high • 2026-03-17
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="meta">0.6875rem / 700<br>Overline label</div>
+      <div class="sample" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground)">
+        Explore by Triplet
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="meta">0.625rem / 700<br>Badge / tag</div>
+      <div class="sample" style="font-size:.625rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase">
+        PENDING &nbsp; APPROVED &nbsp; REJECTED
+      </div>
+    </div>
+
+    <div class="type-row">
+      <div class="meta">0.875rem / 500<br>Monospace</div>
+      <div class="sample" style="font-family:var(--font-mono);font-size:.875rem;font-weight:500;color:var(--muted-foreground)">
+        MATCH (a:Artist)-[:PERFORMED_BY]-(t:Track) RETURN a, t
+      </div>
+    </div>
+  </div>
+
+  <!-- Weight ramp -->
+  <div class="type-specimen">
+    <p class="label">Weight Ramp — Plus Jakarta Sans</p>
+    <div class="type-row"><div class="meta">200 ExtraLight</div><div class="sample" style="font-weight:200;font-size:1.25rem">The quick brown fox jumps over the lazy dog</div></div>
+    <div class="type-row"><div class="meta">300 Light</div><div class="sample" style="font-weight:300;font-size:1.25rem">The quick brown fox jumps over the lazy dog</div></div>
+    <div class="type-row"><div class="meta">400 Regular</div><div class="sample" style="font-weight:400;font-size:1.25rem">The quick brown fox jumps over the lazy dog</div></div>
+    <div class="type-row"><div class="meta">500 Medium</div><div class="sample" style="font-weight:500;font-size:1.25rem">The quick brown fox jumps over the lazy dog</div></div>
+    <div class="type-row"><div class="meta">600 SemiBold</div><div class="sample" style="font-weight:600;font-size:1.25rem">The quick brown fox jumps over the lazy dog</div></div>
+    <div class="type-row"><div class="meta">700 Bold</div><div class="sample" style="font-weight:700;font-size:1.25rem">The quick brown fox jumps over the lazy dog</div></div>
+    <div class="type-row"><div class="meta">800 ExtraBold</div><div class="sample" style="font-weight:800;font-size:1.25rem">The quick brown fox jumps over the lazy dog</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 2: COLORWAYS
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="colors">
+  <h2>Colorways</h2>
+  <p class="section-intro">
+    The base palette uses HSL-based CSS custom properties with light and dark variants.
+    Graph nodes and edges use a separate, high-saturation palette tuned for on-card contrast.
+    Toggle dark mode with the moon button in the header.
+  </p>
+
+  <!-- Semantic tokens -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin-bottom:1rem">
+    Semantic Tokens
+  </p>
+  <div class="color-grid">
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--background);border-bottom:1px solid var(--border)">
+        <span style="color:var(--foreground);text-shadow:none">Bg</span>
+      </div>
+      <div class="swatch-info"><div class="name">Background</div>--background<br>hsl(0 0% 98%)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--foreground)"><span>Fg</span></div>
+      <div class="swatch-info"><div class="name">Foreground</div>--foreground<br>hsl(240 10% 4%)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--card);border-bottom:1px solid var(--border)">
+        <span style="color:var(--foreground);text-shadow:none">Card</span>
+      </div>
+      <div class="swatch-info"><div class="name">Card</div>--card<br>hsl(0 0% 100%)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--primary)"><span>Aa</span></div>
+      <div class="swatch-info"><div class="name">Primary</div>--primary<br>hsl(240 6% 10%)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--muted);border-bottom:1px solid var(--border)">
+        <span style="color:var(--muted-foreground);text-shadow:none">Muted</span>
+      </div>
+      <div class="swatch-info"><div class="name">Muted</div>--muted<br>hsl(240 5% 96%)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--muted-foreground)"><span>Aa</span></div>
+      <div class="swatch-info"><div class="name">Muted Fg</div>--muted-foreground<br>hsl(240 4% 46%)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--border);border-bottom:1px solid var(--border)">
+        <span style="color:var(--muted-foreground);text-shadow:none">—</span>
+      </div>
+      <div class="swatch-info"><div class="name">Border</div>--border<br>hsl(240 6% 90%)</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--ring)"><span>Ring</span></div>
+      <div class="swatch-info"><div class="name">Ring</div>--ring<br>hsl(240 6% 10%)</div>
+    </div>
+  </div>
+
+  <!-- Feedback colors -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:2rem 0 1rem">
+    Feedback &amp; Utility
+  </p>
+  <div class="color-grid">
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--blue-600)"><span>Info</span></div>
+      <div class="swatch-info"><div class="name">Blue 600</div>--blue-600<br>#2563eb</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--amber-300)"><span style="color:#92400e;text-shadow:none">Warn</span></div>
+      <div class="swatch-info"><div class="name">Amber 300</div>--amber-300<br>#fcd34d</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--red-600)"><span>Error</span></div>
+      <div class="swatch-info"><div class="name">Red 600</div>--red-600<br>#dc2626</div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-block" style="background:var(--green-600)"><span>Success</span></div>
+      <div class="swatch-info"><div class="name">Green 600</div>--green-600<br>#16a34a</div>
+    </div>
+  </div>
+
+  <!-- Graph node palette -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:2rem 0 1rem">
+    Graph Node Palette — 17 Entity Types
+  </p>
+  <div class="node-palette" id="node-palette"></div>
+
+  <!-- Link colors -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:2rem 0 1rem">
+    Graph Edge Colors — Relationship Types
+  </p>
+  <div class="link-group" id="link-group"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 3: COMPONENTS
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="components">
+  <h2>Components</h2>
+  <p class="section-intro">
+    Core UI building blocks: buttons, inputs, badges, and cards. All use the semantic token system
+    for automatic light/dark theming. Border radius is <code style="font-family:var(--font-mono);font-size:.8125rem">.375rem</code> (buttons/inputs) and
+    <code style="font-family:var(--font-mono);font-size:.8125rem">.75rem</code> (cards).
+  </p>
+
+  <!-- Buttons -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin-bottom:.75rem">Buttons</p>
+  <div class="comp-row">
+    <button class="btn btn-primary btn-md">Primary</button>
+    <button class="btn btn-secondary btn-md">Secondary</button>
+    <button class="btn btn-destructive btn-md">Destructive</button>
+    <button class="btn btn-outline btn-md">Outline</button>
+    <button class="btn btn-ghost btn-md">Ghost</button>
+  </div>
+  <div class="comp-row">
+    <button class="btn btn-primary btn-sm">Small</button>
+    <button class="btn btn-primary btn-md">Default</button>
+    <button class="btn btn-primary btn-lg">Large</button>
+  </div>
+  <div class="comp-row">
+    <button class="btn btn-primary btn-md" style="display:inline-flex;align-items:center;gap:.375rem">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+      With Icon
+    </button>
+    <button class="btn btn-outline btn-md" disabled style="opacity:.5;cursor:not-allowed">Disabled</button>
+  </div>
+
+  <!-- Inputs -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:1.5rem 0 .75rem">Inputs</p>
+  <div class="comp-row">
+    <input class="input-demo" placeholder="Start your search here…">
+    <input class="input-demo" value="Kacey Musgraves">
+    <input class="input-demo" placeholder="Disabled" disabled style="opacity:.5">
+  </div>
+
+  <!-- Badges -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:1.5rem 0 .75rem">Badges</p>
+  <div class="comp-row">
+    <span class="badge badge-primary">Primary</span>
+    <span class="badge badge-muted">Muted</span>
+    <span class="badge badge-blue">Info</span>
+    <span class="badge badge-amber">Warning</span>
+    <span class="badge badge-red">Error</span>
+    <span class="badge badge-green">Approved</span>
+  </div>
+
+  <!-- Cards -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:1.5rem 0 .75rem">Cards</p>
+  <div class="card-grid">
+    <div class="card-demo">
+      <div style="height:4rem;background:linear-gradient(135deg,var(--node-artist),var(--node-track))"></div>
+      <div class="card-body">
+        <h3>Artist: Kacey Musgraves</h3>
+        <p>6 albums · 84 tracks · 12 collaborators</p>
+      </div>
+    </div>
+    <div class="card-demo">
+      <div style="height:4rem;background:linear-gradient(135deg,var(--node-album),var(--node-genre))"></div>
+      <div class="card-body">
+        <h3>Album: Golden Hour</h3>
+        <p>13 tracks · Country · 2018</p>
+      </div>
+    </div>
+    <div class="card-demo">
+      <div style="height:4rem;background:linear-gradient(135deg,var(--node-studio),var(--node-session))"></div>
+      <div class="card-body">
+        <h3>Studio: RCA Studio B</h3>
+        <p>Nashville, TN · 247 sessions</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pipeline stages card -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:2rem 0 .75rem">Pipeline Stage Card</p>
+  <div style="max-width:36rem">
+    <div class="card-demo" style="padding:1rem 1.25rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
+        <span style="font-size:.875rem;font-weight:700">1. Interpret intent</span>
+        <span class="badge badge-muted">Pending</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:.8125rem">
+        <div>
+          <div style="font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-foreground);margin-bottom:.25rem">Input</div>
+          <div style="color:var(--muted-foreground)">Waiting for prompt…</div>
+        </div>
+        <div>
+          <div style="font-size:.6875rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-foreground);margin-bottom:.25rem">Output</div>
+          <div style="color:var(--muted-foreground)">No output yet.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 4: GRAPHICS & ILLUSTRATIONS
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="graphics">
+  <h2>Graphics &amp; Brand</h2>
+  <p class="section-intro">
+    The GrooveGraph wordmark uses a gradient across the primary entity colors — Artist purple to Track blue
+    to Album green. The logo mark is a stylized graph node cluster representing connected music entities.
+  </p>
+
+  <!-- Logo / wordmark -->
+  <div class="logo-showcase">
+    <div class="logo-card on-light">
+      <div class="hero-wordmark">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" id="logo-mark">
+          <circle cx="24" cy="16" r="7" fill="hsl(262 80% 50%)"/>
+          <circle cx="13" cy="34" r="5.5" fill="hsl(142 70% 40%)"/>
+          <circle cx="36" cy="32" r="6" fill="hsl(210 70% 45%)"/>
+          <line x1="21" y1="22" x2="15" y2="30" stroke="hsl(262 55% 55%)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="27" y1="22" x2="34" y2="28" stroke="hsl(142 45% 45%)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="18" y1="34" x2="31" y2="33" stroke="hsl(28 60% 48%)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 2"/>
+        </svg>
+        <span class="mark-text">GrooveGraph</span>
+      </div>
+    </div>
+    <div class="logo-card on-dark">
+      <div class="hero-wordmark">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="16" r="7" fill="hsl(262 80% 60%)"/>
+          <circle cx="13" cy="34" r="5.5" fill="hsl(142 70% 50%)"/>
+          <circle cx="36" cy="32" r="6" fill="hsl(210 70% 55%)"/>
+          <line x1="21" y1="22" x2="15" y2="30" stroke="hsl(262 55% 65%)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="27" y1="22" x2="34" y2="28" stroke="hsl(142 45% 55%)" stroke-width="2" stroke-linecap="round"/>
+          <line x1="18" y1="34" x2="31" y2="33" stroke="hsl(28 60% 58%)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="3 2"/>
+        </svg>
+        <span class="mark-text" style="color:#fafafa;-webkit-text-fill-color:#fafafa;background:none">GrooveGraph</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Graph illustration -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:2rem 0 .75rem">
+    Graph Visualization Pattern
+  </p>
+  <div class="illustration-row">
+    <div class="illustration-panel">
+      <svg viewBox="0 0 480 260" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:480px">
+        <!-- edges -->
+        <line x1="240" y1="70" x2="120" y2="160" stroke="hsl(262 55% 55%)" stroke-width="2" opacity=".6"/>
+        <line x1="240" y1="70" x2="360" y2="140" stroke="hsl(262 55% 55%)" stroke-width="2" opacity=".6"/>
+        <line x1="120" y1="160" x2="80" y2="230" stroke="hsl(142 45% 45%)" stroke-width="1.5" opacity=".5"/>
+        <line x1="120" y1="160" x2="180" y2="230" stroke="hsl(142 45% 45%)" stroke-width="1.5" opacity=".5"/>
+        <line x1="360" y1="140" x2="300" y2="220" stroke="hsl(142 45% 45%)" stroke-width="1.5" opacity=".5"/>
+        <line x1="360" y1="140" x2="420" y2="220" stroke="hsl(142 45% 45%)" stroke-width="1.5" opacity=".5"/>
+        <line x1="240" y1="70" x2="400" y2="50" stroke="hsl(280 50% 55%)" stroke-width="1.5" stroke-dasharray="4 3" opacity=".4"/>
+        <!-- Artist node (center) -->
+        <circle cx="240" cy="70" r="28" fill="hsl(262 80% 50%)" opacity=".9"/>
+        <text x="240" y="66" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,system-ui" font-size="9" font-weight="700">ARTIST</text>
+        <text x="240" y="79" text-anchor="middle" fill="rgba(255,255,255,.8)" font-family="Plus Jakarta Sans,system-ui" font-size="7.5">Kacey Musgraves</text>
+        <!-- Album nodes -->
+        <circle cx="120" cy="160" r="22" fill="hsl(142 70% 40%)" opacity=".9"/>
+        <text x="120" y="157" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,system-ui" font-size="8" font-weight="700">ALBUM</text>
+        <text x="120" y="168" text-anchor="middle" fill="rgba(255,255,255,.8)" font-family="Plus Jakarta Sans,system-ui" font-size="6.5">Golden Hour</text>
+        <circle cx="360" cy="140" r="22" fill="hsl(142 70% 40%)" opacity=".9"/>
+        <text x="360" y="137" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,system-ui" font-size="8" font-weight="700">ALBUM</text>
+        <text x="360" y="148" text-anchor="middle" fill="rgba(255,255,255,.8)" font-family="Plus Jakarta Sans,system-ui" font-size="6.5">Star-Crossed</text>
+        <!-- Track nodes -->
+        <circle cx="80" cy="230" r="16" fill="hsl(210 70% 45%)" opacity=".85"/>
+        <text x="80" y="232" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,system-ui" font-size="6.5" font-weight="600">Slow Burn</text>
+        <circle cx="180" cy="230" r="16" fill="hsl(210 70% 45%)" opacity=".85"/>
+        <text x="180" y="232" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,system-ui" font-size="6.5" font-weight="600">Butterflies</text>
+        <circle cx="300" cy="220" r="16" fill="hsl(210 70% 45%)" opacity=".85"/>
+        <text x="300" y="222" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,system-ui" font-size="6.5" font-weight="600">Simple Times</text>
+        <circle cx="420" cy="220" r="16" fill="hsl(210 70% 45%)" opacity=".85"/>
+        <text x="420" y="222" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,system-ui" font-size="6.5" font-weight="600">Justified</text>
+        <!-- Genre node -->
+        <circle cx="400" cy="50" r="14" fill="hsl(280 60% 50%)" opacity=".8"/>
+        <text x="400" y="52" text-anchor="middle" fill="#fff" font-family="Plus Jakarta Sans,system-ui" font-size="6.5" font-weight="600">Country</text>
+        <!-- enriched halo example -->
+        <circle cx="240" cy="70" r="32" fill="none" stroke="rgba(251,191,36,.6)" stroke-width="2" stroke-dasharray="6 4"/>
+      </svg>
+    </div>
+    <div class="illustration-panel" style="flex-direction:column;gap:1rem;align-items:flex-start">
+      <div style="font-size:.8125rem;font-weight:700">Graph Legend</div>
+      <div id="legend-mini" style="display:flex;flex-wrap:wrap;gap:.5rem"></div>
+      <div style="font-size:.75rem;color:var(--muted-foreground);margin-top:.5rem">
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem">
+          <svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="hsl(262 55% 55%)" stroke-width="2"/></svg>
+          <span>Performance (PERFORMED_BY, FEATURES)</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem">
+          <svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="hsl(142 45% 45%)" stroke-width="2"/></svg>
+          <span>Release (CONTAINS, RELEASED_ON)</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem">
+          <svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="hsl(28 60% 48%)" stroke-width="2"/></svg>
+          <span>Credits (WRITTEN_BY, PRODUCED_BY)</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.375rem">
+          <svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="hsl(172 50% 45%)" stroke-width="2"/></svg>
+          <span>Studio (RECORDED_AT, SESSION)</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:.5rem">
+          <svg width="24" height="8"><line x1="0" y1="4" x2="24" y2="4" stroke="rgba(251,191,36,.7)" stroke-width="2" stroke-dasharray="4 3"/></svg>
+          <span>Enriched node halo</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 5: VECTOR GRAPHICS / ICONS
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="vectors">
+  <h2>Vector Graphics &amp; Icons</h2>
+  <p class="section-intro">
+    Icons use <strong>Lucide</strong> (24×24 stroke icons, weight 2). Custom SVG illustrations follow
+    the graph node visual language — circles for entities, lines for relationships, with the entity color
+    palette applied.
+  </p>
+
+  <!-- Lucide icon set -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin-bottom:.75rem">
+    Core Icon Set (Lucide)
+  </p>
+  <div class="svg-grid">
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <span>Search</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M12 4v16"/></svg>
+      <span>Plus</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      <span>Send</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span>Music</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+      <span>Disc</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Users</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      <span>Clock</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+      <span>Sparkles</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <span>Check</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      <span>X</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      <span>ChevronLeft</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>Lock</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span>Settings</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Message</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+      <span>RefreshCw</span>
+    </div>
+    <div class="svg-cell">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M13 6h3a2 2 0 0 1 2 2v7"/><path d="M11 18H8a2 2 0 0 1-2-2V9"/></svg>
+      <span>GitCompare</span>
+    </div>
+  </div>
+
+  <!-- Custom SVG entity illustrations -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:2.5rem 0 .75rem">
+    Entity Type Illustrations
+  </p>
+  <div class="illustration-row">
+    <!-- Artist -->
+    <div class="illustration-panel" style="flex-direction:column;gap:.75rem;min-height:180px">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="28" fill="hsl(262 80% 50%)" opacity=".12"/>
+        <circle cx="32" cy="32" r="20" fill="hsl(262 80% 50%)" opacity=".25"/>
+        <circle cx="32" cy="24" r="8" fill="hsl(262 80% 50%)"/>
+        <path d="M18 46c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="hsl(262 80% 50%)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+        <circle cx="32" cy="24" r="3" fill="#fff" opacity=".3"/>
+      </svg>
+      <span style="font-size:.75rem;font-weight:700;color:var(--node-artist)">Artist</span>
+    </div>
+    <!-- Album -->
+    <div class="illustration-panel" style="flex-direction:column;gap:.75rem;min-height:180px">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="28" fill="hsl(142 70% 40%)" opacity=".12"/>
+        <circle cx="32" cy="32" r="22" fill="hsl(142 70% 40%)" opacity=".2"/>
+        <circle cx="32" cy="32" r="22" stroke="hsl(142 70% 40%)" stroke-width="2" fill="none"/>
+        <circle cx="32" cy="32" r="6" fill="hsl(142 70% 40%)"/>
+        <circle cx="32" cy="32" r="3" fill="#fff" opacity=".35"/>
+        <circle cx="32" cy="32" r="14" stroke="hsl(142 70% 40%)" stroke-width="1" fill="none" opacity=".4"/>
+      </svg>
+      <span style="font-size:.75rem;font-weight:700;color:var(--node-album)">Album</span>
+    </div>
+    <!-- Track -->
+    <div class="illustration-panel" style="flex-direction:column;gap:.75rem;min-height:180px">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="28" fill="hsl(210 70% 45%)" opacity=".12"/>
+        <rect x="16" y="22" width="3" height="20" rx="1.5" fill="hsl(210 70% 45%)" opacity=".5"/>
+        <rect x="22" y="18" width="3" height="28" rx="1.5" fill="hsl(210 70% 45%)" opacity=".65"/>
+        <rect x="28" y="14" width="3" height="36" rx="1.5" fill="hsl(210 70% 45%)" opacity=".8"/>
+        <rect x="34" y="20" width="3" height="24" rx="1.5" fill="hsl(210 70% 45%)" opacity=".7"/>
+        <rect x="40" y="16" width="3" height="32" rx="1.5" fill="hsl(210 70% 45%)" opacity=".85"/>
+        <rect x="46" y="24" width="3" height="16" rx="1.5" fill="hsl(210 70% 45%)" opacity=".55"/>
+      </svg>
+      <span style="font-size:.75rem;font-weight:700;color:var(--node-track)">Track</span>
+    </div>
+    <!-- Studio -->
+    <div class="illustration-panel" style="flex-direction:column;gap:.75rem;min-height:180px">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="28" fill="hsl(172 65% 38%)" opacity=".12"/>
+        <rect x="14" y="24" width="36" height="22" rx="3" stroke="hsl(172 65% 38%)" stroke-width="2" fill="none"/>
+        <circle cx="26" cy="35" r="6" stroke="hsl(172 65% 38%)" stroke-width="2" fill="hsl(172 65% 38%)" opacity=".2"/>
+        <circle cx="38" cy="35" r="6" stroke="hsl(172 65% 38%)" stroke-width="2" fill="hsl(172 65% 38%)" opacity=".2"/>
+        <rect x="20" y="18" width="24" height="6" rx="2" fill="hsl(172 65% 38%)" opacity=".3"/>
+        <line x1="30" y1="20" x2="34" y2="20" stroke="hsl(172 65% 38%)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span style="font-size:.75rem;font-weight:700;color:var(--node-studio)">Studio</span>
+    </div>
+  </div>
+
+  <!-- Decorative pattern -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:2.5rem 0 .75rem">
+    Decorative Background Pattern
+  </p>
+  <div class="illustration-panel" style="min-height:160px;overflow:hidden;position:relative">
+    <svg width="100%" height="160" viewBox="0 0 800 160" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%">
+      <!-- scattered nodes -->
+      <circle cx="60" cy="40" r="6" fill="hsl(262 80% 50%)" opacity=".15"/>
+      <circle cx="140" cy="90" r="4" fill="hsl(142 70% 40%)" opacity=".12"/>
+      <circle cx="200" cy="30" r="5" fill="hsl(210 70% 45%)" opacity=".14"/>
+      <circle cx="320" cy="120" r="7" fill="hsl(280 60% 50%)" opacity=".1"/>
+      <circle cx="400" cy="50" r="3" fill="hsl(330 65% 50%)" opacity=".12"/>
+      <circle cx="500" cy="100" r="6" fill="hsl(28 85% 48%)" opacity=".13"/>
+      <circle cx="580" cy="35" r="4" fill="hsl(172 65% 38%)" opacity=".11"/>
+      <circle cx="680" cy="80" r="5" fill="hsl(38 75% 45%)" opacity=".12"/>
+      <circle cx="750" cy="130" r="3" fill="hsl(85 55% 42%)" opacity=".1"/>
+      <!-- connecting lines -->
+      <line x1="60" y1="40" x2="140" y2="90" stroke="hsl(262 55% 55%)" stroke-width="1" opacity=".08"/>
+      <line x1="200" y1="30" x2="320" y2="120" stroke="hsl(142 45% 45%)" stroke-width="1" opacity=".08"/>
+      <line x1="400" y1="50" x2="500" y2="100" stroke="hsl(28 60% 48%)" stroke-width="1" opacity=".08"/>
+      <line x1="580" y1="35" x2="680" y2="80" stroke="hsl(172 50% 45%)" stroke-width="1" opacity=".08"/>
+      <line x1="140" y1="90" x2="200" y2="30" stroke="hsl(210 70% 45%)" stroke-width="1" opacity=".06"/>
+      <line x1="320" y1="120" x2="400" y2="50" stroke="hsl(280 50% 55%)" stroke-width="1" opacity=".06"/>
+      <line x1="500" y1="100" x2="580" y2="35" stroke="hsl(330 50% 52%)" stroke-width="1" opacity=".06"/>
+      <line x1="680" y1="80" x2="750" y2="130" stroke="hsl(85 55% 42%)" stroke-width="1" opacity=".06"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     SECTION 6: SPACING
+     ═══════════════════════════════════════════════════════════════ -->
+<section id="spacing">
+  <h2>Spacing &amp; Layout</h2>
+  <p class="section-intro">
+    All spacing is based on a 4px grid. The app uses <code style="font-family:var(--font-mono);font-size:.8125rem">max-w-6xl</code> (72rem)
+    for main content, a 56px header, and consistent padding at <code style="font-family:var(--font-mono);font-size:.8125rem">px-4</code>
+    / <code style="font-family:var(--font-mono);font-size:.8125rem">pt-4</code> / <code style="font-family:var(--font-mono);font-size:.8125rem">pb-8</code>.
+  </p>
+
+  <div class="spacing-grid">
+    <div class="spacing-box"><div class="block" style="width:4px;height:24px"></div><span>4px</span><span>p-1</span></div>
+    <div class="spacing-box"><div class="block" style="width:8px;height:24px"></div><span>8px</span><span>p-2</span></div>
+    <div class="spacing-box"><div class="block" style="width:12px;height:24px"></div><span>12px</span><span>p-3</span></div>
+    <div class="spacing-box"><div class="block" style="width:16px;height:24px"></div><span>16px</span><span>p-4</span></div>
+    <div class="spacing-box"><div class="block" style="width:20px;height:24px"></div><span>20px</span><span>p-5</span></div>
+    <div class="spacing-box"><div class="block" style="width:24px;height:24px"></div><span>24px</span><span>p-6</span></div>
+    <div class="spacing-box"><div class="block" style="width:32px;height:24px"></div><span>32px</span><span>p-8</span></div>
+    <div class="spacing-box"><div class="block" style="width:40px;height:24px"></div><span>40px</span><span>p-10</span></div>
+    <div class="spacing-box"><div class="block" style="width:48px;height:24px"></div><span>48px</span><span>p-12</span></div>
+    <div class="spacing-box"><div class="block" style="width:64px;height:24px"></div><span>64px</span><span>p-16</span></div>
+  </div>
+
+  <!-- Border radius -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:2rem 0 .75rem">
+    Border Radius
+  </p>
+  <div class="comp-row" style="gap:1.5rem">
+    <div style="width:72px;height:72px;border:2px solid var(--border);border-radius:0;display:grid;place-items:center;font-size:.6875rem;font-family:var(--font-mono);color:var(--muted-foreground)">0</div>
+    <div style="width:72px;height:72px;border:2px solid var(--border);border-radius:.25rem;display:grid;place-items:center;font-size:.6875rem;font-family:var(--font-mono);color:var(--muted-foreground)">.25rem</div>
+    <div style="width:72px;height:72px;border:2px solid var(--border);border-radius:.375rem;display:grid;place-items:center;font-size:.6875rem;font-family:var(--font-mono);color:var(--muted-foreground)">.375rem</div>
+    <div style="width:72px;height:72px;border:2px solid var(--border);border-radius:.5rem;display:grid;place-items:center;font-size:.6875rem;font-family:var(--font-mono);color:var(--muted-foreground)">.5rem</div>
+    <div style="width:72px;height:72px;border:2px solid var(--border);border-radius:.75rem;display:grid;place-items:center;font-size:.6875rem;font-family:var(--font-mono);color:var(--muted-foreground)">.75rem</div>
+    <div style="width:72px;height:72px;border:2px solid var(--border);border-radius:9999px;display:grid;place-items:center;font-size:.6875rem;font-family:var(--font-mono);color:var(--muted-foreground)">full</div>
+  </div>
+
+  <!-- Layout anatomy -->
+  <p class="label" style="font-size:.6875rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-foreground);margin:2rem 0 .75rem">
+    Page Layout Anatomy
+  </p>
+  <div class="illustration-panel" style="padding:0;min-height:280px">
+    <svg viewBox="0 0 600 280" width="100%" style="max-width:600px" xmlns="http://www.w3.org/2000/svg">
+      <!-- viewport -->
+      <rect x="20" y="10" width="560" height="260" rx="8" fill="var(--muted)" stroke="var(--border)" stroke-width="1.5"/>
+      <!-- header -->
+      <rect x="20" y="10" width="560" height="40" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1"/>
+      <text x="40" y="35" font-family="Plus Jakarta Sans,system-ui" font-size="11" font-weight="700" fill="var(--foreground)">GrooveGraph</text>
+      <text x="520" y="35" font-family="Plus Jakarta Sans,system-ui" font-size="9" fill="var(--muted-foreground)" text-anchor="end">Sign in</text>
+      <!-- max-w guide -->
+      <line x1="80" y1="50" x2="80" y2="260" stroke="var(--node-track)" stroke-width="1" stroke-dasharray="4 4" opacity=".4"/>
+      <line x1="520" y1="50" x2="520" y2="260" stroke="var(--node-track)" stroke-width="1" stroke-dasharray="4 4" opacity=".4"/>
+      <text x="300" y="65" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="var(--node-track)" opacity=".7">max-w-6xl (72rem)</text>
+      <!-- content area -->
+      <rect x="96" y="78" width="408" height="36" rx="6" fill="var(--card)" stroke="var(--border)" stroke-width="1"/>
+      <text x="112" y="100" font-family="Plus Jakarta Sans,system-ui" font-size="9" fill="var(--muted-foreground)">Search input…</text>
+      <!-- card -->
+      <rect x="96" y="126" width="408" height="120" rx="8" fill="var(--card)" stroke="var(--border)" stroke-width="1"/>
+      <text x="112" y="148" font-family="Plus Jakarta Sans,system-ui" font-size="10" font-weight="700" fill="var(--foreground)">Pipeline</text>
+      <text x="112" y="164" font-family="Plus Jakarta Sans,system-ui" font-size="8" fill="var(--muted-foreground)">Stages populate after first prompt.</text>
+      <!-- stage rows -->
+      <rect x="108" y="178" width="384" height="24" rx="4" fill="var(--muted)" opacity=".5"/>
+      <rect x="108" y="208" width="384" height="24" rx="4" fill="var(--muted)" opacity=".4"/>
+      <!-- spacing annotations -->
+      <text x="86" y="86" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="7" fill="var(--node-artist)" opacity=".7">px-4</text>
+      <text x="86" y="78" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="7" fill="var(--node-album)" opacity=".7">pt-4</text>
+    </svg>
+  </div>
+</section>
+
+</main>
+
+<footer style="max-width:var(--max-w);margin:0 auto;padding:2rem 1rem 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:.75rem;color:var(--muted-foreground)">
+  <span>GrooveGraph Style Guide — Studio13-NYC</span>
+  <span>Generated from codebase design tokens</span>
+</footer>
+
+<script>
+// Populate node palette
+const nodes = [
+  ['Artist','hsl(262,80%,50%)'],['Album','hsl(142,70%,40%)'],['Track','hsl(210,70%,45%)'],
+  ['Instrument','hsl(28,85%,48%)'],['Equipment','hsl(25,45%,38%)'],['Studio','hsl(172,65%,38%)'],
+  ['Person','hsl(243,65%,52%)'],['Credit','hsl(215,20%,45%)'],['Label','hsl(158,55%,35%)'],
+  ['Performance','hsl(330,65%,50%)'],['Effect','hsl(192,75%,42%)'],['Genre','hsl(280,60%,50%)'],
+  ['Playlist','hsl(85,55%,42%)'],['Venue','hsl(38,75%,45%)'],['SongWork','hsl(200,70%,48%)'],
+  ['Session','hsl(215,25%,50%)'],['Release','hsl(310,60%,48%)']
+];
+const palette=document.getElementById('node-palette');
+const legend=document.getElementById('legend-mini');
+nodes.forEach(([name,color])=>{
+  palette.innerHTML+=`<div class="node-chip"><span class="dot" style="background:${color}"></span>${name}</div>`;
+  legend.innerHTML+=`<div style="display:flex;align-items:center;gap:.375rem"><span style="width:.75rem;height:.75rem;border-radius:50%;background:${color};display:inline-block;flex-shrink:0"></span><span style="font-size:.6875rem">${name}</span></div>`;
+});
+
+// Populate link groups
+const links = [
+  ['PERFORMED_BY','hsl(262,55%,55%)'],['FEATURES','hsl(262,55%,55%)'],['PLAYED_ON','hsl(262,55%,55%)'],
+  ['PLAYED_INSTRUMENT','hsl(262,55%,55%)'],['PARTICIPATED_IN','hsl(262,55%,55%)'],['MEMBER_OF','hsl(262,55%,55%)'],
+  ['RELEASED_ON','hsl(142,45%,45%)'],['CONTAINS','hsl(142,45%,45%)'],['RELEASED_BY','hsl(142,45%,45%)'],
+  ['ISSUED_BY_LABEL','hsl(142,45%,45%)'],['WRITTEN_BY','hsl(28,60%,48%)'],['PRODUCED_BY','hsl(28,60%,48%)'],
+  ['MASTERED_BY','hsl(28,60%,48%)'],['ENGINEERED_BY','hsl(28,60%,48%)'],['CREDITS_PERSON','hsl(28,60%,48%)'],
+  ['RECORDED_AT','hsl(172,50%,45%)'],['RECORDED_IN_SESSION','hsl(172,50%,45%)'],['USED_EQUIPMENT','hsl(25,40%,48%)'],
+  ['PERFORMED_AT','hsl(330,50%,52%)'],['PART_OF_GENRE','hsl(280,50%,55%)'],['USES_EFFECT','hsl(192,55%,50%)'],
+  ['COLLABORATED_WITH','hsl(200,55%,52%)'],['INFLUENCED_BY','hsl(200,55%,52%)'],
+  ['COVERS','hsl(310,50%,52%)'],['REMIXES','hsl(310,50%,52%)'],['HAS_VERSION','hsl(310,50%,52%)']
+];
+const lg=document.getElementById('link-group');
+links.forEach(([name,color])=>{
+  lg.innerHTML+=`<div class="link-row"><span class="bar" style="background:${color}"></span><span class="rel-name">${name}</span><span class="rel-hsl">${color}</span></div>`;
+});
+
+// Dark mode: toggle html class
+document.querySelector('.toggle-dark').addEventListener('click',()=>{
+  document.documentElement.classList.toggle('dark');
+});
+</script>
+</body>
+</html>
