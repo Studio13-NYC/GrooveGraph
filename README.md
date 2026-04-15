@@ -2,6 +2,8 @@
 
 Greenfield **v2** application and tooling. This repository replaces [GrooveGraph-next](https://github.com/Studio13-NYC/GrooveGraph-next) over time; until cutover, treat that codebase as **read-only reference**, not a dependency you edit from here.
 
+**New agent?** Start with [docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md) (remotes, v1 tag, workspace layout, daily workflow).
+
 ## Read-only reference to v1 (GrooveGraph-next)
 
 A **pinned tag** on the legacy repo marks the agreed v1 snapshot:
@@ -26,7 +28,7 @@ git show groovegraph-next-v1/v1-reference-for-v2:README.md
 git grep -n "session" groovegraph-next-v1/v1-reference-for-v2 -- product/src
 ```
 
-Replace `product/README.md` with any path you need from the old layout.
+Replace the path after the colon with any file path you need from the old layout (for example `product/app/main/page.tsx`).
 
 ### Local sibling clone (optional)
 
