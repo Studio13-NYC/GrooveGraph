@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "name": "GrooveGraph (v2)",
+      "path": "."
+    },
+    {
+      "name": "GrooveGraph-next v1 (reference)",
+      "path": "../GrooveGraph-next"
+    }
+  ],
+  "settings": {}
+}
