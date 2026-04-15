@@ -1,12 +1,12 @@
 # GrooveGraph
 
-Greenfield **v2** application and tooling. This repository replaces [GrooveGraph-next](https://github.com/nickknyc/GrooveGraph-next) over time; until cutover, treat that codebase as **read-only reference**, not a dependency you edit from here.
+Greenfield **v2** application and tooling. This repository replaces [GrooveGraph-next](https://github.com/Studio13-NYC/GrooveGraph-next) over time; until cutover, treat that codebase as **read-only reference**, not a dependency you edit from here.
 
 ## Read-only reference to v1 (GrooveGraph-next)
 
 A **pinned tag** on the legacy repo marks the agreed v1 snapshot:
 
-- **Repository:** `https://github.com/nickknyc/GrooveGraph-next`
+- **Repository:** `https://github.com/Studio13-NYC/GrooveGraph-next`
 - **Tag:** `v1-reference-for-v2` (points at `main` at the time the tag was created)
 
 ### Git remote in this repo (already configured)
