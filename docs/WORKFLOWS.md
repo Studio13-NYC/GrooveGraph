@@ -230,7 +230,7 @@ Full list: [`.env.example`](../.env.example).
 | `logs/gg.log` | Rotating CLI log (repo root). |
 | `logs/pytest.log` | Pytest session log. |
 
-**Pytest markers:** `core`, `entity_service`, `e2e`, `brave_only` — see [`cli/README.md`](../cli/README.md). Upstream schema gaps: tags in [`ENTITY_SERVICE_PUNCH_LIST.md`](ENTITY_SERVICE_PUNCH_LIST.md).
+**Pytest markers:** `core`, `entity_service`, `e2e`, `brave_only` — see [`cli/README.md`](../cli/README.md). Upstream schema gaps: tags in [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md) §1.2 (historical checklist: [`archive/ENTITY_SERVICE_PUNCH_LIST.md`](archive/ENTITY_SERVICE_PUNCH_LIST.md)).
 
 ---
 
@@ -238,9 +238,8 @@ Full list: [`.env.example`](../.env.example).
 
 | Doc | Content |
 |-----|---------|
-| [`v2-implementer-defaults.md`](v2-implementer-defaults.md) | Decisions and slice checklist. |
-| [`v2-product-qa-log.md`](v2-product-qa-log.md) | Full Q&A. |
-| [`ENTITY_SERVICE_PUNCH_LIST.md`](ENTITY_SERVICE_PUNCH_LIST.md) | Entity-service vs GrooveGraph responsibilities. |
+| [`GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md`](GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md) | Product + build synthesis (Q1–Q33, defaults, slice); verbatim Q&A in [`archive/v2-product-qa-log.md`](archive/v2-product-qa-log.md). |
+| [`archive/ENTITY_SERVICE_PUNCH_LIST.md`](archive/ENTITY_SERVICE_PUNCH_LIST.md) | **Archived** entity-service integration checklist. |
 | [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md) | Why ES may not return entities / empty `knownEntities`; two TypeDB configs; acceptance checks. |
 | [`typedb/README.md`](../typedb/README.md) | Manual schema apply. |
 | [`ontology/mo-coverage-matrix.md`](../ontology/mo-coverage-matrix.md) | MO coverage. |

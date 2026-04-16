@@ -19,6 +19,7 @@ def build_extract_stimulus_text(
     canonical: CanonicalEnrichmentResult | None = None,
     context: ContextMode = "rich",
     stimulus_max_chars: int = DEFAULT_STIMULUS_MAX_CHARS,
+    brave_embed_max_chars: int | None = None,
 ) -> str:
     """
     Build the full stimulus string for entity-service.
@@ -29,6 +30,7 @@ def build_extract_stimulus_text(
     can = canonical if canonical is not None else fetch_canonical_enrichment(needle)
     ctext = can.combined_text().strip()
     web_ok = bool(include_web and isinstance(web_report, dict) and web_report.get("ok") is True)
+    web_cap = brave_embed_max_chars if brave_embed_max_chars is not None else stimulus_max_chars
     parts: list[str] = []
     if ctext:
         parts.append(ctext)
@@ -39,7 +41,7 @@ def build_extract_stimulus_text(
                 web_report,
                 context=context,
                 max_web_results=brave_count,
-                max_chars=stimulus_max_chars,
+                max_chars=min(stimulus_max_chars, web_cap),
                 prefix_needle=not bool(ctext),
             ),
         )

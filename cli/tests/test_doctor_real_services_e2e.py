@@ -25,7 +25,11 @@ def test_doctor_hits_real_typedb_and_entity_service() -> None:
     report = run_doctor(repo_start=REPO_ROOT, probe_brave=False)
     assert report["typedb"]["ok"] is True, report
     assert report["entity_service"]["ok"] is True, report
-    assert report["ok"] is True, report
+    schema = report.get("entity_service_schema") or {}
+    if schema.get("dual_typedb_env_suspected"):
+        assert report["ok"] is False
+    else:
+        assert report["ok"] is True, report
 
 
 @pytest.mark.e2e

@@ -1,0 +1,19 @@
+name: GrooveGraph CLI pytest
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: cli
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        run: pip install uv
+      - name: Sync and test (skip live entity-service marker)
+        run: uv sync --group dev && uv run pytest -q -m "not entity_service"

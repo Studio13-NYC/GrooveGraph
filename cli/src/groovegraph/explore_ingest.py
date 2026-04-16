@@ -20,6 +20,10 @@ def build_ingest_rows_from_extract(
     Map ``/extract`` ``entities[]`` into draft catalog rows for kinds GrooveGraph already models.
 
     Unknown ``label`` values are returned in ``skipped`` for operator review (no guessy typing).
+
+    Duplicate ``(label, text)`` spans are collapsed here so persistence can stay one-row-per-surface;
+    the original ``extract`` payload on the envelope is unchanged so JSON can still list every span
+    entity-service returned. Database duplicate names are filtered later in ``persist_ingest_envelope``.
     """
     rows: list[CatalogDraftEntity] = []
     skipped: list[dict[str, Any]] = []

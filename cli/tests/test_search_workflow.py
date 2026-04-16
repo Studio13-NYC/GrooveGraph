@@ -17,7 +17,7 @@ def _stub_canonical_sources_no_network(monkeypatch: pytest.MonkeyPatch) -> None:
 
     import groovegraph.search_workflow as sw_mod
 
-    def _stub(needle: str, *, timeout_s: float = 14.0) -> CanonicalEnrichmentResult:
+    def _stub(needle: str, **kwargs: object) -> CanonicalEnrichmentResult:
         n = (needle or "").strip()
         return CanonicalEnrichmentResult(
             needle=n,

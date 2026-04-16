@@ -1,3 +1,5 @@
+> **Archived snapshot.** Active canonical doc: **[`../GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md`](../GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md)**. Append new discovery rounds there (or a new dated log) instead of this file.
+
 # GrooveGraph v2 — product Q&A log
 
 Permanent record of discovery questions and answers. Append new entries in chronological order.
@@ -397,13 +399,13 @@ Neither skips MO; the difference is **which document leads** when two goals conf
 
 ## Synthesized defaults (implementer judgment, 2026-04-15)
 
-**Canonical document:** [`v2-implementer-defaults.md`](v2-implementer-defaults.md) — full table, Q33 decision text, and **first implementation slice** checklist. Update that file when defaults change; this log keeps a **pointer** so the Q&A record stays the narrative source of truth.
+**Canonical document (current):** [`../GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md`](../GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md) — full table, Q33 decision text, and **first implementation slice** checklist. This archived log keeps the verbatim narrative.
 
 ---
 
 ## End of round 1 (2026-04-15)
 
-Discovery Q&A through **Q33** plus implementer defaults (documented separately). Next work: see **“First implementation slice”** in [`v2-implementer-defaults.md`](v2-implementer-defaults.md), the prioritized handoff in [`NEXT_AGENT_TODO.md`](NEXT_AGENT_TODO.md), and extract stimulus details in [`WEB_ENRICHMENT.md`](WEB_ENRICHMENT.md).
+Discovery Q&A through **Q33** plus implementer defaults (documented separately). Next work: see **“First implementation slice”** in [`../GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md`](../GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md), the prioritized handoff in [`../NEXT_AGENT_TODO.md`](../NEXT_AGENT_TODO.md), and extract stimulus details in [`../WEB_ENRICHMENT.md`](../WEB_ENRICHMENT.md).
 
 ---
 

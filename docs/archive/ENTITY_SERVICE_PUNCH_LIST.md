@@ -1,4 +1,8 @@
-# Entity service — punch list (GrooveGraph v2)
+# Entity service — punch list (GrooveGraph v2) — **ARCHIVED**
+
+**Status:** Archived **2026-04-16**. Upstream integration items below are **historical “done”** checklist material. **Current** debugging and tags: [`../AGENT_ENTITY_SERVICE_ISSUES.md`](../AGENT_ENTITY_SERVICE_ISSUES.md). **Handoff / operator acceptance:** [`../NEXT_AGENT_TODO.md`](../NEXT_AGENT_TODO.md).
+
+---
 
 GrooveGraph (**`gg`**) and other clients integrate with **entity-service** over HTTP. Some historical “punch” items mixed **entity-service** work with **client-side** responsibilities (where env vars live, what URL `doctor` calls). Below, **entity-service** items are marked **done**; **GrooveGraph** follow-ups are called out explicitly.
 
@@ -16,11 +20,13 @@ GrooveGraph (**`gg`**) and other clients integrate with **entity-service** over 
 | 6 | Safe logging for large define text | **Done:** sizes + SHA-256 at INFO; **`ENTITY_SERVICE_DEBUG_TYPEDB_BODY`** | — |
 | 7 | Smoke / short loop | **Done:** `scripts/smoke_schema_pipeline.py`, **`npm run smoke:schema-pipeline*`**, README | **You:** run smoke against the URL where ES listens. |
 | 8 | Contract tests without Brave | **Done:** **`pytest -m contract`**, `tests/test_contract_offline.py` | **You:** run **`uv run pytest -q -m contract`** in CI that only checks ES contracts. |
-| 9 | **`gg-generic`** + optional catalog fallback on **`/extract`** | **Done:** literal **`gg-generic`** label alignment; **`options.useGgGenericForUnknownCatalogLabels`** when **`useTypeDbTypes`** is off | **You:** ensure TypeQL **`entity gg-generic`** exists in the DB GrooveGraph uses ([`typedb/groovegraph-schema-add-gg-generic.tql`](../typedb/groovegraph-schema-add-gg-generic.tql)); see [`NEXT_AGENT_TODO.md`](NEXT_AGENT_TODO.md). |
+| 9 | **`gg-generic`** + optional catalog fallback on **`/extract`** | **Done:** literal **`gg-generic`** label alignment; **`options.useGgGenericForUnknownCatalogLabels`** when **`useTypeDbTypes`** is off | **You:** ensure TypeQL **`entity gg-generic`** exists in the DB GrooveGraph uses ([`../../typedb/groovegraph-schema-add-gg-generic.tql`](../../typedb/groovegraph-schema-add-gg-generic.tql)); see [`../NEXT_AGENT_TODO.md`](../NEXT_AGENT_TODO.md). |
 
 ---
 
 ## GrooveGraph tracking tags
+
+*(Reproduced in [`../AGENT_ENTITY_SERVICE_ISSUES.md`](../AGENT_ENTITY_SERVICE_ISSUES.md) for active use.)*
 
 | Tag | Where it appears | What it means |
 | --- | --- | --- |
@@ -54,8 +60,6 @@ GrooveGraph (**`gg`**) and other clients integrate with **entity-service** over 
 
 ---
 
-When you change HTTP behavior, update **`docs/USER_AND_AGENT_GUIDE.md`** / **`README.md`** and adjust this table if new tags are needed.
+**Agent debugging (symptoms, two TypeDB configs, extract vs formatted):** [`../AGENT_ENTITY_SERVICE_ISSUES.md`](../AGENT_ENTITY_SERVICE_ISSUES.md).
 
-**Agent debugging (symptoms, two TypeDB configs, extract vs formatted):** [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md).
-
-**GrooveGraph-side backlog (P0–P3):** [`NEXT_AGENT_TODO.md`](NEXT_AGENT_TODO.md) in this repository.
+**GrooveGraph-side backlog:** [`../NEXT_AGENT_TODO.md`](../NEXT_AGENT_TODO.md).

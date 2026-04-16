@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import httpx
+
 from groovegraph.brave_extract_context import ContextMode
 from groovegraph.brave_search import brave_web_search
 from groovegraph.canonical_sources import fetch_canonical_enrichment
@@ -11,7 +13,12 @@ from groovegraph.env_loader import brave_api_key, ner_service_url
 from groovegraph.extract_client import post_extract
 from groovegraph.logging_setup import get_logger
 from groovegraph.schema_pipeline import run_schema_pipeline_chain
+from groovegraph.stimulus_assembly_options import StimulusAssemblyOptions
 from groovegraph.stimulus_compose import build_extract_stimulus_text
+from groovegraph.supplementary_http_text import (
+    collect_supplementary_candidate_urls,
+    fetch_supplementary_page_blocks,
+)
 from groovegraph.typedb_config import TypeDbConfigError, read_typedb_connection_params
 from groovegraph.typedb_session import open_typedb_driver, run_read_query
 
@@ -29,7 +36,7 @@ def run_analyze_query(
     extract_context: ContextMode = "rich",
     use_model: bool = False,
     emit_stimulus: bool = False,
-    stimulus_max_chars: int = 500_000,
+    stimulus_options: StimulusAssemblyOptions | None = None,
 ) -> dict[str, Any]:
     """
     Discovery-oriented path: optional catalog + optional web, then POST /extract with **no label filter**
@@ -58,7 +65,10 @@ def run_analyze_query(
         "extract": None,
         "stimulus": None,
         "canonical_sources": None,
+        "supplementary_http": None,
     }
+
+    opts = stimulus_options or StimulusAssemblyOptions.from_env()
 
     if include_typedb:
         typedb_hits: list[dict[str, Any]] = []
@@ -103,7 +113,11 @@ def run_analyze_query(
             web_report = brave_web_search(api_key=key, query=needle, count=brave_count)
         out["web"] = web_report
 
-    can = fetch_canonical_enrichment(needle)
+    can = fetch_canonical_enrichment(
+        needle,
+        deep_artist_context=opts.deep_artist_context,
+        max_section_chars=opts.wikipedia_section_max_chars,
+    )
     out["canonical_sources"] = can.to_wire()
     extract_text = build_extract_stimulus_text(
         needle,
@@ -112,8 +126,33 @@ def run_analyze_query(
         brave_count=brave_count,
         canonical=can,
         context=extract_context,
-        stimulus_max_chars=stimulus_max_chars,
+        stimulus_max_chars=opts.stimulus_max_chars,
+        brave_embed_max_chars=opts.brave_embed_max_chars,
     )
+    if opts.fetch_supplementary_pages and opts.supplementary_max_urls > 0:
+        urls = collect_supplementary_candidate_urls(
+            web_report=out.get("web") if isinstance(out.get("web"), dict) else None,
+            canonical=can,
+            max_urls=opts.supplementary_max_urls,
+        )
+        room = max(0, opts.stimulus_max_chars - len(extract_text) - 64)
+        cap = min(room, max(4096, opts.stimulus_max_chars // 5))
+        if urls and cap >= 800:
+            with httpx.Client(timeout=24.0, follow_redirects=True) as sclient:
+                sup_text, per_url = fetch_supplementary_page_blocks(
+                    urls,
+                    client=sclient,
+                    total_max_chars=cap,
+                )
+            if sup_text.strip():
+                extract_text = (extract_text + "\n\n" + sup_text).strip()
+            out["supplementary_http"] = {"ok": True, "urls": urls, "per_url": per_url}
+        elif not urls:
+            out["supplementary_http"] = {"ok": True, "skipped": True, "reason": "no_candidate_urls"}
+        else:
+            out["supplementary_http"] = {"ok": True, "skipped": True, "reason": "stimulus_budget_exhausted"}
+        if len(extract_text) > opts.stimulus_max_chars:
+            extract_text = extract_text[: opts.stimulus_max_chars - 1].rstrip() + "…"
 
     base = ner_service_url()
     schema: dict[str, Any] | None = None

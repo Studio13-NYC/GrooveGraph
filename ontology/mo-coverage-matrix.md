@@ -14,6 +14,6 @@
 | `foaf:Agent` (`http://xmlns.com/foaf/0.1/Agent`) | `foaf-agent` | Partial | Yes | | Companion to MO for people/agents; split producer/engineer later if MO dictates. |
 | `mo:Studio` / venue modelling | — | | Yes | | Not in the first TypeQL slice; add when MO matrix + queries need it. |
 | Provenance / batch grouping | `ingestion-batch` | Yes | | | Operational provenance (not an MO catalog class); `mo-class-iri` documents GG namespace. |
-| `approval-status` (product field) | attribute | Yes | | | Values like `pending`, `test` per Q2–Q3 in [`docs/v2-product-qa-log.md`](../docs/v2-product-qa-log.md). |
+| `approval-status` (product field) | attribute | Yes | | | Values like `pending`, `test` per Q2–Q3 in [`docs/GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md`](../docs/GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md) §3. |
 | `mo-property-iri` on writes | attribute | Yes | | | Optional property-level traceability (Q12–Q13). |
 | Performance / work keys | — | | Yes | | Defer `mo:Performance`, `mo:Lyrics`, etc. until search/ingest stabilises. |

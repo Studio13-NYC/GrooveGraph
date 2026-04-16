@@ -4,13 +4,23 @@ from typing import Any
 
 import httpx
 
+from groovegraph.catalog_types import default_schema_pipeline_entity_types
 from groovegraph.entity_service_errors import entity_service_pipeline_error_code
 from groovegraph.logging_setup import get_logger
 
 log = get_logger("schema_pipeline")
 
-# Default ER slice: empty list = entity-service uses TypeDB types already in the database.
+# Default for ``/raw`` only: empty ``entityTypes`` lets entity-service auto-sample from define.
 DEFAULT_ER_ASSUMPTIONS: dict[str, Any] = {"entityTypes": []}
+
+
+def _db_backed_formatted_assumptions() -> dict[str, Any]:
+    """Assumptions for ``POST /schema-pipeline/formatted`` so the server queries catalog rows per MO type."""
+    return {
+        "entityTypes": default_schema_pipeline_entity_types(),
+        "nameAttribute": "name",
+        "limitPerType": 50,
+    }
 
 
 def _pick_assumptions(raw: dict[str, Any]) -> dict[str, Any]:
@@ -90,6 +100,7 @@ def post_schema_formatted_db_backed(
     *,
     skip_ontology_precheck: bool = False,
     timeout_s: float = 120.0,
+    transport: httpx.BaseTransport | None = None,
 ) -> httpx.Response:
     """
     ``POST /schema-pipeline/formatted`` with **assumptions only** — entity-service reads
@@ -97,11 +108,14 @@ def post_schema_formatted_db_backed(
     """
     url = f"{base_url.rstrip('/')}/schema-pipeline/formatted"
     payload: dict[str, Any] = {
-        "assumptions": dict(DEFAULT_ER_ASSUMPTIONS),
+        "assumptions": _db_backed_formatted_assumptions(),
         "skipOntologyPrecheck": skip_ontology_precheck,
     }
     log.debug("POST %s (db-backed formatted) skipOntologyPrecheck=%s", url, skip_ontology_precheck)
-    with httpx.Client(timeout=timeout_s) as client:
+    client_kw: dict[str, Any] = {"timeout": timeout_s}
+    if transport is not None:
+        client_kw["transport"] = transport
+    with httpx.Client(**client_kw) as client:
         resp = client.post(url, json=payload)
     log.info("schema-pipeline/formatted (db-backed) status=%s", resp.status_code)
     return resp
@@ -111,8 +125,8 @@ def run_schema_pipeline_chain(base_url: str) -> dict[str, Any]:
     """
     Resolve ``schema`` for ``POST /extract`` using **TypeDB types already deployed**.
 
-    Calls **only** ``POST /schema-pipeline/formatted`` with default ER assumptions (empty
-    ``entityTypes`` → server default slice). The ``/schema-pipeline/raw`` route is **not**
+    Calls **only** ``POST /schema-pipeline/formatted`` with catalog ``entityTypes`` so the
+    server samples ``knownEntities`` from TypeDB. The ``/schema-pipeline/raw`` route is **not**
     used here; use ``post_schema_raw`` / ``gg schema raw`` for offline define inspection.
     """
     log.info("schema slice begin base_url=%s (formatted-only, DB-backed)", base_url.rstrip("/"))

@@ -1,6 +1,6 @@
 # TypeDB schema (GrooveGraph v2)
 
-Canonical **TypeQL** for **TypeDB Cloud** lives in this directory. See [`docs/v2-implementer-defaults.md`](../docs/v2-implementer-defaults.md) for layout and apply policy.
+Canonical **TypeQL** for **TypeDB Cloud** lives in this directory. See [`docs/GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md`](../docs/GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md) §6 and §10 for layout and apply policy.
 
 ## Apply policy (conservative)
 

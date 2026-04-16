@@ -50,7 +50,7 @@ def test_entity_service_schema_pipeline_chain_succeeds() -> None:
         pytest.skip(
             "blocked: entity-service schema pipeline is not TypeDB-enabled on the server process. "
             "Tags: upstream blocked, typedb_not_configured_on_entity_service. "
-            "See docs/ENTITY_SERVICE_PUNCH_LIST.md, then re-run entity_service tests."
+            "See docs/AGENT_ENTITY_SERVICE_ISSUES.md, then re-run entity_service tests."
         )
     assert result.get("ok") is True, result
     assert isinstance(result.get("formatted"), dict), result
@@ -75,7 +75,7 @@ def test_entity_service_gg_schema_validate_pipe_succeeds() -> None:
         pytest.skip(
             "blocked: entity-service returned 503 for POST /schema-pipeline/raw (TypeDB not configured on server). "
             "Tags: upstream blocked, typedb_not_configured_on_entity_service. "
-            "See docs/ENTITY_SERVICE_PUNCH_LIST.md, then re-run entity_service tests."
+            "See docs/AGENT_ENTITY_SERVICE_ISSUES.md, then re-run entity_service tests."
         )
     assert status == 200, _ENTITY_SERVICE_SCHEMA_FAILURE.format(status=status, body=outer.get("body"))
     assert raw_proc.returncode == 0, outer

@@ -2,7 +2,7 @@
 
 This document is for **humans integrating** the NER / entity extraction HTTP service and for **AI agents** that need to reason about the system **end to end**. In the **entity-service** repository it complements that repo’s `README.md` and maintainer docs (for example `AGENTS.md` when present).
 
-**GrooveGraph v2:** This file is **mirrored** under `docs/` so agents can read the HTTP contract next to product docs. GrooveGraph direction and CLI defaults: [v2-product-qa-log.md](v2-product-qa-log.md), [v2-implementer-defaults.md](v2-implementer-defaults.md), and the root [README.md](../README.md). The **`gg`** CLI builds **`POST /extract` → `text`** from Wikipedia + MusicBrainz + Discogs APIs plus optional Brave snippets before calling entity-service — see [WEB_ENRICHMENT.md](WEB_ENRICHMENT.md) (not part of the ES HTTP contract; caller-side behavior).
+**GrooveGraph v2:** This file is **mirrored** under `docs/` so agents can read the HTTP contract next to product docs. GrooveGraph direction and CLI defaults: [GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md](GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md) and the root [README.md](../README.md). The **`gg`** CLI builds **`POST /extract` → `text`** from Wikipedia + MusicBrainz + Discogs APIs plus optional Brave snippets before calling entity-service — see [WEB_ENRICHMENT.md](WEB_ENRICHMENT.md) (not part of the ES HTTP contract; caller-side behavior).
 
 ---
 

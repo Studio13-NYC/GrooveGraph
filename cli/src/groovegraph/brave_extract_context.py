@@ -110,6 +110,34 @@ def build_augmented_extract_text(
     return joined[: max_chars - 1].rstrip() + "…"
 
 
+def iter_brave_web_result_urls(web_report: dict[str, Any] | None, *, limit: int) -> list[str]:
+    """
+    Yield ``https?://`` URLs from Brave ``web.results[]`` (rank order), capped for downstream fetchers.
+
+    Used when optional supplementary HTTP extraction is enabled (see ``supplementary_http_text``).
+    """
+    if web_report is None or web_report.get("ok") is not True or limit <= 0:
+        return []
+    body = web_report.get("body")
+    if not isinstance(body, dict):
+        return []
+    web = body.get("web")
+    if not isinstance(web, dict):
+        return []
+    results = web.get("results")
+    if not isinstance(results, list):
+        return []
+    out: list[str] = []
+    cap = min(limit, _MAX_WEB_RESULTS_SAFETY, len(results))
+    for item in results[:cap]:
+        if not isinstance(item, dict):
+            continue
+        u = item.get("url")
+        if isinstance(u, str) and u.strip().startswith(("http://", "https://")):
+            out.append(u.strip())
+    return out
+
+
 def _first_web_title(web_report: dict[str, Any]) -> str | None:
     body = web_report.get("body")
     if not isinstance(body, dict):

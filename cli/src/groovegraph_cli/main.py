@@ -25,6 +25,7 @@ from groovegraph.pending_queries import list_pending_hits
 from groovegraph.schema_pipeline import post_schema_formatted, post_schema_raw, post_schema_validate, run_schema_pipeline_chain
 from groovegraph.schema_bootstrap import ensure_groovegraph_catalog_schema
 from groovegraph.search_workflow import run_gg_search
+from groovegraph.stimulus_assembly_options import StimulusAssemblyOptions
 from groovegraph.typedb_config import TypeDbConfigError, read_typedb_connection_params
 from groovegraph.typedb_session import open_typedb_driver, run_read_query
 
@@ -217,6 +218,27 @@ def search(
         bool,
         typer.Option("--extract", help="Run schema pipeline + POST /extract (requires configured entity-service)."),
     ] = False,
+    max_stimulus_chars: Annotated[
+        int | None,
+        typer.Option(
+            "--max-stimulus-chars",
+            help="Hard cap on POST /extract text size (overrides GROOVEGRAPH_STIMULUS_MAX_CHARS for this run).",
+        ),
+    ] = None,
+    fetch_supplementary_pages: Annotated[
+        bool | None,
+        typer.Option(
+            "--fetch-supplementary-pages/--no-fetch-supplementary-pages",
+            help="Optional HTTP GET + readability-style merge (overrides GROOVEGRAPH_SUPPLEMENTARY_HTTP_FETCH).",
+        ),
+    ] = None,
+    deep_artist_context: Annotated[
+        bool | None,
+        typer.Option(
+            "--deep-artist-context/--no-deep-artist-context",
+            help="Extra MusicBrainz/Discogs artist detail (overrides GROOVEGRAPH_CANONICAL_DEEP_ARTIST).",
+        ),
+    ] = None,
     pretty_cmd: Annotated[bool, typer.Option("--pretty", help="Pretty-print JSON.")] = False,
 ) -> None:
     """DB-first catalog search, optional Brave enrichment, optional schema-aware extraction."""
@@ -228,12 +250,18 @@ def search(
         raise typer.Exit(code=2) from exc
 
     include_web = brave_api_key() is not None if web is None else bool(web)
+    stim_opts = StimulusAssemblyOptions.from_env().with_cli_overrides(
+        stimulus_max_chars=max_stimulus_chars,
+        fetch_supplementary_pages=fetch_supplementary_pages,
+        deep_artist_context=deep_artist_context,
+    )
     report = run_gg_search(
         needle=query,
         kinds=kinds,
         include_web=include_web,
         brave_count=brave_count,
         include_extract=extract,
+        stimulus_options=stim_opts,
     )
     report = {**report, "dotenv_path": ctx.obj.get("dotenv_path")}
     get_logger("cli").info("search end ok=%s typedb_hits=%s", report.get("ok"), len((report.get("typedb") or {}).get("hits") or []))
@@ -280,6 +308,24 @@ def explore(
         typer.Option(
             "--batch-id",
             help="ingestion_batch_id for --ingest (default: explore-YYYYMMDD-slug from query).",
+        ),
+    ] = None,
+    max_stimulus_chars: Annotated[
+        int | None,
+        typer.Option("--max-stimulus-chars", help="Cap extract stimulus size for this run."),
+    ] = None,
+    fetch_supplementary_pages: Annotated[
+        bool | None,
+        typer.Option(
+            "--fetch-supplementary-pages/--no-fetch-supplementary-pages",
+            help="Optional HTTP page text merge (overrides env for this run).",
+        ),
+    ] = None,
+    deep_artist_context: Annotated[
+        bool | None,
+        typer.Option(
+            "--deep-artist-context/--no-deep-artist-context",
+            help="Extra canonical artist detail (overrides env for this run).",
         ),
     ] = None,
     pretty_cmd: Annotated[bool, typer.Option("--pretty", help="Pretty-print JSON.")] = False,
@@ -387,6 +433,11 @@ def explore(
             schema_bootstrap.get("action"),
         )
 
+    stim_opts = StimulusAssemblyOptions.from_env().with_cli_overrides(
+        stimulus_max_chars=max_stimulus_chars,
+        fetch_supplementary_pages=fetch_supplementary_pages,
+        deep_artist_context=deep_artist_context,
+    )
     report = run_gg_search(
         needle=query,
         kinds=kinds,
@@ -396,6 +447,7 @@ def explore(
         require_successful_web_for_extract=True,
         use_model=use_model,
         include_reserved_generic_extract_label=True,
+        stimulus_options=stim_opts,
     )
     report = {
         **report,
@@ -494,11 +546,15 @@ def explore(
                                     envelope=envelope,
                                 )
                                 ingest_report = {**ingest_report, "skipped": skipped, "ingestion_batch_id": bid}
+                                dup_db = ingest_report.get("skipped_duplicate_in_database") or []
                                 log.info(
-                                    "explore stage=ingest ok=True batch_id=%s catalog_rows=%s skipped_non_rows=%s",
+                                    "explore stage=ingest ok=True batch_id=%s catalog_rows=%s inserted=%s "
+                                    "skipped_non_rows=%s skipped_duplicate_in_database=%s",
                                     bid,
                                     len(catalog_rows),
+                                    len((ingest_report.get("inserted") or [])),
                                     len(skipped),
+                                    len(dup_db) if isinstance(dup_db, list) else 0,
                                 )
                     except Exception as exc:  # noqa: BLE001
                         log.exception("explore FAILED stage=ingest reason=typedb_write_failed")
@@ -575,6 +631,24 @@ def analyze(
             help="Include full stimulus text in JSON under stimulus.text (can be large).",
         ),
     ] = False,
+    max_stimulus_chars: Annotated[
+        int | None,
+        typer.Option("--max-stimulus-chars", help="Cap combined stimulus size for this run."),
+    ] = None,
+    fetch_supplementary_pages: Annotated[
+        bool | None,
+        typer.Option(
+            "--fetch-supplementary-pages/--no-fetch-supplementary-pages",
+            help="Optional HTTP page text merge (overrides env for this run).",
+        ),
+    ] = None,
+    deep_artist_context: Annotated[
+        bool | None,
+        typer.Option(
+            "--deep-artist-context/--no-deep-artist-context",
+            help="Extra canonical artist detail (overrides env for this run).",
+        ),
+    ] = None,
     pretty_cmd: Annotated[bool, typer.Option("--pretty", help="Pretty-print JSON.")] = False,
 ) -> None:
     """
@@ -607,6 +681,11 @@ def analyze(
             raise typer.Exit(code=2) from exc
 
     include_web = brave_api_key() is not None if web is None else bool(web)
+    stim_opts = StimulusAssemblyOptions.from_env().with_cli_overrides(
+        stimulus_max_chars=max_stimulus_chars,
+        fetch_supplementary_pages=fetch_supplementary_pages,
+        deep_artist_context=deep_artist_context,
+    )
     report = run_analyze_query(
         needle=query,
         include_typedb=typedb,
@@ -617,6 +696,7 @@ def analyze(
         extract_context=cast(ContextMode, ctx_mode),
         use_model=use_model,
         emit_stimulus=emit_stimulus,
+        stimulus_options=stim_opts,
     )
     report = {**report, "dotenv_path": ctx.obj.get("dotenv_path")}
     get_logger("cli").info("analyze end ok=%s", report.get("ok"))

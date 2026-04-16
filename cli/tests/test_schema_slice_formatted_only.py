@@ -4,6 +4,7 @@ import httpx
 import pytest
 
 import groovegraph.schema_pipeline as sp
+from groovegraph.catalog_types import default_schema_pipeline_entity_types
 
 
 def test_run_schema_pipeline_chain_uses_formatted_only(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -32,7 +33,11 @@ def test_run_schema_pipeline_chain_uses_formatted_only(monkeypatch: pytest.Monke
 
     assert len(calls) == 1
     assert calls[0][0].endswith("/schema-pipeline/formatted")
-    assert calls[0][1] == {"assumptions": {"entityTypes": []}, "skipOntologyPrecheck": False}
+    assert calls[0][1]["skipOntologyPrecheck"] is False
+    asm = calls[0][1]["assumptions"]
+    assert asm["entityTypes"] == default_schema_pipeline_entity_types()
+    assert asm.get("nameAttribute") == "name"
+    assert asm.get("limitPerType") == 50
     assert out["ok"] is True
     assert out["raw"] is None
     assert out["validate"].get("skipped") is True

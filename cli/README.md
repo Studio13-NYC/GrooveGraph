@@ -57,7 +57,7 @@ uv run pytest
 ```
 
 - **`e2e`** — real TypeDB, entity-service, Brave when configured.
-- **`entity_service`** — schema pipeline HTTP; may **skip** if unreachable or upstream-blocked ([`docs/ENTITY_SERVICE_PUNCH_LIST.md`](../docs/ENTITY_SERVICE_PUNCH_LIST.md)).
+- **`entity_service`** — schema pipeline HTTP; may **skip** if unreachable or upstream-blocked ([`docs/AGENT_ENTITY_SERVICE_ISSUES.md`](../docs/AGENT_ENTITY_SERVICE_ISSUES.md) §1.2).
 
 ```bash
 uv run pytest -m "not entity_service" -q

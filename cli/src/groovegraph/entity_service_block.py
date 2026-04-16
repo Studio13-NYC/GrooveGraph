@@ -8,7 +8,7 @@ BLOCKED_ENTITY_SERVICE_UPSTREAM = (
     "blocked (upstream): entity-service returned 503 / missing TypeDB-backed schema pipeline capability. "
     "Tags: upstream blocked, typedb_not_configured_on_entity_service. "
     "This is not a GrooveGraph failure — configure TypeDB on the **entity-service process** or extend "
-    "entity-service; track items in docs/ENTITY_SERVICE_PUNCH_LIST.md. "
+    "entity-service; see docs/AGENT_ENTITY_SERVICE_ISSUES.md §1.2 (archived checklist: docs/archive/ENTITY_SERVICE_PUNCH_LIST.md). "
     "Continue running the rest of the suite with: pytest -m \"not entity_service\"."
 )
 

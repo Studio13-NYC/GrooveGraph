@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import httpx
+
 from groovegraph.brave_search import brave_web_search
 from groovegraph.canonical_sources import fetch_canonical_enrichment
 from groovegraph.catalog_search import search_catalog_in_typedb
@@ -10,9 +12,14 @@ from groovegraph.env_loader import brave_api_key, ner_service_url
 from groovegraph.extract_client import post_extract
 from groovegraph.logging_setup import get_logger
 from groovegraph.schema_pipeline import run_schema_pipeline_chain
+from groovegraph.stimulus_assembly_options import StimulusAssemblyOptions
 from groovegraph.stimulus_compose import (
     build_extract_stimulus_text,
     enrichment_sufficient_for_extract,
+)
+from groovegraph.supplementary_http_text import (
+    collect_supplementary_candidate_urls,
+    fetch_supplementary_page_blocks,
 )
 from groovegraph.typedb_config import TypeDbConfigError, read_typedb_connection_params
 from groovegraph.typedb_session import open_typedb_driver, run_read_query
@@ -30,6 +37,7 @@ def run_gg_search(
     require_successful_web_for_extract: bool = False,
     use_model: bool = False,
     include_reserved_generic_extract_label: bool = False,
+    stimulus_options: StimulusAssemblyOptions | None = None,
 ) -> dict[str, Any]:
     """
     DB-first search, optional Brave web enrichment, optional schema-aware extraction.
@@ -57,6 +65,7 @@ def run_gg_search(
         use_model,
         include_reserved_generic_extract_label,
     )
+    opts = stimulus_options or StimulusAssemblyOptions.from_env()
     out: dict[str, Any] = {
         "ok": True,
         "query": needle,
@@ -65,6 +74,7 @@ def run_gg_search(
         "schema_pipeline": None,
         "extract": None,
         "canonical_sources": None,
+        "supplementary_http": None,
     }
 
     typedb_hits: list[dict[str, Any]] = []
@@ -113,7 +123,11 @@ def run_gg_search(
     extract_text = needle
     canonical = None
     if include_extract:
-        canonical = fetch_canonical_enrichment(needle)
+        canonical = fetch_canonical_enrichment(
+            needle,
+            deep_artist_context=opts.deep_artist_context,
+            max_section_chars=opts.wikipedia_section_max_chars,
+        )
         out["canonical_sources"] = canonical.to_wire()
         web_ok = bool(include_web and isinstance(out.get("web"), dict) and out["web"].get("ok") is True)
         extract_text = build_extract_stimulus_text(
@@ -123,7 +137,38 @@ def run_gg_search(
             brave_count=brave_count,
             canonical=canonical,
             context="rich",
+            stimulus_max_chars=opts.stimulus_max_chars,
+            brave_embed_max_chars=opts.brave_embed_max_chars,
         )
+        if opts.fetch_supplementary_pages and opts.supplementary_max_urls > 0 and canonical is not None:
+            urls = collect_supplementary_candidate_urls(
+                web_report=out.get("web") if isinstance(out.get("web"), dict) else None,
+                canonical=canonical,
+                max_urls=opts.supplementary_max_urls,
+            )
+            sup_report: dict[str, Any]
+            if not urls:
+                sup_report = {"ok": True, "skipped": True, "reason": "no_candidate_urls"}
+            else:
+                room = max(0, opts.stimulus_max_chars - len(extract_text) - 64)
+                cap = min(room, max(4096, opts.stimulus_max_chars // 5))
+                if cap < 800:
+                    sup_report = {"ok": True, "skipped": True, "reason": "stimulus_budget_exhausted", "urls": urls}
+                else:
+                    with httpx.Client(timeout=24.0, follow_redirects=True) as sclient:
+                        sup_text, per_url = fetch_supplementary_page_blocks(
+                            urls,
+                            client=sclient,
+                            total_max_chars=cap,
+                        )
+                    if sup_text.strip():
+                        extract_text = (extract_text + "\n\n" + sup_text).strip()
+                        sup_report = {"ok": True, "urls": urls, "per_url": per_url}
+                    else:
+                        sup_report = {"ok": True, "urls": urls, "per_url": per_url, "note": "no_usable_extracts"}
+            if len(extract_text) > opts.stimulus_max_chars:
+                extract_text = extract_text[: opts.stimulus_max_chars - 1].rstrip() + "…"
+            out["supplementary_http"] = sup_report
 
     if include_extract:
         base = ner_service_url()

@@ -62,6 +62,16 @@ INGESTION_BATCH_ENTITY: Final[str] = "ingestion-batch"
 INGESTION_BATCH_MO_CLASS_IRI: Final[str] = "https://groovegraph.dev/ns#IngestionBatch"
 
 
+def default_schema_pipeline_entity_types() -> list[str]:
+    """
+    Type labels to send on ``POST /schema-pipeline/formatted`` as ``assumptions.entityTypes``.
+
+    Entity-service only samples ``knownEntities`` for types listed here; an empty list yields an
+    empty slice even when TypeDB is configured.
+    """
+    return [k.typedb_entity for k in _CATALOG.values()]
+
+
 def parse_kind_list(raw: str | None, *, default_all: bool) -> list[CatalogEntityKind]:
     """
     Parse a comma-separated kind list.

@@ -1,8 +1,10 @@
+> **Archived snapshot.** Active canonical doc: **[`../GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md`](../GROOVEGRAPH_V2_PRODUCT_AND_BUILD_SYNTHESIS.md)**. Verbatim Q&A: **[`v2-product-qa-log.md`](v2-product-qa-log.md)** (this folder).
+
 # GrooveGraph v2 — implementer defaults
 
-**Release:** **`v0.0.3`** — ships **`cli/`** + **`gg`** (doctor, schema pipeline), pytest harness, and docs touch-ups for env and tests.
+**Release:** **`v0.0.4` (rolling)** — **`cli/`** + **`gg`**: doctor, search/explore/analyze, DB-backed **`formatted`** assumptions, draft ingest with **duplicate-name skip**, optional CI workflow for default pytest.
 
-**Status:** Product-approved defaults (2026-04-15). They extend the full Q&A record in [`v2-product-qa-log.md`](v2-product-qa-log.md); if this file and the log ever disagree, **reconcile** and update both.
+**Status:** Product-approved defaults (2026-04-16). They extend the full Q&A record in [`v2-product-qa-log.md`](v2-product-qa-log.md) (archived); if this file and the log ever disagree, **reconcile** in the synthesis doc above.
 
 **Purpose:** One place for builders (humans and agents) to read **concrete choices** that were either answered explicitly in discovery or inferred conservatively from those answers.
 
@@ -49,6 +51,6 @@ In order of dependency:
 | 4. **`cli/`** package + **`gg` entry** | **Done** | `pyproject.toml`: `uv`, Typer, Pydantic, python-dotenv, httpx, official TypeDB Python driver, pytest; console script **`gg`**. |
 | 5. **`gg doctor`** | **Done** | JSON default, `--pretty`; TypeDB via **`type_schema()`** + type list; entity-service **GET `/health`** (fallback **`/ready`**, **`/docs`**); one Brave search when **`BRAVE_API_KEY`** is set (429 treated as reachable); **`--probe`** fails Brave block if the key is missing. |
 | 6. **`gg schema *` (entity-service pipeline)** | **Done** | `gg schema run` uses **`POST /schema-pipeline/formatted`** only (DB-backed); `raw|validate|formatted` for testing / stdin pipes per [`USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md). |
-| 7. **Catalog operator loop (post-`v0.0.3`)** | **Done (slice)** | **`gg search`**, **`gg analyze`**, **`gg extract`**, **`gg ingest-draft`**, **`gg pending list`**. **Canonical API enrichment** (Wikipedia + MusicBrainz + Discogs → `/extract` `text`) is **done** — see [`WEB_ENRICHMENT.md`](WEB_ENRICHMENT.md). **Next:** URL fetch / readability extraction, richer MB/Discogs follow-up queries, richer MO relations, and (later) **`gg typedb apply`** once schema automation is justified (Q32). |
+| 7. **Catalog operator loop (post-`v0.0.3`)** | **Done (slice)** | **`gg search`**, **`gg analyze`**, **`gg extract`**, **`gg ingest-draft`**, **`gg pending list`**, **`gg explore --ingest`**. **Canonical API enrichment** (Wikipedia + MusicBrainz + Discogs → `/extract` `text`), optional **supplementary HTTP** and **deep artist** context, and **DB-backed `formatted`** assumptions (catalog **`entityTypes`**) are **done** — see [`WEB_ENRICHMENT.md`](WEB_ENRICHMENT.md), [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md). **Next:** richer MO relations, **`gg typedb apply`** once schema automation is justified (Q32), heavier browser automation (deferred in Q&A). |
 
-CI (GitHub Actions) stays **out** until explicitly requested (Q24).
+**CI:** [`.github/workflows/cli-pytest.yml`](../.github/workflows/cli-pytest.yml) runs **`pytest -m "not entity_service"`** for a default PR signal. Broader CI (full markers, secrets) remains a product decision (Q24); reconcile with [`NEXT_AGENT_TODO.md`](NEXT_AGENT_TODO.md) when expanding.
