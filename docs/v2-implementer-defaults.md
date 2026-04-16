@@ -39,10 +39,12 @@ These items were **not** each asked as a separate discovery question; they follo
 
 In order of dependency:
 
-1. **`.gitignore`** — ignore `.env`; add **`.env.example`** at repo root (names + placeholders only).
-2. **`typedb/`** — add `groovegraph-schema.tql` (empty or minimal stub until MO matrix drives content) and **`typedb/README.md`** for manual apply.
-3. **`ontology/mo-coverage-matrix.md`** — stub or first rows for MO-first coverage (Q30).
-4. **`cli/`** — `pyproject.toml` (`uv`, Typer, Pydantic, python-dotenv, httpx, official TypeDB Python HTTP client, pytest), package layout, console script **`gg`**.
-5. **`gg doctor`** — JSON default, `--pretty`, Brave env check + **`--probe`** one-shot (Q27–Q28).
+| Step | Status | Notes |
+|------|--------|--------|
+| 1. **`.gitignore` + `.env.example`** | **Done** | Repo root; `.env` gitignored. |
+| 2. **`typedb/`** stub + **`typedb/README.md`** | **Done** | `groovegraph-schema.tql` is a placeholder until MO matrix drives real TypeQL. |
+| 3. **`ontology/mo-coverage-matrix.md`** | **Done** | Stub table; fill rows MO-first. |
+| 4. **`cli/`** package + **`gg` entry** | **Next** | `pyproject.toml`: `uv`, Typer, Pydantic, python-dotenv, httpx, official TypeDB Python HTTP client, pytest; console script **`gg`**. |
+| 5. **`gg doctor`** | **After 4** | JSON default, `--pretty`, Brave env check + **`--probe`** one-shot (Q27–Q28). |
 
 CI (GitHub Actions) stays **out** until explicitly requested (Q24).

@@ -2,7 +2,7 @@
 
 Greenfield **v2** application and tooling. This repository replaces [GrooveGraph-next](https://github.com/Studio13-NYC/GrooveGraph-next) over time; until cutover, treat that codebase as **read-only reference**, not a dependency you edit from here.
 
-**New agent?** Start with [docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md) (remotes, v1 tag, workspace layout, daily workflow).
+**New agent?** Start with [docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md) — v1 reference workflow **and** the **“Implementing v2 — first session”** section (ordered reading + external services + next build step).
 
 ## Product decisions and build defaults
 

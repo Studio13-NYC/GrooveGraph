@@ -2,6 +2,17 @@
 
 Use this document when you are new to the workspace and need to know how **GrooveGraph** (v2) relates to **GrooveGraph-next** (v1). All implementation work for the new product belongs in **GrooveGraph**; v1 is **read-only reference** unless explicitly asked to change that repo.
 
+## Implementing v2 — first session (read in order)
+
+Use this when the task is **building**, not only browsing v1.
+
+1. **[`docs/v2-implementer-defaults.md`](v2-implementer-defaults.md)** — stack choices, defaults table, and **first implementation slice** (what is done vs next).
+2. **[`docs/v2-product-qa-log.md`](v2-product-qa-log.md)** — full product Q&A (search → DB then web, drafts/pending, MO-first, Brave, Azure, CLI, and so on).
+3. **[`docs/USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP API (`/extract`, optional `/schema-pipeline/*`). You need a **running** entity-service for NER and schema pipeline calls (typically local: clone [`Studio13/entity-service`](https://github.com/Studio13/entity-service) per that repo’s README, `uv run` / Docker as documented there).
+4. **Secrets:** copy [`.env.example`](../.env.example) → `.env` at repo root; never commit `.env`.
+5. **TypeDB Cloud:** credentials in `.env` as in the USER guide §7; **manual** schema apply policy in [`typedb/README.md`](../typedb/README.md).
+6. **Next code deliverable (as of tag `v0.0.2`):** scaffold **`cli/`** and **`gg doctor`** per the implementer defaults slice (items not yet in the tree).
+
 ## Goal
 
 Wire your **GrooveGraph** repo so **GrooveGraph-next** stays a **read-only reference** (remote + tag + docs + side-by-side workspace).
