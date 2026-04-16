@@ -11,7 +11,7 @@ Use this when the task is **building**, not only browsing v1.
 3. **[`docs/USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP API (`/extract`, optional `/schema-pipeline/*`). You need a **running** entity-service for NER and schema pipeline calls (typically local: clone [`Studio13/entity-service`](https://github.com/Studio13/entity-service) per that repo’s README, `uv run` / Docker as documented there).
 4. **Secrets:** copy [`.env.example`](../.env.example) → `.env` at repo root; never commit `.env`.
 5. **TypeDB Cloud:** credentials in `.env` as in the USER guide §7; **manual** schema apply policy in [`typedb/README.md`](../typedb/README.md).
-6. **Next code deliverable (as of tag `v0.0.2`):** scaffold **`cli/`** and **`gg doctor`** per the implementer defaults slice (items not yet in the tree).
+6. **Released slice (`v0.0.3`):** **`cli/`** + **`gg`** (`doctor`, `schema`); see [`cli/README.md`](../cli/README.md). **Next deliverable:** MO matrix + TypeQL + `gg search` / ingest per [`docs/v2-implementer-defaults.md`](v2-implementer-defaults.md).
 
 ## Goal
 

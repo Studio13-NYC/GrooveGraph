@@ -1,5 +1,7 @@
 # GrooveGraph v2 — implementer defaults
 
+**Release:** **`v0.0.3`** — ships **`cli/`** + **`gg`** (doctor, schema pipeline), pytest harness, and docs touch-ups for env and tests.
+
 **Status:** Product-approved defaults (2026-04-15). They extend the full Q&A record in [`v2-product-qa-log.md`](v2-product-qa-log.md); if this file and the log ever disagree, **reconcile** and update both.
 
 **Purpose:** One place for builders (humans and agents) to read **concrete choices** that were either answered explicitly in discovery or inferred conservatively from those answers.
@@ -24,7 +26,7 @@ These items were **not** each asked as a separate discovery question; they follo
 
 | Topic | Default |
 |--------|---------|
-| **`gg` after `doctor`** | Add **entity-service schema pipeline** commands next (e.g. **`gg er raw`**, then validate/formatted wrappers)—aligns with Q13–Q14 and [`USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md). Add **`gg search`** once DB-first + MO-shaped ingest exists. |
+| **`gg` next** | **`gg search`** (DB then web) once MO-shaped ingest exists; later **`gg typedb apply`** when schema automation is justified (Q32). |
 | **HTTP client in `cli/`** | **`httpx`** for Brave, entity-service, and other REST calls. |
 | **`requires-python`** | **`>=3.12`** in `cli/pyproject.toml` until a reason appears to widen or narrow. |
 | **Manual schema apply** | Document in **`typedb/README.md`** (and link from root `README.md`): env vars, **empty database** expectation, and that apply is **deliberate** until automation lands. |
@@ -44,7 +46,9 @@ In order of dependency:
 | 1. **`.gitignore` + `.env.example`** | **Done** | Repo root; `.env` gitignored. |
 | 2. **`typedb/`** stub + **`typedb/README.md`** | **Done** | `groovegraph-schema.tql` is a placeholder until MO matrix drives real TypeQL. |
 | 3. **`ontology/mo-coverage-matrix.md`** | **Done** | Stub table; fill rows MO-first. |
-| 4. **`cli/`** package + **`gg` entry** | **Next** | `pyproject.toml`: `uv`, Typer, Pydantic, python-dotenv, httpx, official TypeDB Python HTTP client, pytest; console script **`gg`**. |
-| 5. **`gg doctor`** | **After 4** | JSON default, `--pretty`, Brave env check + **`--probe`** one-shot (Q27–Q28). |
+| 4. **`cli/`** package + **`gg` entry** | **Done** | `pyproject.toml`: `uv`, Typer, Pydantic, python-dotenv, httpx, official TypeDB Python driver, pytest; console script **`gg`**. |
+| 5. **`gg doctor`** | **Done** | JSON default, `--pretty`; TypeDB via **`type_schema()`** + type list; entity-service **GET `/docs`**; one Brave search when **`BRAVE_API_KEY`** is set (429 treated as reachable); **`--probe`** fails Brave block if the key is missing. |
+| 6. **`gg schema *` (entity-service pipeline)** | **Done** | `gg schema raw|validate|formatted|run` per [`USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md). |
+| 7. **Next (post-`v0.0.3`)** | **Next** | Grow **`ontology/mo-coverage-matrix.md`** + real **`typedb/groovegraph-schema.tql`**; **`gg search`** / ingest when ready. |
 
 CI (GitHub Actions) stays **out** until explicitly requested (Q24).

@@ -13,6 +13,10 @@ Entity-service integration (including schema pipeline: raw → validate → form
 
 TypeQL layout and **manual apply** policy: [`typedb/README.md`](typedb/README.md). Copy [`.env.example`](.env.example) to `.env` (gitignored) for local keys.
 
+## CLI (`gg`)
+
+Python CLI and **`gg`** commands live under **[`cli/`](cli/README.md)** (`uv sync`, `gg doctor`, `gg schema`, pytest). **Release tag for this slice:** [`v0.0.3`](https://github.com/Studio13-NYC/GrooveGraph/releases/tag/v0.0.3) (after push).
+
 ## Read-only reference to v1 (GrooveGraph-next)
 
 A **pinned tag** on the legacy repo marks the agreed v1 snapshot:

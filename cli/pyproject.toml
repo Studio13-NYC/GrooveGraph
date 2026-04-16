@@ -1,0 +1,35 @@
+[project]
+name = "groovegraph-cli"
+version = "0.1.0"
+description = "GrooveGraph v2 CLI (gg)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "httpx>=0.27,<1",
+  "pydantic>=2.6,<3",
+  "python-dotenv>=1.0,<2",
+  "typer>=0.12,<1",
+  "typedb-driver>=3.8,<4",
+]
+
+[project.scripts]
+gg = "groovegraph_cli.main:entrypoint"
+
+[dependency-groups]
+dev = ["pytest>=8,<9"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/groovegraph", "src/groovegraph_cli"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+  "brave_only: standalone Brave Search API check (loads repo `.env` inside the test)",
+  "core: live connectivity checks for repo-root `.env` integrations (requires `.env` file; entity-service always; TypeDB/Brave when configured there)",
+  "e2e: exercises real services (TypeDB, entity-service, Brave); skipped when env is incomplete",
+  "entity_service: HTTP checks against NER_SERVICE_URL (expected to fail until schema-pipeline + TypeDB are configured on the server)",
+]

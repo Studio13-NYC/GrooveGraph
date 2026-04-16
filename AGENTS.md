@@ -18,7 +18,7 @@
 
 - **All v2 implementation lives in this repo (`GrooveGraph`).** [GrooveGraph-next](https://github.com/Studio13-NYC/GrooveGraph-next) is **read-only reference** at tag `v1-reference-for-v2`. Do not land v2 features or fixes there unless the product owner explicitly says so.
 - **Never commit secrets.** `.env` is gitignored; only [`.env.example`](.env.example) documents variable **names**. Production uses **Azure** (or host) environment injection, not checked-in env files.
-- **entity-service does not own the database.** It is a **stateless** HTTP pipeline. TypeDB access and schema evolution live in **callers** (today: planned **`cli/`** + `gg`, later app/worker). Python inside entity-service must not open TypeDB for writes that belong in GrooveGraph’s persistence story.
+- **entity-service does not own the database.** It is a **stateless** HTTP pipeline. TypeDB access and schema evolution live in **callers** (**`cli/`** + **`gg`**, later app/worker). Python inside entity-service must not open TypeDB for writes that belong in GrooveGraph’s persistence story.
 - **MO-first for the catalog model.** Lead with Music Ontology understanding and the [ontology/mo-coverage-matrix.md](ontology/mo-coverage-matrix.md), then TypeQL under [`typedb/`](typedb/README.md). v1 greenfield TypeQL in GrooveGraph-next is **inspiration only**, not a copy source.
 - **Human in the loop when you are stuck.** If you are **unsure** or **confused** after consulting the docs in the read order (or the risk is **high** — product meaning, schema migration, auth, secrets, compliance), **stop** and **ask the human** for assistance. State what you already checked and what is ambiguous. **Do not** guess past serious uncertainty or ship speculative behaviour in those areas.
 
@@ -38,10 +38,11 @@
 
 - **Minimal, purposeful diffs.** Change only what the task requires. No drive-by refactors, no unrelated formatting sweeps, no new dependencies without a clear need.
 - **Match the house style** in each area: read neighboring files before writing; align naming, imports, and error handling with what is already there.
-- **Python (`cli/`, when it exists):** **`uv`** only; **Pydantic** for models; **Typer** for `gg`; **httpx** for HTTP; **python-dotenv** loading repo-root `.env`; official **TypeDB Python HTTP** client for Cloud. **`requires-python >=3.12`** unless the repo pin changes.
+- **Python (`cli/`):** **`uv`** only; **Pydantic** for models; **Typer** for `gg`; **httpx** for HTTP; **python-dotenv** loading repo-root `.env`; official **`typedb-driver`** for TypeDB Cloud. **`requires-python >=3.12`** unless the repo pin changes.
 - **TypeScript (`ner-client/`):** keep the client **thin** — types + `fetch` to `/health` and `/extract` only unless the task expands it deliberately.
 - **TypeQL:** lives under **`typedb/`**; start from **one** canonical file until migrations are needed. Extend schema in line with the **MO coverage matrix**, not ad hoc.
-- **Tests:** **`pytest`** and **small smoke tests** for `cli/` when you touch it. **No GitHub Actions CI** until the product owner turns it on (see Q&A log).
+- **Tests:** **`pytest`** under **`cli/tests/`** — markers include **`core`** (repo `.env` connectivity), **`brave_only`** (standalone Brave), **`entity_service`** (HTTP schema-pipeline; fails until the API process has `TYPEDB_*`). **No GitHub Actions CI** until the product owner turns it on (see Q&A log).
+- **Test data in TypeDB:** Any **persisted** rows created by **automated tests** (or ad-hoc local harnesses) must be tagged on the same **`approval-status`** field used for draft ingest lifecycle (the field that carries values like **`pending`** for operator review). Use the literal value **`test`** for those rows so they are easy to filter out and never mistaken for real pending catalog drafts.
 - **Documentation:** update **this file**, **implementer defaults**, or **Q&A log** when you change a **product or process** decision; update **typedb/README** or **README** when you change how we apply schema or configure env.
 
 ---
