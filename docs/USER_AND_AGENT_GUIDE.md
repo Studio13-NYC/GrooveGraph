@@ -99,13 +99,15 @@ Returns JSON like `{ "ok": true }` when the process is ready to serve traffic (s
 
 ### Schema resolution pipeline (optional, server + TypeDB env)
 
-Use when the **app** must: (1) retrieve **raw** material from TypeDB from **ER assumptions** (entity types + `nameAttribute`), (2) **examine** the define schema offline to ensure those types and string `owns` exist, then (3) request a **formatted** `schema` matching **`POST /extract`**.
+**Production path:** **`POST /schema-pipeline/formatted`** with **`{ "assumptions": { "entityTypes": [] }, "skipOntologyPrecheck": false }`** (or custom `entityTypes`) — entity-service reads **live TypeDB** and returns `{ entityTypes, knownEntities }` for **`POST /extract`**. GrooveGraph **`gg schema run`**, **`gg extract`** (default), **`gg search --extract`**, and **`gg analyze --schema`** use this path only (no **`/raw`**).
+
+**Testing / offline inspection:** **`POST /schema-pipeline/raw`** returns `typeSchemaDefine` text plus samples; then **`/validate`** and **`/formatted`** may consume that payload when you are iterating on define text.
 
 | Method | Path | TypeDB required | Purpose |
 |--------|------|-----------------|--------|
-| `POST` | `/schema-pipeline/raw` | Yes (503 if unset) | Returns `typeSchemaDefine`, parsed entity labels, and per-type sample `answers` (bounded read) or error text. **Body must include `assumptions`** (Pydantic); GrooveGraph **`gg`** sends `{"assumptions": {"entityTypes": []}}` so the server applies its default TypeDB slice. |
-| `POST` | `/schema-pipeline/validate` | No | Body includes prior `typeSchemaDefine` + `assumptions`; returns `ready` and `issues[]`. |
-| `POST` | `/schema-pipeline/formatted` | Yes | After validation, returns `{ entityTypes, knownEntities }` (same shape as `schema` on `/extract`). Set `skipOntologyPrecheck: true` only if you already validated. |
+| `POST` | `/schema-pipeline/raw` | Yes (503 if unset) | **Testing:** returns `typeSchemaDefine`, parsed entity labels, and per-type sample `answers`. Body includes `assumptions` (e.g. `{"assumptions": {"entityTypes": []}}`). |
+| `POST` | `/schema-pipeline/validate` | No | Body includes `typeSchemaDefine` + `assumptions`; returns `ready` and `issues[]`. |
+| `POST` | `/schema-pipeline/formatted` | Yes | Returns `{ entityTypes, knownEntities }` for `/extract`. Request body is **`assumptions`** + **`skipOntologyPrecheck`**; **`typeSchemaDefine`** is optional when types already exist in TypeDB. |
 
 Env vars match the TypeScript driver: **`TYPEDB_CONNECTION_STRING`** and/or **`TYPEDB_ADDRESSES`**, **`TYPEDB_USERNAME`**, **`TYPEDB_PASSWORD`**, **`TYPEDB_DATABASE`**.
 

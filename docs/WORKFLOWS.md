@@ -78,27 +78,27 @@ Runs on **entity-service** only (TypeDB must be configured **on that server** fo
 
 ```mermaid
 flowchart LR
-  subgraph chain [Typical chain]
+  subgraph prod [Default gg orchestration]
+    F[POST /schema-pipeline/formatted assumptions only]
+  end
+  subgraph manual [Manual / testing]
     R[schema raw]
     V[schema validate]
-    F[schema formatted]
+    FF[schema formatted stdin]
   end
-  R -->|JSON body|V
-  V -->|stdin raw JSON|F
-  R -.->|or one shot|RUN[schema run]
-  RUN -.-> R
-  RUN -.-> V
-  RUN -.-> F
+  F -->|entityTypes knownEntities|EX[POST /extract schema]
+  R --> V
+  V -->|stdin|FF
 ```
 
 | Command | Role |
 |---------|------|
-| **`gg schema raw`** | `POST /schema-pipeline/raw` with `{"assumptions":{"entityTypes":[]}}` → raw define + assumptions JSON (entity-service requires this body shape). |
-| **`gg schema validate`** | Reads **stdin** (raw JSON), `POST /schema-pipeline/validate`. |
-| **`gg schema formatted`** | Reads **stdin** (raw JSON), `POST /schema-pipeline/formatted`. |
-| **`gg schema run`** | Same orchestration as internal callers: raw → validate → formatted. |
+| **`gg schema run`** | **`POST /schema-pipeline/formatted`** only — assumes types **already exist** in TypeDB; body `{"assumptions":{"entityTypes":[]},"skipOntologyPrecheck":false}` (same as `extract` / `analyze --schema`). |
+| **`gg schema raw`** | `POST /schema-pipeline/raw` — **initial testing / define text inspection** only. |
+| **`gg schema validate`** | Reads **stdin** (includes `typeSchemaDefine` from raw), `POST /schema-pipeline/validate`. |
+| **`gg schema formatted`** | Reads **stdin**; `POST /schema-pipeline/formatted` (with `typeSchemaDefine` when present). |
 
-**Downstream:** formatted output becomes the `schema` field on **`POST /extract`** when you use `gg search --extract`, `gg extract` (default), or `gg analyze --schema`.
+**Downstream:** `formatted` JSON becomes the `schema` field on **`POST /extract`** when you use `gg search --extract`, `gg extract` (default), or `gg analyze --schema`.
 
 ---
 

@@ -40,7 +40,7 @@ def test_entity_service_post_schema_pipeline_raw_returns_200() -> None:
 
 @pytest.mark.entity_service
 def test_entity_service_schema_pipeline_chain_succeeds() -> None:
-    """End-to-end raw → validate → formatted against a running entity-service (fails if server returns 503)."""
+    """DB-backed ``POST /schema-pipeline/formatted`` slice (same path as ``gg schema run``)."""
     try:
         result = run_schema_pipeline_chain(ner_service_url())
     except (httpx.ConnectError, httpx.TimeoutException) as exc:

@@ -98,7 +98,7 @@ def schema_raw(
     ctx: typer.Context,
     pretty_cmd: Annotated[bool, typer.Option("--pretty", help="Pretty-print JSON.")] = False,
 ) -> None:
-    """POST /schema-pipeline/raw (requires entity-service + server-side TypeDB env)."""
+    """POST /schema-pipeline/raw (initial testing / define inspection; normal ``gg`` flows use ``formatted`` only)."""
     base = ner_service_url()
     resp = post_schema_raw(base)
     body: Any
@@ -174,7 +174,7 @@ def schema_run(
     ctx: typer.Context,
     pretty_cmd: Annotated[bool, typer.Option("--pretty", help="Pretty-print JSON.")] = False,
 ) -> None:
-    """Run raw, validate, then formatted in one shot (same orchestration `gg` uses internally)."""
+    """Fetch DB-backed ``schema`` via ``POST /schema-pipeline/formatted`` (same path as ``extract`` / ``analyze --schema``)."""
     base = ner_service_url()
     result = run_schema_pipeline_chain(base)
     _dump_json(result, pretty=_pretty(ctx, pretty_cmd))

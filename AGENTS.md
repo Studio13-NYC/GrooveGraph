@@ -63,7 +63,7 @@
 ## Architecture habits
 
 - **Middle path for ingest:** keep **shared library boundaries** inside the repo so a future **worker** can own long-running fetch/write without rewriting core logic (see Q&A on “middle path”).
-- **Schema pipeline:** prefer **`/schema-pipeline/raw` → `/validate` → `/formatted`** before expensive extraction when TypeDB is in play — see USER guide.
+- **Schema pipeline:** default **`gg`** flows use **`POST /schema-pipeline/formatted`** only (DB-backed types). **`/raw` → `/validate` → `/formatted`** is for **testing / define inspection** — see USER guide and [`docs/WORKFLOWS.md`](docs/WORKFLOWS.md).
 - **Return raw in every environment** is a **service capability**; respect whatever auth the deployed entity-service enforces.
 
 ---
