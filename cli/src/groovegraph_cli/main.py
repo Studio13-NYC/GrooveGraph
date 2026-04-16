@@ -27,9 +27,17 @@ app = typer.Typer(no_args_is_help=True, add_completion=False)
 
 def _dump_json(data: Any, *, pretty: bool) -> None:
     if pretty:
-        typer.echo(json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False))
+        raw = json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False)
     else:
-        typer.echo(json.dumps(data, separators=(",", ":"), ensure_ascii=False))
+        raw = json.dumps(data, separators=(",", ":"), ensure_ascii=False)
+    try:
+        typer.echo(raw)
+    except UnicodeEncodeError:
+        # Windows consoles often default to cp1252; Brave snippets may contain emoji.
+        if pretty:
+            typer.echo(json.dumps(data, indent=2, sort_keys=True, ensure_ascii=True))
+        else:
+            typer.echo(json.dumps(data, separators=(",", ":"), ensure_ascii=True))
 
 
 def _pretty(ctx: typer.Context, pretty_cmd: bool) -> bool:

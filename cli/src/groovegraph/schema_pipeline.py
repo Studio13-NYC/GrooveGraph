@@ -27,10 +27,18 @@ def _pick_type_schema_define(raw: dict[str, Any]) -> str | None:
 
 
 def post_schema_raw(base_url: str, *, timeout_s: float = 60.0) -> httpx.Response:
+    """
+    ``POST /schema-pipeline/raw``.
+
+    Entity-service expects a body with ``assumptions`` (Pydantic). An empty
+    ``entityTypes`` list means “use server defaults / discover from TypeDB”
+    for the raw pipeline slice.
+    """
     url = f"{base_url.rstrip('/')}/schema-pipeline/raw"
+    payload = {"assumptions": {"entityTypes": []}}
     log.debug("POST %s", url)
     with httpx.Client(timeout=timeout_s) as client:
-        resp = client.post(url, json={})
+        resp = client.post(url, json=payload)
     log.info("schema-pipeline/raw status=%s", resp.status_code)
     return resp
 

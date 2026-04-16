@@ -103,7 +103,7 @@ Use when the **app** must: (1) retrieve **raw** material from TypeDB from **ER a
 
 | Method | Path | TypeDB required | Purpose |
 |--------|------|-----------------|--------|
-| `POST` | `/schema-pipeline/raw` | Yes (503 if unset) | Returns `typeSchemaDefine`, parsed entity labels, and per-type sample `answers` (bounded read) or error text. |
+| `POST` | `/schema-pipeline/raw` | Yes (503 if unset) | Returns `typeSchemaDefine`, parsed entity labels, and per-type sample `answers` (bounded read) or error text. **Body must include `assumptions`** (Pydantic); GrooveGraph **`gg`** sends `{"assumptions": {"entityTypes": []}}` so the server applies its default TypeDB slice. |
 | `POST` | `/schema-pipeline/validate` | No | Body includes prior `typeSchemaDefine` + `assumptions`; returns `ready` and `issues[]`. |
 | `POST` | `/schema-pipeline/formatted` | Yes | After validation, returns `{ entityTypes, knownEntities }` (same shape as `schema` on `/extract`). Set `skipOntologyPrecheck: true` only if you already validated. |
 

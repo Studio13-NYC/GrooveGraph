@@ -93,7 +93,7 @@ flowchart LR
 
 | Command | Role |
 |---------|------|
-| **`gg schema raw`** | `POST /schema-pipeline/raw` → raw define + assumptions JSON. |
+| **`gg schema raw`** | `POST /schema-pipeline/raw` with `{"assumptions":{"entityTypes":[]}}` → raw define + assumptions JSON (entity-service requires this body shape). |
 | **`gg schema validate`** | Reads **stdin** (raw JSON), `POST /schema-pipeline/validate`. |
 | **`gg schema formatted`** | Reads **stdin** (raw JSON), `POST /schema-pipeline/formatted`. |
 | **`gg schema run`** | Same orchestration as internal callers: raw → validate → formatted. |
