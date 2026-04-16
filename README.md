@@ -4,6 +4,15 @@ Greenfield **v2** application and tooling. This repository replaces [GrooveGraph
 
 **New agent?** Start with [docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md) (remotes, v1 tag, workspace layout, daily workflow).
 
+## Product decisions and build defaults
+
+- **[`docs/v2-product-qa-log.md`](docs/v2-product-qa-log.md)** — discovery **Q&A** (users, search, TypeDB, CLI, env, and so on).
+- **[`docs/v2-implementer-defaults.md`](docs/v2-implementer-defaults.md)** — **canonical implementer defaults** (synthesized from Q&A + Q33 TypeQL layout) and the **first implementation slice** checklist.
+
+Entity-service integration (including schema pipeline: raw → validate → formatted) is described in [`docs/USER_AND_AGENT_GUIDE.md`](docs/USER_AND_AGENT_GUIDE.md).
+
+TypeQL layout and **manual apply** policy: [`typedb/README.md`](typedb/README.md). Copy [`.env.example`](.env.example) to `.env` (gitignored) for local keys.
+
 ## Read-only reference to v1 (GrooveGraph-next)
 
 A **pinned tag** on the legacy repo marks the agreed v1 snapshot:

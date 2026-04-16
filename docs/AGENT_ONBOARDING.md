@@ -26,7 +26,13 @@ Wire your **GrooveGraph** repo so **GrooveGraph-next** stays a **read-only refer
 
 ### GrooveGraph repository contents (reference)
 
-- **`README.md`** — remotes, tag, `git show` / `git grep`, sibling clone, “reference only” rules.
+- **`README.md`** — remotes, tag, `git show` / `git grep`, sibling clone, “reference only” rules, and links to **v2 product** docs.
+- **[`docs/v2-product-qa-log.md`](v2-product-qa-log.md)** — discovery Q&A (permanent record).
+- **[`docs/v2-implementer-defaults.md`](v2-implementer-defaults.md)** — canonical implementer defaults and first implementation slice.
+- **[`docs/USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md)** — entity-service API (including optional TypeDB schema pipeline); mirrored for GrooveGraph agents.
+- **`ontology/`** — MO pointers and [`ontology/mo-coverage-matrix.md`](../ontology/mo-coverage-matrix.md) (coverage matrix stub).
+- **`typedb/`** — canonical TypeQL and [`typedb/README.md`](../typedb/README.md) (manual apply policy).
+- **`ner-client/`** — minimal TypeScript client types for `POST /extract` (optional for TS callers).
 - **`groovegraph-dev.code-workspace`** — multi-root workspace: this repo + `../GrooveGraph-next`.
 - Default branch **`main`** on `https://github.com/Studio13-NYC/GrooveGraph.git` holds the bootstrap commits.
 
