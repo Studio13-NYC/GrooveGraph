@@ -6,12 +6,13 @@ Use this document when you are new to the workspace and need to know how **Groov
 
 Use this when the task is **building**, not only browsing v1.
 
-1. **[`docs/v2-implementer-defaults.md`](v2-implementer-defaults.md)** — stack choices, defaults table, and **first implementation slice** (what is done vs next).
-2. **[`docs/v2-product-qa-log.md`](v2-product-qa-log.md)** — full product Q&A (search → DB then web, drafts/pending, MO-first, Brave, Azure, CLI, and so on).
-3. **[`docs/USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP API (`/extract`, optional `/schema-pipeline/*`). You need a **running** entity-service for NER and schema pipeline calls (typically local: clone [`Studio13/entity-service`](https://github.com/Studio13/entity-service) per that repo’s README, `uv run` / Docker as documented there).
-4. **Secrets:** copy [`.env.example`](../.env.example) → `.env` at repo root; never commit `.env`.
-5. **TypeDB Cloud:** credentials in `.env` as in the USER guide §7; **manual** schema apply policy in [`typedb/README.md`](../typedb/README.md).
-6. **Released slice (`v0.0.3`):** **`cli/`** + **`gg`** (`doctor`, `schema`); see [`cli/README.md`](../cli/README.md). **Next deliverable:** MO matrix + TypeQL + `gg search` / ingest per [`docs/v2-implementer-defaults.md`](v2-implementer-defaults.md).
+1. **[`docs/WORKFLOWS.md`](WORKFLOWS.md)** — diagrams for **`gg`** (doctor, schema, search, analyze, extract, ingest, pending) and how services connect.
+2. **[`docs/v2-implementer-defaults.md`](v2-implementer-defaults.md)** — stack choices, defaults table, and **implementation slice** status.
+3. **[`docs/v2-product-qa-log.md`](v2-product-qa-log.md)** — full product Q&A (search → DB then web, drafts/pending, MO-first, Brave, Azure, CLI, and so on).
+4. **[`docs/USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP API (`/extract`, optional `/schema-pipeline/*`). You need a **running** entity-service for NER and schema pipeline calls (typically local: clone [`Studio13/entity-service`](https://github.com/Studio13/entity-service) per that repo’s README, `uv run` / Docker as documented there).
+5. **Secrets:** copy [`.env.example`](../.env.example) → `.env` at repo root; never commit `.env`.
+6. **TypeDB Cloud:** credentials in `.env` as in the USER guide §7; **manual** schema apply policy in [`typedb/README.md`](../typedb/README.md).
+7. **`cli/`** + **`gg`:** install and commands in [`cli/README.md`](../cli/README.md); deeper command reference in [`docs/WORKFLOWS.md`](WORKFLOWS.md).
 
 ## Goal
 

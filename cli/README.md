@@ -1,6 +1,6 @@
 # GrooveGraph CLI (`gg`)
 
-Install and run from the **repository root** (so repo `.env` resolves consistently):
+Install and run from **inside the GrooveGraph checkout** (so repo-root `.env` resolves):
 
 ```bash
 cd /path/to/GrooveGraph/cli
@@ -8,33 +8,60 @@ uv sync
 uv run gg --help
 ```
 
-See root [`AGENTS.md`](../AGENTS.md) and [`docs/USER_AND_AGENT_GUIDE.md`](../docs/USER_AND_AGENT_GUIDE.md).
+## Where to read next
 
-`gg doctor` checks **GET `/docs`** on entity-service, **TypeDB** via `type_schema()` (returns a `types` list), and **one Brave web search** whenever **`BRAVE_API_KEY`** or **`BraveSearchApiKey`** is set in `.env`.
+- **[`docs/WORKFLOWS.md`](../docs/WORKFLOWS.md)** — **diagrams and narrative** for every `gg` path (doctor, schema, search, analyze, extract, ingest, pending).
+- **[`AGENTS.md`](../AGENTS.md)** — agent rules and doc index.
+- **[`docs/USER_AND_AGENT_GUIDE.md`](../docs/USER_AND_AGENT_GUIDE.md)** — entity-service HTTP contract.
 
-Standalone Brave API smoke (no entity-service / TypeDB / doctor):
+`gg doctor` checks **TypeDB** (`type_schema`), entity-service (**`/health` → `/ready` → `/docs`**), and **one Brave** search when a Brave key is set.
 
-```bash
-uv run pytest -m brave_only -q
+## Logging
+
+- **File:** `../logs/gg.log` (rotating) — [`logs/README.md`](../logs/README.md).
+- **Console:** INFO+ on stderr; DEBUG in file by default.
+- **Env:** `GG_LOG_LEVEL` in repo-root `.env` ([`.env.example`](../.env.example)).
+- **Pytest:** `../logs/pytest.log` via `cli/tests/conftest.py`.
+
+## Pretty JSON
+
+Use **`gg --pretty <cmd>`** (global before subcommand) or **`--pretty`** after the subcommand args.
+
+## `gg ingest-draft` stdin shape
+
+```json
+{
+  "ingestion_batch_id": "cli-2026-04-16-001",
+  "catalog_entities": [
+    {
+      "kind": "mo-music-artist",
+      "name": "Talking Heads",
+      "approval_status": "pending",
+      "mo_class_iri": "http://purl.org/ontology/mo/MusicArtist",
+      "source_url": "https://example.com/evidence"
+    }
+  ],
+  "extract": { "entities": [] },
+  "notes": "optional audit note"
+}
 ```
 
-## End-to-end tests
+Harness rows: set `"approval_status": "test"` ([`AGENTS.md`](../AGENTS.md)).
+
+## Tests
 
 ```bash
 uv sync --group dev
 uv run pytest
 ```
 
-`e2e` tests call **real** TypeDB, entity-service, and (when enabled) Brave. TypeDB reachability is also checked **directly** against TypeDB (no entity-service) in `test_typedb_direct_smoke_e2e.py`.
-
-Tests marked **`entity_service`** hit **`NER_SERVICE_URL`** for `/schema-pipeline/*` and **fail** (no skip) until the API process has **`TYPEDB_*` set** per entity-service docs. To run everything except those while fixing the server:
+- **`e2e`** — real TypeDB, entity-service, Brave when configured.
+- **`entity_service`** — schema pipeline HTTP; may **skip** if unreachable or upstream-blocked ([`docs/ENTITY_SERVICE_PUNCH_LIST.md`](../docs/ENTITY_SERVICE_PUNCH_LIST.md)).
 
 ```bash
 uv run pytest -m "not entity_service" -q
-```
-
-Core connectivity (repo-root **`.env`** must exist; verifies each configured integration):
-
-```bash
+uv run pytest -m brave_only -q
 uv run pytest -m core -q
 ```
+
+Canonical TypeQL: [`typedb/groovegraph-schema.tql`](../typedb/groovegraph-schema.tql) (apply manually; see [`typedb/README.md`](../typedb/README.md)).

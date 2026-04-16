@@ -20,6 +20,15 @@ def ner_service_url() -> str:
     return os.environ.get("NER_SERVICE_URL", "http://127.0.0.1:8000").rstrip("/")
 
 
+def openai_api_key() -> str | None:
+    """Return OpenAI API key when set (used by future LLM tooling; never log the raw value)."""
+    raw = os.environ.get("OPENAI_API_KEY")
+    if raw is None:
+        return None
+    stripped = raw.strip()
+    return stripped or None
+
+
 def brave_api_key() -> str | None:
     """
     Prefer `BRAVE_API_KEY` (documented in repo-root `.env.example`).

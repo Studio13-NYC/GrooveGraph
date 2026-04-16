@@ -72,6 +72,10 @@ flowchart LR
 
 Returns JSON like `{ "ok": true }`. Use for readiness checks.
 
+### `GET /ready`
+
+Returns JSON like `{ "ok": true }` when the process is ready to serve traffic (same shape as **`/health`**; stricter deployments may distinguish the two).
+
 ### `POST /extract`
 
 **Request body** (JSON):

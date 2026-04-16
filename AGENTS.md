@@ -7,10 +7,11 @@
 ## Read order (before you change code)
 
 1. **[README.md](README.md)** — repo role, v1 reference rules, doc index.
-2. **[docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md)** — **“Implementing v2 — first session”**: ordered steps, **entity-service** runtime, `.env`, TypeDB manual apply, **next deliverable** in the tree.
-3. **[docs/v2-implementer-defaults.md](docs/v2-implementer-defaults.md)** — **canonical** stack choices, tool versions, and **implementation-slice status** (what is done vs next).
-4. **[docs/v2-product-qa-log.md](docs/v2-product-qa-log.md)** — full **product Q&A** (intent, tradeoffs, deferred items). Do not contradict it without an explicit product decision recorded there.
-5. **[docs/USER_AND_AGENT_GUIDE.md](docs/USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP contract (`/extract`, optional `/schema-pipeline/*`). Mirrored from upstream; treat the **wire shapes** as stable.
+2. **[docs/WORKFLOWS.md](docs/WORKFLOWS.md)** — **visual map** of `gg` commands and integrations (TypeDB, entity-service, Brave); read before changing CLI orchestration.
+3. **[docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md)** — **“Implementing v2 — first session”**: ordered steps, **entity-service** runtime, `.env`, TypeDB manual apply.
+4. **[docs/v2-implementer-defaults.md](docs/v2-implementer-defaults.md)** — **canonical** stack choices, tool versions, and **implementation-slice status** (what is done vs next).
+5. **[docs/v2-product-qa-log.md](docs/v2-product-qa-log.md)** — full **product Q&A** (intent, tradeoffs, deferred items). Do not contradict it without an explicit product decision recorded there.
+6. **[docs/USER_AND_AGENT_GUIDE.md](docs/USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP contract (`/extract`, optional `/schema-pipeline/*`). Mirrored from upstream; treat the **wire shapes** as stable.
 
 ---
 
@@ -41,7 +42,7 @@
 - **Python (`cli/`):** **`uv`** only; **Pydantic** for models; **Typer** for `gg`; **httpx** for HTTP; **python-dotenv** loading repo-root `.env`; official **`typedb-driver`** for TypeDB Cloud. **`requires-python >=3.12`** unless the repo pin changes.
 - **TypeScript (`ner-client/`):** keep the client **thin** — types + `fetch` to `/health` and `/extract` only unless the task expands it deliberately.
 - **TypeQL:** lives under **`typedb/`**; start from **one** canonical file until migrations are needed. Extend schema in line with the **MO coverage matrix**, not ad hoc.
-- **Tests:** **`pytest`** under **`cli/tests/`** — markers include **`core`** (repo `.env` connectivity), **`brave_only`** (standalone Brave), **`entity_service`** (HTTP schema-pipeline; fails until the API process has `TYPEDB_*`). **No GitHub Actions CI** until the product owner turns it on (see Q&A log).
+- **Tests:** **`pytest`** under **`cli/tests/`** — markers include **`core`** (repo `.env` connectivity), **`brave_only`** (standalone Brave), **`entity_service`** (HTTP schema-pipeline; **`skip`** when entity-service is unreachable or returns **503 / TypeDB-not-configured-on-server** — treat as **upstream blocked**; tags **`upstream blocked`**, **`typedb_not_configured_on_entity_service`** in [`docs/ENTITY_SERVICE_PUNCH_LIST.md`](docs/ENTITY_SERVICE_PUNCH_LIST.md), not GrooveGraph regressions). **No GitHub Actions CI** until the product owner turns it on (see Q&A log).
 - **Test data in TypeDB:** Any **persisted** rows created by **automated tests** (or ad-hoc local harnesses) must be tagged on the same **`approval-status`** field used for draft ingest lifecycle (the field that carries values like **`pending`** for operator review). Use the literal value **`test`** for those rows so they are easy to filter out and never mistaken for real pending catalog drafts.
 - **Documentation:** update **this file**, **implementer defaults**, or **Q&A log** when you change a **product or process** decision; update **typedb/README** or **README** when you change how we apply schema or configure env.
 

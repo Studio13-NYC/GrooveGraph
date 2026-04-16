@@ -7,7 +7,7 @@ import pytest
 
 from groovegraph.brave_probe import probe_brave_search
 from groovegraph.env_loader import brave_api_key, ner_service_url
-from groovegraph.ner_health import check_entity_service_docs
+from groovegraph.ner_health import check_entity_service_liveness
 from groovegraph.typedb_config import TypeDbConfigError, read_typedb_connection_params
 from groovegraph.typedb_verify import verify_typedb
 
@@ -50,7 +50,7 @@ def test_core_live_connectivity_for_all_configured_dotenv_services() -> None:
         "Copy `.env.example` to `.env` at the GrooveGraph repository root and fill in values."
     )
 
-    ner = check_entity_service_docs(ner_service_url())
+    ner = check_entity_service_liveness(ner_service_url())
     assert ner["ok"] is True, {"stage": "entity_service", "report": ner}
 
     if _typedb_env_mentioned_in_process_env():

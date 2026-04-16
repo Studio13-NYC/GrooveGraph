@@ -1,3 +1,69 @@
-// GrooveGraph v2 — MO-first TypeQL (TypeDB 3.x)
-// Replace this stub as ontology/mo-coverage-matrix.md and schema design progress.
-// Apply manually until gg typedb apply exists; see typedb/README.md.
+// GrooveGraph v2 — canonical TypeQL (TypeDB 3.x)
+// Entity **labels** mirror Music Ontology (MO) class intent; `mo-class-iri` carries the MO IRI.
+// Apply manually to TypeDB Cloud until `gg typedb apply` exists; see typedb/README.md.
+
+define
+
+  // --- Shared string attributes (lifecycle + traceability) ---
+  attribute name, value string;
+  attribute approval-status, value string;
+  attribute mo-class-iri, value string;
+  attribute mo-property-iri, value string;
+  attribute source-url, value string;
+  attribute batch-id, value string;
+  attribute ingestion-batch-id, value string;
+
+  // --- MO-aligned catalog entities (operator `name` is the human-facing label) ---
+  entity mo-music-artist,
+    owns name,
+    owns approval-status,
+    owns mo-class-iri,
+    owns mo-property-iri,
+    owns source-url,
+    owns ingestion-batch-id;
+
+  entity mo-record,
+    owns name,
+    owns approval-status,
+    owns mo-class-iri,
+    owns mo-property-iri,
+    owns source-url,
+    owns ingestion-batch-id;
+
+  entity mo-track,
+    owns name,
+    owns approval-status,
+    owns mo-class-iri,
+    owns mo-property-iri,
+    owns source-url,
+    owns ingestion-batch-id;
+
+  entity mo-instrument,
+    owns name,
+    owns approval-status,
+    owns mo-class-iri,
+    owns mo-property-iri,
+    owns source-url,
+    owns ingestion-batch-id;
+
+  entity mo-label,
+    owns name,
+    owns approval-status,
+    owns mo-class-iri,
+    owns mo-property-iri,
+    owns source-url,
+    owns ingestion-batch-id;
+
+  entity foaf-agent,
+    owns name,
+    owns approval-status,
+    owns mo-class-iri,
+    owns mo-property-iri,
+    owns source-url,
+    owns ingestion-batch-id;
+
+  // --- Provenance: operational batch (not an MO catalog class) ---
+  entity ingestion-batch,
+    owns batch-id,
+    owns approval-status,
+    owns mo-class-iri;

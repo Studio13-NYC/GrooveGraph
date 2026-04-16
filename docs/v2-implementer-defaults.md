@@ -44,11 +44,11 @@ In order of dependency:
 | Step | Status | Notes |
 |------|--------|--------|
 | 1. **`.gitignore` + `.env.example`** | **Done** | Repo root; `.env` gitignored. |
-| 2. **`typedb/`** stub + **`typedb/README.md`** | **Done** | `groovegraph-schema.tql` is a placeholder until MO matrix drives real TypeQL. |
-| 3. **`ontology/mo-coverage-matrix.md`** | **Done** | Stub table; fill rows MO-first. |
+| 2. **`typedb/`** + **`typedb/README.md`** | **Done** | `groovegraph-schema.tql` is a first MO-aligned catalog slice (manual apply still required). |
+| 3. **`ontology/mo-coverage-matrix.md`** | **Done** | MVP rows filled; evolve in parallel with TypeQL. |
 | 4. **`cli/`** package + **`gg` entry** | **Done** | `pyproject.toml`: `uv`, Typer, Pydantic, python-dotenv, httpx, official TypeDB Python driver, pytest; console script **`gg`**. |
-| 5. **`gg doctor`** | **Done** | JSON default, `--pretty`; TypeDB via **`type_schema()`** + type list; entity-service **GET `/docs`**; one Brave search when **`BRAVE_API_KEY`** is set (429 treated as reachable); **`--probe`** fails Brave block if the key is missing. |
+| 5. **`gg doctor`** | **Done** | JSON default, `--pretty`; TypeDB via **`type_schema()`** + type list; entity-service **GET `/health`** (fallback **`/ready`**, **`/docs`**); one Brave search when **`BRAVE_API_KEY`** is set (429 treated as reachable); **`--probe`** fails Brave block if the key is missing. |
 | 6. **`gg schema *` (entity-service pipeline)** | **Done** | `gg schema raw|validate|formatted|run` per [`USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md). |
-| 7. **Next (post-`v0.0.3`)** | **Next** | Grow **`ontology/mo-coverage-matrix.md`** + real **`typedb/groovegraph-schema.tql`**; **`gg search`** / ingest when ready. |
+| 7. **Catalog operator loop (post-`v0.0.3`)** | **Done (slice)** | **`gg search`**, **`gg analyze`** (discovery `/extract` with empty `labels`, no schema by default), **`gg extract`**, **`gg ingest-draft`**, **`gg pending list`**. Next: richer MO relations, non-Brave source adapters, and (later) **`gg typedb apply`** once schema automation is justified (Q32). |
 
 CI (GitHub Actions) stays **out** until explicitly requested (Q24).

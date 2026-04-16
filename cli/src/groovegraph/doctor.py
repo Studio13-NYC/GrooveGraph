@@ -4,14 +4,18 @@ from pathlib import Path
 
 from groovegraph.brave_probe import probe_brave_search
 from groovegraph.env_loader import brave_api_key, ner_service_url
-from groovegraph.ner_health import check_entity_service_docs
+from groovegraph.logging_setup import get_logger
+from groovegraph.ner_health import check_entity_service_liveness
 from groovegraph.paths import repo_root_from
 from groovegraph.typedb_config import read_typedb_connection_params, TypeDbConfigError
 from groovegraph.typedb_verify import verify_typedb
 
+log = get_logger("doctor")
+
 
 def run_doctor(*, repo_start: Path | None, probe_brave: bool) -> dict[str, object]:
     root = repo_root_from(repo_start)
+    log.info("doctor begin repo_root=%s probe_brave=%s", root, probe_brave)
     typedb_report: dict[str, object]
     try:
         params = read_typedb_connection_params()
@@ -20,7 +24,7 @@ def run_doctor(*, repo_start: Path | None, probe_brave: bool) -> dict[str, objec
         typedb_report = {"ok": False, "error": "config", "detail": str(exc)}
 
     ner_url = ner_service_url()
-    ner_report = check_entity_service_docs(ner_url)
+    ner_report = check_entity_service_liveness(ner_url)
 
     brave_key = brave_api_key()
     brave_report: dict[str, object] = {
@@ -38,6 +42,7 @@ def run_doctor(*, repo_start: Path | None, probe_brave: bool) -> dict[str, objec
         brave_report["ok"] = True
 
     overall_ok = bool(typedb_report.get("ok")) and bool(ner_report.get("ok")) and bool(brave_report.get("ok"))
+    log.info("doctor end ok=%s typedb_ok=%s ner_ok=%s brave_ok=%s", overall_ok, typedb_report.get("ok"), ner_report.get("ok"), brave_report.get("ok"))
 
     return {
         "ok": overall_ok,

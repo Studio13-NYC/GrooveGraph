@@ -6,6 +6,7 @@ Greenfield **v2** application and tooling. This repository replaces [GrooveGraph
 
 ## Product decisions and build defaults
 
+- **[`docs/WORKFLOWS.md`](docs/WORKFLOWS.md)** — **diagrams + short prose** for every `gg` workflow and how TypeDB, entity-service, and Brave connect.
 - **[`docs/v2-product-qa-log.md`](docs/v2-product-qa-log.md)** — discovery **Q&A** (users, search, TypeDB, CLI, env, and so on).
 - **[`docs/v2-implementer-defaults.md`](docs/v2-implementer-defaults.md)** — **canonical implementer defaults** (synthesized from Q&A + Q33 TypeQL layout) and the **first implementation slice** checklist.
 
@@ -15,7 +16,7 @@ TypeQL layout and **manual apply** policy: [`typedb/README.md`](typedb/README.md
 
 ## CLI (`gg`)
 
-Python CLI and **`gg`** commands live under **[`cli/`](cli/README.md)** (`uv sync`, `gg doctor`, `gg schema`, pytest). **Release tag for this slice:** [`v0.0.3`](https://github.com/Studio13-NYC/GrooveGraph/releases/tag/v0.0.3) (after push).
+Python CLI and **`gg`** commands live under **[`cli/`](cli/README.md)** (`uv sync`, `gg doctor`, `gg schema`, `gg analyze`, pytest). Operator map: **[`docs/WORKFLOWS.md`](docs/WORKFLOWS.md)**.
 
 ## Read-only reference to v1 (GrooveGraph-next)
 
