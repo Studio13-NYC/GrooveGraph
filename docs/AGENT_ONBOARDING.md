@@ -37,6 +37,7 @@ Wire your **GrooveGraph** repo so **GrooveGraph-next** stays a **read-only refer
 
 ### GrooveGraph repository contents (reference)
 
+- **[`AGENTS.md`](../AGENTS.md)** — **entry index** for AI agents (links to onboarding, defaults, Q&A, entity-service guide).
 - **`README.md`** — remotes, tag, `git show` / `git grep`, sibling clone, “reference only” rules, and links to **v2 product** docs.
 - **[`docs/v2-product-qa-log.md`](v2-product-qa-log.md)** — discovery Q&A (permanent record).
 - **[`docs/v2-implementer-defaults.md`](v2-implementer-defaults.md)** — canonical implementer defaults and first implementation slice.
