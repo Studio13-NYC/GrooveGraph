@@ -2,7 +2,7 @@
 
 This document is for **humans integrating** the NER / entity extraction HTTP service and for **AI agents** that need to reason about the system **end to end**. In the **entity-service** repository it complements that repo’s `README.md` and maintainer docs (for example `AGENTS.md` when present).
 
-**GrooveGraph v2:** This file is **mirrored** under `docs/` so agents can read the HTTP contract next to product docs. GrooveGraph direction and CLI defaults: [v2-product-qa-log.md](v2-product-qa-log.md), [v2-implementer-defaults.md](v2-implementer-defaults.md), and the root [README.md](../README.md).
+**GrooveGraph v2:** This file is **mirrored** under `docs/` so agents can read the HTTP contract next to product docs. GrooveGraph direction and CLI defaults: [v2-product-qa-log.md](v2-product-qa-log.md), [v2-implementer-defaults.md](v2-implementer-defaults.md), and the root [README.md](../README.md). The **`gg`** CLI builds **`POST /extract` → `text`** from Wikipedia + MusicBrainz + Discogs APIs plus optional Brave snippets before calling entity-service — see [WEB_ENRICHMENT.md](WEB_ENRICHMENT.md) (not part of the ES HTTP contract; caller-side behavior).
 
 ---
 
@@ -84,7 +84,7 @@ Returns JSON like `{ "ok": true }` when the process is ready to serve traffic (s
 |--------|----------|---------|
 | `text` | Yes | Input string to analyze. |
 | `labels` | No | If non-empty, only entities whose **`label`** is in this list are returned. If omitted or `[]`, no label filter. |
-| `options` | No | `{ "use_aliases": boolean, "use_model": boolean }`. Defaults: aliases **on**, model **off**. |
+| `options` | No | `{ "use_aliases": boolean, "use_model": boolean, "useGgGenericForUnknownCatalogLabels": boolean }`. Defaults: aliases **on**, model **off**, catalog fallback **off**. When **`useGgGenericForUnknownCatalogLabels`** is **true** and **`useTypeDbTypes`** is **false**, labels not in **`schema`** map to **`gg-generic`** before the **`labels`** filter. |
 | `schema` | No | Optional **runtime** vocabulary: `entityTypes` + `knownEntities`. Drives extra alias rows for this request only. |
 
 **Response body** (JSON):
@@ -96,6 +96,8 @@ Returns JSON like `{ "ok": true }` when the process is ready to serve traffic (s
 **Stability:** the **`/extract` response shape** (`entities[]` fields above) is treated as **stable**. New behavior is added through **optional** request fields, not by renaming or removing existing fields.
 
 **Wire format note:** Pydantic models use **camelCase** aliases for JSON (`entityTypes`, `knownEntities`, …). Some nested compatibility with snake_case exists where configured.
+
+**Generic catalog `label` (GrooveGraph stack):** **`gg-generic`** — TypeQL entity type in [`typedb/groovegraph-schema.tql`](../typedb/groovegraph-schema.tql), same row shape as **`mo-*`**. Use on **`entities[].label`** for provisional spans. **`gg explore`** may include **`gg-generic`** in **`labels`** when kinds are narrowed. Default class IRI for drafts: **`https://groovegraph.dev/ns#GenericExtractSpan`**.
 
 ### Schema resolution pipeline (optional, server + TypeDB env)
 

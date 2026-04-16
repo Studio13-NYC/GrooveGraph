@@ -10,9 +10,10 @@ uv run gg --help
 
 ## Where to read next
 
-- **[`docs/WORKFLOWS.md`](../docs/WORKFLOWS.md)** — **diagrams and narrative** for every `gg` path (doctor, schema, search, analyze, extract, ingest, pending).
+- **[`docs/WORKFLOWS.md`](../docs/WORKFLOWS.md)** — **diagrams and narrative** for every `gg` path (doctor, **explore**, schema, search, analyze, extract, ingest, pending).
 - **[`AGENTS.md`](../AGENTS.md)** — agent rules and doc index.
 - **[`docs/USER_AND_AGENT_GUIDE.md`](../docs/USER_AND_AGENT_GUIDE.md)** — entity-service HTTP contract.
+- **[`docs/WEB_ENRICHMENT.md`](../docs/WEB_ENRICHMENT.md)** — Wikipedia + MusicBrainz + Discogs + Brave stimulus for **`/extract`** (`canonical_sources.py`, `stimulus_compose.py`); env: **`DISCOGS_TOKEN`**, **`GROOVEGRAPH_HTTP_USER_AGENT`**.
 
 `gg doctor` checks **TypeDB** (`type_schema`), entity-service (**`/health` → `/ready` → `/docs`**), and **one Brave** search when a Brave key is set.
 

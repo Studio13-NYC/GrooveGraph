@@ -29,6 +29,29 @@ def openai_api_key() -> str | None:
     return stripped or None
 
 
+# Sent to Wikipedia, MusicBrainz, and Discogs API requests (Discogs requires a unique UA; see their docs).
+_DEFAULT_HTTP_USER_AGENT = "GrooveGraph/2.0 (+https://github.com/) python-httpx"
+
+
+def groovegraph_http_user_agent() -> str:
+    """Return ``GROOVEGRAPH_HTTP_USER_AGENT`` from env or a conservative default."""
+    raw = os.environ.get("GROOVEGRAPH_HTTP_USER_AGENT") or ""
+    stripped = raw.strip()
+    return stripped or _DEFAULT_HTTP_USER_AGENT
+
+
+def discogs_token() -> str | None:
+    """
+    Personal access token for Discogs API (``Authorization: Discogs token=…``).
+
+    Create at https://www.discogs.com/settings/developers — see
+    https://www.discogs.com/developers/page:authentication,header:authentication
+    """
+    raw = os.environ.get("DISCOGS_TOKEN") or os.environ.get("DISCOGS_PERSONAL_ACCESS_TOKEN") or ""
+    stripped = raw.strip()
+    return stripped or None
+
+
 def brave_api_key() -> str | None:
     """
     Prefer `BRAVE_API_KEY` (documented in repo-root `.env.example`).

@@ -19,6 +19,10 @@ This document is **issue-oriented**. For the upstream capability checklist, see 
 
 **Tags:** `typedb_not_configured_on_entity_service`, `upstream blocked` (see punch list).
 
+### 1.1 Generic catalog type (`gg-generic`)
+
+**`gg-generic`** is the TypeQL **entity type** and **`POST /extract`** **`label`** for provisional / untyped spans: same **`owns`** as **`mo-*`** rows (`name`, `approval-status`, `mo-class-iri`, …). Defined in [`typedb/groovegraph-schema.tql`](../typedb/groovegraph-schema.tql) with default class IRI **`https://groovegraph.dev/ns#GenericExtractSpan`**. **`gg explore`** may append **`gg-generic`** to **`labels`** when kinds are narrowed so generics are not filtered out. **`gg explore --ingest`** **may** persist **`gg-generic`** drafts like other catalog kinds when that label is in the allowlist.
+
 ---
 
 ## 2. Symptom matrix (what you observe vs likely cause)

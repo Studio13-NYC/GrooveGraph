@@ -1,0 +1,12 @@
+// Incremental define: add ``gg-generic`` when the database already has the rest of
+// groovegraph-schema.tql applied. Run in a SCHEMA transaction (see typedb/README.md).
+
+define
+
+  entity gg-generic,
+    owns name,
+    owns approval-status,
+    owns mo-class-iri,
+    owns mo-property-iri,
+    owns source-url,
+    owns ingestion-batch-id;

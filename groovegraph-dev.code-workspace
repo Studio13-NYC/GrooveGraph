@@ -5,8 +5,7 @@
       "path": "."
     },
     {
-      "name": "GrooveGraph-next v1 (reference)",
-      "path": "../GrooveGraph-next"
+      "path": "../entity-service"
     }
   ],
   "settings": {}

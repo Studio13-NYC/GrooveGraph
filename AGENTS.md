@@ -6,22 +6,23 @@
 
 ## Read order (before you change code)
 
-1. **[README.md](README.md)** — repo role, v1 reference rules, doc index.
-2. **[docs/WORKFLOWS.md](docs/WORKFLOWS.md)** — **visual map** of `gg` commands and integrations (TypeDB, entity-service, Brave); read before changing CLI orchestration.
-3. **[docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md)** — **new agent brief**: what GrooveGraph v2 is, current work slice, how we work, doc read order, v1 reference workflow, clone checklist.
-4. **[docs/v2-implementer-defaults.md](docs/v2-implementer-defaults.md)** — **canonical** stack choices, tool versions, and **implementation-slice status** (what is done vs next).
-5. **[docs/v2-product-qa-log.md](docs/v2-product-qa-log.md)** — full **product Q&A** (intent, tradeoffs, deferred items). Do not contradict it without an explicit product decision recorded there.
-6. **[docs/USER_AND_AGENT_GUIDE.md](docs/USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP contract (`/extract`, optional `/schema-pipeline/*`). Mirrored from upstream; treat the **wire shapes** as stable.
-7. **[docs/AGENT_ENTITY_SERVICE_ISSUES.md](docs/AGENT_ENTITY_SERVICE_ISSUES.md)** — when **`/extract`** or **`/schema-pipeline/formatted`** look “broken” (empty `entities`, empty `knownEntities`, 503): symptom matrix, **two TypeDB envs**, and what **`gg`** does *not* do.
+1. **[README.md](README.md)** — repo role and doc index.
+2. **[docs/WORKFLOWS.md](docs/WORKFLOWS.md)** — **visual map** of `gg` commands and integrations (TypeDB, entity-service, Brave); read before changing CLI orchestration. Canonical extract stimulus (Wikipedia / MusicBrainz / Discogs + Brave): **[docs/WEB_ENRICHMENT.md](docs/WEB_ENRICHMENT.md)**.
+3. **[docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md)** — **new agent brief**: what GrooveGraph v2 is, current work slice, how we work, doc read order, clone checklist.
+4. **[docs/NEXT_AGENT_TODO.md](docs/NEXT_AGENT_TODO.md)** — **prioritized handoff checklist** (P0–P3); update when you ship or reprioritize a slice.
+5. **[docs/v2-implementer-defaults.md](docs/v2-implementer-defaults.md)** — **canonical** stack choices, tool versions, and **implementation-slice status** (what is done vs next).
+6. **[docs/v2-product-qa-log.md](docs/v2-product-qa-log.md)** — full **product Q&A** (intent, tradeoffs, deferred items). Do not contradict it without an explicit product decision recorded there.
+7. **[docs/USER_AND_AGENT_GUIDE.md](docs/USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP contract (`/extract`, optional `/schema-pipeline/*`). Mirrored from upstream; treat the **wire shapes** as stable.
+8. **[docs/AGENT_ENTITY_SERVICE_ISSUES.md](docs/AGENT_ENTITY_SERVICE_ISSUES.md)** — when **`/extract`** or **`/schema-pipeline/formatted`** look “broken” (empty `entities`, empty `knownEntities`, 503): symptom matrix, **two TypeDB envs**, and what **`gg`** does *not* do.
 
 ---
 
 ## Non-negotiables
 
-- **All v2 implementation lives in this repo (`GrooveGraph`).** [GrooveGraph-next](https://github.com/Studio13-NYC/GrooveGraph-next) is **read-only reference** at tag `v1-reference-for-v2`. Do not land v2 features or fixes there unless the product owner explicitly says so.
+- **All v2 implementation lives in this repo (`GrooveGraph`).** There is no sibling legacy app in this workspace; ship v2 work only here on **`origin`**.
 - **Never commit secrets.** `.env` is gitignored; only [`.env.example`](.env.example) documents variable **names**. Production uses **Azure** (or host) environment injection, not checked-in env files.
 - **entity-service does not own the database.** It is a **stateless** HTTP pipeline. TypeDB access and schema evolution live in **callers** (**`cli/`** + **`gg`**, later app/worker). Python inside entity-service must not open TypeDB for writes that belong in GrooveGraph’s persistence story.
-- **MO-first for the catalog model.** Lead with Music Ontology understanding and the [ontology/mo-coverage-matrix.md](ontology/mo-coverage-matrix.md), then TypeQL under [`typedb/`](typedb/README.md). v1 greenfield TypeQL in GrooveGraph-next is **inspiration only**, not a copy source.
+- **MO-first for the catalog model.** Lead with Music Ontology understanding and the [ontology/mo-coverage-matrix.md](ontology/mo-coverage-matrix.md), then TypeQL under [`typedb/`](typedb/README.md). Prior greenfield TypeQL (if any) is **inspiration only**, not a copy source — see Q11 in the product Q&A log.
 - **Human in the loop when you are stuck.** If you are **unsure** or **confused** after consulting the docs in the read order (or the risk is **high** — product meaning, schema migration, auth, secrets, compliance), **stop** and **ask the human** for assistance. State what you already checked and what is ambiguous. **Do not** guess past serious uncertainty or ship speculative behaviour in those areas.
 
 ---
@@ -44,6 +45,7 @@
 - **TypeScript (`ner-client/`):** keep the client **thin** — types + `fetch` to `/health` and `/extract` only unless the task expands it deliberately.
 - **TypeQL:** lives under **`typedb/`**; start from **one** canonical file until migrations are needed. Extend schema in line with the **MO coverage matrix**, not ad hoc.
 - **Tests:** **`pytest`** under **`cli/tests/`** — markers include **`core`** (repo `.env` connectivity), **`brave_only`** (standalone Brave), **`entity_service`** (HTTP schema-pipeline; **`skip`** when entity-service is unreachable or returns **503 / TypeDB-not-configured-on-server** — treat as **upstream blocked**; tags **`upstream blocked`**, **`typedb_not_configured_on_entity_service`** in [`docs/ENTITY_SERVICE_PUNCH_LIST.md`](docs/ENTITY_SERVICE_PUNCH_LIST.md), not GrooveGraph regressions). **No GitHub Actions CI** until the product owner turns it on (see Q&A log).
+- **Generic catalog type:** TypeQL **`entity gg-generic`** (see [`typedb/groovegraph-schema.tql`](typedb/groovegraph-schema.tql)) matches the same **`owns`** shape as MO catalog rows; **`gg-generic`** is the **`POST /extract`** **`label`** and CLI kind for provisional spans. Apply schema to TypeDB before relying on it (see [`typedb/README.md`](typedb/README.md)).
 - **Test data in TypeDB:** Any **persisted** rows created by **automated tests** (or ad-hoc local harnesses) must be tagged on the same **`approval-status`** field used for draft ingest lifecycle (the field that carries values like **`pending`** for operator review). Use the literal value **`test`** for those rows so they are easy to filter out and never mistaken for real pending catalog drafts.
 - **Documentation:** update **this file**, **implementer defaults**, or **Q&A log** when you change a **product or process** decision; update **typedb/README** or **README** when you change how we apply schema or configure env.
 
@@ -66,12 +68,6 @@
 - **Middle path for ingest:** keep **shared library boundaries** inside the repo so a future **worker** can own long-running fetch/write without rewriting core logic (see Q&A on “middle path”).
 - **Schema pipeline:** default **`gg`** flows use **`POST /schema-pipeline/formatted`** only (DB-backed types). **`/raw` → `/validate` → `/formatted`** is for **testing / define inspection** — see USER guide and [`docs/WORKFLOWS.md`](docs/WORKFLOWS.md).
 - **Return raw in every environment** is a **service capability**; respect whatever auth the deployed entity-service enforces.
-
----
-
-## v1 reference (when you need prior art)
-
-Use **`git fetch groovegraph-next-v1`** and **`git show` / `git grep`** on tag `v1-reference-for-v2` (see [docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md)). **Re-implement** in GrooveGraph; do not bulk-copy legacy trees.
 
 ---
 

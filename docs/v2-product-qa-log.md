@@ -140,13 +140,13 @@ Agreed technical direction (not Q&A, for reference):
 
 ---
 
-## Q11 — MO-aligned TypeQL: relationship to GrooveGraph-next greenfield
+## Q11 — MO-aligned TypeQL: relationship to prior greenfield TypeQL
 
-**Question (2026-04-15):** For the **MO-aligned TypeQL schema**, should we **start from the existing greenfield vocabulary** in GrooveGraph-next (`groovegraph-mo-greenfield-schema.tql` as a reference) and **re-home + extend it in GrooveGraph**, or treat that file as **inspiration only** and **re-author** the schema in GrooveGraph from MO + your pending/provenance needs?
+**Question (2026-04-15):** For the **MO-aligned TypeQL schema**, should we **start from an existing greenfield vocabulary** (for example a `groovegraph-mo-greenfield-schema.tql`-style file from earlier work) and **re-home + extend it** in GrooveGraph, or treat prior greenfield TypeQL as **inspiration only** and **re-author** the schema in GrooveGraph from MO + your pending/provenance needs?
 
 **Answer (2026-04-15):**
 
-- **Inspiration only** — do not treat the v1 greenfield file as the source of truth to copy forward.
+- **Inspiration only** — do not treat prior greenfield TypeQL as the source of truth to copy forward.
 - Schema will be **figured out while digging into the ontology**; the old approach was **not** modeling MO correctly.
 
 ---
@@ -403,4 +403,10 @@ Neither skips MO; the difference is **which document leads** when two goals conf
 
 ## End of round 1 (2026-04-15)
 
-Discovery Q&A through **Q33** plus implementer defaults (documented separately). Next work: see **“First implementation slice”** in [`v2-implementer-defaults.md`](v2-implementer-defaults.md).
+Discovery Q&A through **Q33** plus implementer defaults (documented separately). Next work: see **“First implementation slice”** in [`v2-implementer-defaults.md`](v2-implementer-defaults.md), the prioritized handoff in [`NEXT_AGENT_TODO.md`](NEXT_AGENT_TODO.md), and extract stimulus details in [`WEB_ENRICHMENT.md`](WEB_ENRICHMENT.md).
+
+---
+
+## Errata (frozen Q&A vs current tree)
+
+- **Q30:** The MO-first coverage matrix is checked in as **`ontology/mo-coverage-matrix.md`** (the answer text predates that filename; the location under **`ontology/`** matches).

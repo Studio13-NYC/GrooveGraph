@@ -2,14 +2,16 @@ from __future__ import annotations
 
 from typing import Any
 
-from groovegraph.brave_extract_context import ContextMode, build_augmented_extract_text
+from groovegraph.brave_extract_context import ContextMode
 from groovegraph.brave_search import brave_web_search
+from groovegraph.canonical_sources import fetch_canonical_enrichment
 from groovegraph.catalog_search import search_catalog_in_typedb
 from groovegraph.catalog_types import CatalogEntityKind
 from groovegraph.env_loader import brave_api_key, ner_service_url
 from groovegraph.extract_client import post_extract
 from groovegraph.logging_setup import get_logger
 from groovegraph.schema_pipeline import run_schema_pipeline_chain
+from groovegraph.stimulus_compose import build_extract_stimulus_text
 from groovegraph.typedb_config import TypeDbConfigError, read_typedb_connection_params
 from groovegraph.typedb_session import open_typedb_driver, run_read_query
 
@@ -27,7 +29,7 @@ def run_analyze_query(
     extract_context: ContextMode = "rich",
     use_model: bool = False,
     emit_stimulus: bool = False,
-    stimulus_max_chars: int = 12_000,
+    stimulus_max_chars: int = 500_000,
 ) -> dict[str, Any]:
     """
     Discovery-oriented path: optional catalog + optional web, then POST /extract with **no label filter**
@@ -55,6 +57,7 @@ def run_analyze_query(
         "schema_pipeline": None,
         "extract": None,
         "stimulus": None,
+        "canonical_sources": None,
     }
 
     if include_typedb:
@@ -100,15 +103,17 @@ def run_analyze_query(
             web_report = brave_web_search(api_key=key, query=needle, count=brave_count)
         out["web"] = web_report
 
-    extract_text = needle
-    web_ok = isinstance(out.get("web"), dict) and out["web"].get("ok") is True
-    if include_web and web_ok and isinstance(out["web"], dict):
-        extract_text = build_augmented_extract_text(
-            needle,
-            out["web"],
-            context=extract_context,
-            max_chars=stimulus_max_chars,
-        )
+    can = fetch_canonical_enrichment(needle)
+    out["canonical_sources"] = can.to_wire()
+    extract_text = build_extract_stimulus_text(
+        needle,
+        out.get("web"),
+        include_web=include_web,
+        brave_count=brave_count,
+        canonical=can,
+        context=extract_context,
+        stimulus_max_chars=stimulus_max_chars,
+    )
 
     base = ner_service_url()
     schema: dict[str, Any] | None = None

@@ -4,6 +4,21 @@ import httpx
 import pytest
 
 import groovegraph.analyze_workflow as aw
+from groovegraph.canonical_sources import CanonicalEnrichmentResult, SourceChunk
+
+
+@pytest.fixture(autouse=True)
+def _stub_canonical_sources_no_network(monkeypatch: pytest.MonkeyPatch) -> None:
+    def _stub(needle: str, *, timeout_s: float = 14.0) -> CanonicalEnrichmentResult:
+        n = (needle or "").strip()
+        return CanonicalEnrichmentResult(
+            needle=n,
+            wikipedia=SourceChunk("wikipedia", True, "", "test_stub"),
+            musicbrainz=SourceChunk("musicbrainz", True, "", "test_stub"),
+            discogs=SourceChunk("discogs", True, "", "test_stub"),
+        )
+
+    monkeypatch.setattr(aw, "fetch_canonical_enrichment", _stub)
 
 
 def test_analyze_default_no_typedb_no_schema_empty_labels(monkeypatch: pytest.MonkeyPatch) -> None:

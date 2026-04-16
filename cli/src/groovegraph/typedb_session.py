@@ -72,6 +72,23 @@ def run_read_query(driver: Any, *, database: str, query: str) -> list[dict[str, 
     return rows
 
 
+def run_schema_define(driver: Any, *, database: str, define_typeql: str) -> None:
+    """
+    Run a single **define** (or other schema) pipeline in a SCHEMA transaction.
+
+    Caller supplies full TypeQL from the canonical repo file (see ``schema_bootstrap``).
+    """
+    text = define_typeql.strip()
+    if not text:
+        raise ValueError("run_schema_define requires non-empty TypeQL")
+    log.info("typedb SCHEMA define begin database=%s chars=%s", database, len(text))
+    log.debug("typedb SCHEMA define body=\n%s", text)
+    with driver.transaction(database, TransactionType.SCHEMA) as tx:
+        tx.query(text).resolve()
+        tx.commit()
+    log.info("typedb SCHEMA define committed database=%s", database)
+
+
 def run_write_queries(driver: Any, *, database: str, queries: list[str]) -> None:
     """
     Run one or more write pipelines in a single WRITE transaction, then commit.

@@ -26,7 +26,7 @@ These items were **not** each asked as a separate discovery question; they follo
 
 | Topic | Default |
 |--------|---------|
-| **`gg` next** | **`gg search`** (DB then web) once MO-shaped ingest exists; later **`gg typedb apply`** when schema automation is justified (Q32). |
+| **Future `gg` work** | **`gg search`** (DB then web) once MO-shaped ingest exists; later **`gg typedb apply`** when schema automation is justified (Q32). |
 | **HTTP client in `cli/`** | **`httpx`** for Brave, entity-service, and other REST calls. |
 | **`requires-python`** | **`>=3.12`** in `cli/pyproject.toml` until a reason appears to widen or narrow. |
 | **Manual schema apply** | Document in **`typedb/README.md`** (and link from root `README.md`): env vars, **empty database** expectation, and that apply is **deliberate** until automation lands. |
@@ -49,6 +49,6 @@ In order of dependency:
 | 4. **`cli/`** package + **`gg` entry** | **Done** | `pyproject.toml`: `uv`, Typer, Pydantic, python-dotenv, httpx, official TypeDB Python driver, pytest; console script **`gg`**. |
 | 5. **`gg doctor`** | **Done** | JSON default, `--pretty`; TypeDB via **`type_schema()`** + type list; entity-service **GET `/health`** (fallback **`/ready`**, **`/docs`**); one Brave search when **`BRAVE_API_KEY`** is set (429 treated as reachable); **`--probe`** fails Brave block if the key is missing. |
 | 6. **`gg schema *` (entity-service pipeline)** | **Done** | `gg schema run` uses **`POST /schema-pipeline/formatted`** only (DB-backed); `raw|validate|formatted` for testing / stdin pipes per [`USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md). |
-| 7. **Catalog operator loop (post-`v0.0.3`)** | **Done (slice)** | **`gg search`**, **`gg analyze`** (discovery `/extract` with empty `labels`, no schema by default), **`gg extract`**, **`gg ingest-draft`**, **`gg pending list`**. Next: richer MO relations, non-Brave source adapters, and (later) **`gg typedb apply`** once schema automation is justified (Q32). |
+| 7. **Catalog operator loop (post-`v0.0.3`)** | **Done (slice)** | **`gg search`**, **`gg analyze`**, **`gg extract`**, **`gg ingest-draft`**, **`gg pending list`**. **Canonical API enrichment** (Wikipedia + MusicBrainz + Discogs → `/extract` `text`) is **done** — see [`WEB_ENRICHMENT.md`](WEB_ENRICHMENT.md). **Next:** URL fetch / readability extraction, richer MB/Discogs follow-up queries, richer MO relations, and (later) **`gg typedb apply`** once schema automation is justified (Q32). |
 
 CI (GitHub Actions) stays **out** until explicitly requested (Q24).

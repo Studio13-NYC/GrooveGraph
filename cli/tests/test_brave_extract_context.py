@@ -41,3 +41,14 @@ def test_build_rich_truncates() -> None:
     t = build_augmented_extract_text("Q", web, context="rich", max_chars=100)
     assert len(t) == 100
     assert t.endswith("…")
+
+
+def test_build_rich_prefix_needle_false_skips_leading_query() -> None:
+    web = {
+        "ok": True,
+        "body": {"web": {"results": [{"title": "Hit", "description": "Body"}]}},
+    }
+    t = build_augmented_extract_text("Q", web, context="rich", prefix_needle=False)
+    assert not t.startswith("Q")
+    assert "--- Web excerpts (Brave) ---" in t
+    assert "Hit" in t and "Body" in t

@@ -20,3 +20,4 @@ Thumbs.db
 
 # Local runtime logs (see logs/README.md)
 logs/*.log
+logs/*.json

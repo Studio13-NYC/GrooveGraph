@@ -12,12 +12,18 @@ from groovegraph.catalog_types import CatalogEntityKind, parse_kind_list
 from groovegraph.doctor import run_doctor
 from groovegraph.draft_ingest import persist_ingest_envelope
 from groovegraph.env_loader import brave_api_key, load_repo_dotenv, ner_service_url, openai_api_key
+from groovegraph.explore_ingest import (
+    build_ingest_rows_from_extract,
+    catalog_labels_from_kinds,
+    default_explore_batch_id,
+)
 from groovegraph.extract_client import post_extract
 from groovegraph.ingest_models import IngestDraftEnvelope
 from groovegraph.logging_setup import get_logger, setup_gg_logging
 from groovegraph.paths import repo_root_from
 from groovegraph.pending_queries import list_pending_hits
 from groovegraph.schema_pipeline import post_schema_formatted, post_schema_raw, post_schema_validate, run_schema_pipeline_chain
+from groovegraph.schema_bootstrap import ensure_groovegraph_catalog_schema
 from groovegraph.search_workflow import run_gg_search
 from groovegraph.typedb_config import TypeDbConfigError, read_typedb_connection_params
 from groovegraph.typedb_session import open_typedb_driver, run_read_query
@@ -196,7 +202,7 @@ def search(
         typer.Option(
             "--types",
             "-t",
-            help="Comma-separated MO-aligned kinds: mo-music-artist,mo-record,mo-track,mo-instrument,mo-label,foaf-agent (default: all).",
+            help="Comma-separated catalog kinds: mo-music-artist,mo-record,mo-track,mo-instrument,mo-label,foaf-agent,gg-generic (default: all).",
         ),
     ] = None,
     web: Annotated[
@@ -206,7 +212,7 @@ def search(
             help="Run Brave web search after DB (default: on when BRAVE_API_KEY is set).",
         ),
     ] = None,
-    brave_count: Annotated[int, typer.Option("--brave-count", min=1, max=20)] = 5,
+    brave_count: Annotated[int, typer.Option("--brave-count", min=1, max=20)] = 20,
     extract: Annotated[
         bool,
         typer.Option("--extract", help="Run schema pipeline + POST /extract (requires configured entity-service)."),
@@ -231,6 +237,285 @@ def search(
     )
     report = {**report, "dotenv_path": ctx.obj.get("dotenv_path")}
     get_logger("cli").info("search end ok=%s typedb_hits=%s", report.get("ok"), len((report.get("typedb") or {}).get("hits") or []))
+    _dump_json(report, pretty=_pretty(ctx, pretty_cmd))
+    raise typer.Exit(code=0 if bool(report.get("ok")) else 2)
+
+
+@app.command()
+def explore(
+    ctx: typer.Context,
+    query: Annotated[str, typer.Argument(help="Topic: TypeDB catalog match + Brave excerpts + schema pipeline + POST /extract.")],
+    types: Annotated[
+        str | None,
+        typer.Option(
+            "--types",
+            "-t",
+            help="Comma-separated catalog kinds incl. gg-generic (default: all). Forwarded as /extract labels filter.",
+        ),
+    ] = None,
+    brave_count: Annotated[int, typer.Option("--brave-count", min=1, max=20)] = 20,
+    auto_catalog_schema: Annotated[
+        bool,
+        typer.Option(
+            "--auto-catalog-schema/--no-auto-catalog-schema",
+            help="If MO catalog types are missing in TypeDB, apply typedb/groovegraph-schema.tql (SCHEMA tx) before calling entity-service.",
+        ),
+    ] = True,
+    use_model: Annotated[
+        bool,
+        typer.Option(
+            "--use-model/--no-use-model",
+            help="Forward options.use_model=true on POST /extract (GLiNER when enabled on entity-service).",
+        ),
+    ] = False,
+    ingest: Annotated[
+        bool,
+        typer.Option(
+            "--ingest",
+            help="After a successful extract, persist mapped entities as pending drafts (same shape as gg ingest-draft).",
+        ),
+    ] = False,
+    batch_id: Annotated[
+        str | None,
+        typer.Option(
+            "--batch-id",
+            help="ingestion_batch_id for --ingest (default: explore-YYYYMMDD-slug from query).",
+        ),
+    ] = None,
+    pretty_cmd: Annotated[bool, typer.Option("--pretty", help="Pretty-print JSON.")] = False,
+) -> None:
+    """Explore: doctor (Brave probe) → optional catalog **define** in TypeDB → Brave rich text → /formatted → /extract → optional ingest."""
+    log = get_logger("cli")
+    log.info(
+        "explore begin query=%r types=%r auto_catalog_schema=%s use_model=%s ingest=%s",
+        query,
+        types,
+        auto_catalog_schema,
+        use_model,
+        ingest,
+    )
+    root = Path.cwd()
+    doctor_report = run_doctor(repo_start=root, probe_brave=True)
+    if not bool(doctor_report.get("ok")):
+        log.warning(
+            "explore FAILED stage=doctor ok=False (fix TypeDB, entity-service, or Brave; see gg doctor --probe)"
+        )
+        _dump_json(
+            {
+                "ok": False,
+                "error": "doctor_failed",
+                "detail": "Explore requires TypeDB, entity-service, and a working Brave API key (see `gg doctor --probe`).",
+                "doctor": doctor_report,
+                "dotenv_path": ctx.obj.get("dotenv_path"),
+            },
+            pretty=_pretty(ctx, pretty_cmd),
+        )
+        raise typer.Exit(code=2)
+    log.info("explore stage=doctor ok=True")
+
+    try:
+        kinds = parse_kind_list(types, default_all=True)
+    except ValueError as exc:
+        _dump_json({"ok": False, "error": "invalid_types", "detail": str(exc)}, pretty=_pretty(ctx, pretty_cmd))
+        raise typer.Exit(code=2) from exc
+
+    schema_bootstrap: dict[str, Any] | None = None
+    if not auto_catalog_schema:
+        log.info("explore stage=schema_bootstrap skipped (--no-auto-catalog-schema)")
+    if auto_catalog_schema:
+        try:
+            params = read_typedb_connection_params()
+        except TypeDbConfigError as exc:
+            _dump_json(
+                {"ok": False, "error": "typedb_config", "detail": str(exc), "dotenv_path": ctx.obj.get("dotenv_path")},
+                pretty=_pretty(ctx, pretty_cmd),
+            )
+            raise typer.Exit(code=2) from exc
+        try:
+            with open_typedb_driver(params) as driver:
+                if not driver.databases.contains(params.database):
+                    names = sorted(d.name for d in driver.databases.all())
+                    _dump_json(
+                        {
+                            "ok": False,
+                            "error": "database_missing",
+                            "database": params.database,
+                            "databases": names,
+                            "dotenv_path": ctx.obj.get("dotenv_path"),
+                        },
+                        pretty=_pretty(ctx, pretty_cmd),
+                    )
+                    raise typer.Exit(code=2)
+                repo = repo_root_from(root)
+                schema_bootstrap = ensure_groovegraph_catalog_schema(
+                    driver=driver,
+                    database=params.database,
+                    repo_root=repo,
+                )
+        except typer.Exit:
+            raise
+        except Exception as exc:  # noqa: BLE001
+            get_logger("cli").exception("explore catalog schema bootstrap failed")
+            _dump_json(
+                {
+                    "ok": False,
+                    "error": "schema_bootstrap_exception",
+                    "detail": str(exc),
+                    "dotenv_path": ctx.obj.get("dotenv_path"),
+                },
+                pretty=_pretty(ctx, pretty_cmd),
+            )
+            raise typer.Exit(code=2) from exc
+
+        if not bool(schema_bootstrap.get("ok")):
+            log.warning(
+                "explore FAILED stage=schema_bootstrap ok=False detail=%s",
+                schema_bootstrap.get("detail"),
+            )
+            _dump_json(
+                {
+                    "ok": False,
+                    "error": "schema_bootstrap_failed",
+                    "schema_bootstrap": schema_bootstrap,
+                    "dotenv_path": ctx.obj.get("dotenv_path"),
+                },
+                pretty=_pretty(ctx, pretty_cmd),
+            )
+            raise typer.Exit(code=2)
+        log.info(
+            "explore stage=schema_bootstrap ok=True action=%s",
+            schema_bootstrap.get("action"),
+        )
+
+    report = run_gg_search(
+        needle=query,
+        kinds=kinds,
+        include_web=True,
+        brave_count=brave_count,
+        include_extract=True,
+        require_successful_web_for_extract=True,
+        use_model=use_model,
+        include_reserved_generic_extract_label=True,
+    )
+    report = {
+        **report,
+        "mode": "explore",
+        "doctor": {"ok": True, "note": "Preflight passed at start of explore."},
+        "schema_bootstrap": schema_bootstrap,
+        "dotenv_path": ctx.obj.get("dotenv_path"),
+    }
+
+    ex_body = (report.get("extract") or {}).get("body") if isinstance((report.get("extract") or {}).get("body"), dict) else {}
+    ent_list = ex_body.get("entities") if isinstance(ex_body.get("entities"), list) else []
+    log.info(
+        "explore stage=search_extract ok=%s typedb_hits=%s extract_http_ok=%s entities_count=%s",
+        report.get("ok"),
+        len((report.get("typedb") or {}).get("hits") or []),
+        (report.get("extract") or {}).get("ok"),
+        len(ent_list),
+    )
+    if ent_list:
+        sample_labels = [str(e.get("label", "")) for e in ent_list[:8] if isinstance(e, dict)]
+        log.info("explore extract sample_labels(first8)=%s", sample_labels)
+
+    fmt = (report.get("schema_pipeline") or {}).get("formatted")
+    if isinstance(fmt, dict):
+        ne = fmt.get("knownEntities")
+        et = fmt.get("entityTypes")
+        n_empty = not isinstance(ne, list) or len(ne) == 0
+        t_empty = not isinstance(et, list) or len(et) == 0
+        if n_empty and t_empty and (report.get("extract") or {}).get("ok"):
+            log.warning(
+                "explore pipeline note: POST /schema-pipeline/formatted returned empty entityTypes and "
+                "knownEntities - weak DB-backed schema slice for /extract (check TYPEDB_* on entity-service "
+                "process vs gg; see docs/AGENT_ENTITY_SERVICE_ISSUES.md)"
+            )
+
+    ingest_report: dict[str, Any] | None = None
+    if ingest:
+        if not bool(report.get("ok")):
+            ingest_report = {"ok": False, "error": "explore_not_ok", "detail": "Fix explore before --ingest."}
+            report["ok"] = False
+            log.warning(
+                "explore FAILED stage=ingest reason=explore_not_ok (upstream search/extract not ok; see JSON extract/schema_pipeline)"
+            )
+        else:
+            ex = report.get("extract") or {}
+            body = ex.get("body") if isinstance(ex.get("body"), dict) else {}
+            entities_raw = body.get("entities")
+            entities = entities_raw if isinstance(entities_raw, list) else []
+            allowed = catalog_labels_from_kinds(kinds)
+            catalog_rows, skipped = build_ingest_rows_from_extract(entities=entities, allowed_labels=allowed)
+            if not catalog_rows:
+                ingest_report = {
+                    "ok": False,
+                    "error": "no_mappable_entities",
+                    "skipped": skipped,
+                    "entities_count": len(entities),
+                }
+                report["ok"] = False
+                raw_labels = [str(e.get("label")) for e in entities if isinstance(e, dict) and e.get("label")]
+                log.warning(
+                    "explore FAILED stage=ingest reason=no_mappable_entities entities_count=%s "
+                    "allowlisted_labels=%s raw_labels_from_es=%s skipped_count=%s",
+                    len(entities),
+                    sorted(allowed),
+                    raw_labels[:20],
+                    len(skipped),
+                )
+            else:
+                bid = (batch_id or "").strip() or default_explore_batch_id(query)
+                envelope = IngestDraftEnvelope(
+                    ingestion_batch_id=bid,
+                    catalog_entities=catalog_rows,
+                    extract=body,
+                    notes="gg explore --ingest",
+                )
+                try:
+                    params = read_typedb_connection_params()
+                except TypeDbConfigError as exc:
+                    ingest_report = {"ok": False, "error": "typedb_config", "detail": str(exc)}
+                    report["ok"] = False
+                    log.warning("explore FAILED stage=ingest reason=typedb_config detail=%s", exc)
+                else:
+                    try:
+                        with open_typedb_driver(params) as driver:
+                            if not driver.databases.contains(params.database):
+                                ingest_report = {"ok": False, "error": "database_missing"}
+                                report["ok"] = False
+                                log.warning(
+                                    "explore FAILED stage=ingest reason=database_missing database=%s",
+                                    params.database,
+                                )
+                            else:
+                                ingest_report = persist_ingest_envelope(
+                                    driver=driver,
+                                    database=params.database,
+                                    envelope=envelope,
+                                )
+                                ingest_report = {**ingest_report, "skipped": skipped, "ingestion_batch_id": bid}
+                                log.info(
+                                    "explore stage=ingest ok=True batch_id=%s catalog_rows=%s skipped_non_rows=%s",
+                                    bid,
+                                    len(catalog_rows),
+                                    len(skipped),
+                                )
+                    except Exception as exc:  # noqa: BLE001
+                        log.exception("explore FAILED stage=ingest reason=typedb_write_failed")
+                        ingest_report = {"ok": False, "error": "typedb_write_failed", "detail": str(exc)}
+                        report["ok"] = False
+
+        report["ingest"] = ingest_report
+
+    if bool(report.get("ok")):
+        log.info("explore end ok=True (all requested stages succeeded)")
+    else:
+        err = (report.get("ingest") or {}).get("error") if isinstance(report.get("ingest"), dict) else None
+        log.warning(
+            "explore end ok=False (see JSON; ingest_error=%s extract_ok=%s)",
+            err,
+            (report.get("extract") or {}).get("ok"),
+        )
     _dump_json(report, pretty=_pretty(ctx, pretty_cmd))
     raise typer.Exit(code=0 if bool(report.get("ok")) else 2)
 
@@ -261,7 +546,7 @@ def analyze(
             help="Brave web search for extra context (default: on when BRAVE_API_KEY is set).",
         ),
     ] = None,
-    brave_count: Annotated[int, typer.Option("--brave-count", min=1, max=20)] = 5,
+    brave_count: Annotated[int, typer.Option("--brave-count", min=1, max=20)] = 20,
     schema: Annotated[
         bool,
         typer.Option(

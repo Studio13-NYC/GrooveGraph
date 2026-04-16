@@ -70,6 +70,28 @@ flowchart TD
 - **`--probe`**: if Brave key missing, Brave section fails (stricter check).
 - Use this before relying on `search`, `schema`, or `analyze`.
 
+### 3.1 Explore mode — `gg explore` (canonical slice)
+
+Until we add more operator pipelines, treat **explore** as the default “find what you can” path: **sanity is mandatory**, then **TypeDB + Brave + entity-service** in one JSON result.
+
+1. **`gg doctor`** — **required** preflight for explore: same checks as **`gg doctor --probe`** (`TypeDB` + entity-service `GET /health` → `/ready` → `/docs` + **mandatory Brave** probe). Missing `BRAVE_API_KEY` or a failed probe → **`gg explore`** exits **2** with `error: doctor_failed`.
+2. **Catalog types in TypeDB (instances later)** — by default **`--auto-catalog-schema`** runs **before** Brave/ES: if `mo-music-artist` is not yet defined in the target database, **`gg`** applies **`typedb/groovegraph-schema.tql`** in a **TypeDB SCHEMA** transaction (attributes + MO entity types + `ingestion-batch`). Use **`--no-auto-catalog-schema`** to skip (fail-soft catalog search only). **Warning:** only use on empty or dedicated databases if you already use a different schema shape.
+3. **Canonical APIs + Brave + same stimulus to ES** — catalog substring search runs on TypeDB; **Wikipedia + MusicBrainz + Discogs** (see [`WEB_ENRICHMENT.md`](WEB_ENRICHMENT.md)) plus optional **Brave** snippets are merged into the **`text`** for **`POST /extract`** (`stimulus_compose.py`, `brave_extract_context.py`).
+4. **Entity-service** — **`POST /schema-pipeline/formatted`** (needs **`TYPEDB_*` on the ES process**) → **`POST /extract`** with that **`text`**, returned **`schema`**, **`labels`** from `--types` **plus the reserved bucket** **`gg-generic`** (so untyped spans can be returned; see `docs/AGENT_ENTITY_SERVICE_ISSUES.md` §1.1), and **`options`** (`use_aliases: true`; **`--use-model`** sets `use_model: true` for GLiNER when enabled upstream).
+5. **Optional instance persist** — **`gg explore QUERY --ingest`** maps **`entities[]`** whose **`label`** is an allowlisted MO kind into **`gg ingest-draft`** rows (`approval_status: pending`) in one WRITE transaction. Unknown labels are listed under **`ingest.skipped`** (no guessed types). **`--batch-id`** overrides the default `explore-YYYYMMDD-…` id.
+
+**ES HTTP checklist (contract in `USER_AND_AGENT_GUIDE.md`):**
+
+| Stage | Method + path | Notes |
+|--------|----------------|-------|
+| Preflight | `GET /health` (+ `/ready`, `/docs` via doctor) | Proves process up; does **not** prove `/extract` or `/formatted`. |
+| Schema slice | `POST /schema-pipeline/formatted` | Needs **`TYPEDB_*` on the ES process** (separate from `gg`’s `.env`). |
+| NER | `POST /extract` | **`text`** (required), **`schema`** (optional, from formatted), **`labels`**, **`options`**. |
+
+If the **topic** Brave call fails after doctor passed (rate limit, network) **and** canonical sources (Wikipedia / MusicBrainz / Discogs) also yield no text, **`gg explore`** returns **`ok: false`** with **`extract.error: insufficient_context`** and does **not** call entity-service for that run. If canonical enrichment produced text, extract still runs (Brave snippets are optional when canonical succeeded). See [`WEB_ENRICHMENT.md`](WEB_ENRICHMENT.md).
+
+For scripted acceptance after doctor, still run the **`POST /formatted` → `POST /extract`** probes in [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md) §4 when debugging upstream.
+
 ---
 
 ## 4. Schema pipeline — `gg schema …`
@@ -104,6 +126,8 @@ flowchart LR
 
 ## 5. Catalog search — `gg search`
 
+Prefer **`gg explore QUERY`** for the combined doctor + DB + web + extract path (§3.1). **`gg search`** remains the building block with explicit flags.
+
 ```mermaid
 flowchart TD
   S[gg search QUERY] --> T[TypeDB: substring on name per MO kind]
@@ -117,7 +141,7 @@ flowchart TD
 
 - **DB-first:** always queries TypeDB catalog (allowlisted kinds; default all MO tokens).
 - **`--web` / `--no-web`:** default web **on** when `BRAVE_API_KEY` is set.
-- **`--extract`:** forwards **label list** from `--types` (or all) plus schema pipeline output.
+- **`--extract`:** **`POST /schema-pipeline/formatted`** then **`POST /extract`**; stimulus **`text`** uses **rich Brave excerpts** when web succeeded (same builder as `gg analyze --context rich`).
 
 ---
 

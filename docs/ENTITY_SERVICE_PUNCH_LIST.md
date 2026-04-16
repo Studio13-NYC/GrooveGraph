@@ -16,15 +16,16 @@ GrooveGraph (**`gg`**) and other clients integrate with **entity-service** over 
 | 6 | Safe logging for large define text | **Done:** sizes + SHA-256 at INFO; **`ENTITY_SERVICE_DEBUG_TYPEDB_BODY`** | — |
 | 7 | Smoke / short loop | **Done:** `scripts/smoke_schema_pipeline.py`, **`npm run smoke:schema-pipeline*`**, README | **You:** run smoke against the URL where ES listens. |
 | 8 | Contract tests without Brave | **Done:** **`pytest -m contract`**, `tests/test_contract_offline.py` | **You:** run **`uv run pytest -q -m contract`** in CI that only checks ES contracts. |
+| 9 | **`gg-generic`** + optional catalog fallback on **`/extract`** | **Done:** literal **`gg-generic`** label alignment; **`options.useGgGenericForUnknownCatalogLabels`** when **`useTypeDbTypes`** is off | **You:** ensure TypeQL **`entity gg-generic`** exists in the DB GrooveGraph uses ([`typedb/groovegraph-schema-add-gg-generic.tql`](../typedb/groovegraph-schema-add-gg-generic.tql)); see [`NEXT_AGENT_TODO.md`](NEXT_AGENT_TODO.md). |
 
 ---
 
-## GrooveGraph tracking tags (formerly “PR tags”)
+## GrooveGraph tracking tags
 
 | Tag | Where it appears | What it means |
 | --- | --- | --- |
 | **`upstream blocked`** | Docs, agent guidance | Failure is **entity-service configuration or capability**, not a GrooveGraph regression. Fix ES env or deployment, then re-run tests. |
-| **`typedb_not_configured_on_entity_service`** | `POST /schema-pipeline/*` **503** or JSON **`detail`** | TypeDB vars are missing on the **API process** that runs FastAPI. |
+| **`typedb_not_configured_on_entity_service`** | `POST /schema-pipeline/*` **503**, **`POST /extract`** with **`useTypeDbTypes`: true** **503**, or JSON **`detail`** | TypeDB vars are missing on the **API process** that runs FastAPI. |
 | **`entity_service`** | Pytest marker `@pytest.mark.entity_service` | Tests that need a **reachable** HTTP entity-service (live e2e). |
 | **`blocked: entity-service not reachable`** | Pytest skip text | Nothing listening at **`NER_SERVICE_URL`**. |
 | **`503`** | HTTP status on schema pipeline | Often **`typedb_not_configured_on_entity_service`** until **`detail.code`** is read. |
@@ -49,8 +50,12 @@ GrooveGraph (**`gg`**) and other clients integrate with **entity-service** over 
 
 8. **Offline contracts** — **`pytest -m contract`**, **`tests/test_contract_offline.py`**.
 
+9. **Extract alignment** — **`app/services/extractor.py`**, **`app/routes/extract.py`** (entity-service repo); GrooveGraph **`run_gg_search`** sets catalog fallback for extract when calling ES.
+
 ---
 
 When you change HTTP behavior, update **`docs/USER_AND_AGENT_GUIDE.md`** / **`README.md`** and adjust this table if new tags are needed.
 
 **Agent debugging (symptoms, two TypeDB configs, extract vs formatted):** [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md).
+
+**GrooveGraph-side backlog (P0–P3):** [`NEXT_AGENT_TODO.md`](NEXT_AGENT_TODO.md) in this repository.
