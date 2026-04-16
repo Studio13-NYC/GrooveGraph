@@ -20,6 +20,7 @@
 - **Never commit secrets.** `.env` is gitignored; only [`.env.example`](.env.example) documents variable **names**. Production uses **Azure** (or host) environment injection, not checked-in env files.
 - **entity-service does not own the database.** It is a **stateless** HTTP pipeline. TypeDB access and schema evolution live in **callers** (today: planned **`cli/`** + `gg`, later app/worker). Python inside entity-service must not open TypeDB for writes that belong in GrooveGraph’s persistence story.
 - **MO-first for the catalog model.** Lead with Music Ontology understanding and the [ontology/mo-coverage-matrix.md](ontology/mo-coverage-matrix.md), then TypeQL under [`typedb/`](typedb/README.md). v1 greenfield TypeQL in GrooveGraph-next is **inspiration only**, not a copy source.
+- **Human in the loop when you are stuck.** If you are **unsure** or **confused** after consulting the docs in the read order (or the risk is **high** — product meaning, schema migration, auth, secrets, compliance), **stop** and **ask the human** for assistance. State what you already checked and what is ambiguous. **Do not** guess past serious uncertainty or ship speculative behaviour in those areas.
 
 ---
 
@@ -52,7 +53,8 @@
 3. **Integrate services locally:** entity-service on **`NER_SERVICE_URL`**; TypeDB env per USER guide §7; Brave key only where search or `doctor --probe` is in scope.
 4. **Implement:** one vertical slice per change set (e.g. one `gg` subcommand, one schema concern, one doc correction).
 5. **Verify:** run the relevant tests or smoke commands you added or touched; use **`gg doctor`** (when shipped) for environment sanity.
-6. **Hand off:** commit messages are **clear, complete sentences**; describe what changed and why. Link issues or ADR-style notes in the body when it helps the next reader.
+6. **Escalate if blocked:** if a decision is unclear after docs (see **When you are unsure**), **ask the human** before merging or pushing risky assumptions.
+7. **Hand off:** commit messages are **clear, complete sentences**; describe what changed and why. Link issues or ADR-style notes in the body when it helps the next reader.
 
 ---
 
@@ -72,8 +74,7 @@ Use **`git fetch groovegraph-next-v1`** and **`git show` / `git grep`** on tag `
 
 ## When you are unsure
 
-- **Product intent or priority:** [docs/v2-product-qa-log.md](docs/v2-product-qa-log.md).
-- **Concrete defaults or “what we picked”:** [docs/v2-implementer-defaults.md](docs/v2-implementer-defaults.md).
-- **HTTP API shapes:** [docs/USER_AND_AGENT_GUIDE.md](docs/USER_AND_AGENT_GUIDE.md).
+1. Re-check in order: **product Q&A** → [docs/v2-product-qa-log.md](docs/v2-product-qa-log.md); **defaults** → [docs/v2-implementer-defaults.md](docs/v2-implementer-defaults.md); **HTTP API** → [docs/USER_AND_AGENT_GUIDE.md](docs/USER_AND_AGENT_GUIDE.md).
+2. If you are still **unsure** or **confused**, or the decision touches **product intent, TypeQL semantics, data safety, or secrets**, follow the **non-negotiable** above: **stop and ask the human** (summarize evidence and the exact question).
 
-If something is still ambiguous after those three, make the **smallest reasonable assumption**, document it in your commit message or a short note in the relevant doc, and proceed. Prefer **shipping a small reversible change** over extended back-and-forth.
+For **low-risk, purely local** choices that are fully consistent with those docs (for example a private helper name), you may proceed and note the choice in the commit message.
