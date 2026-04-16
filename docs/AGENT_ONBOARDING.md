@@ -1,77 +1,105 @@
-# Agent onboarding — GrooveGraph v2 and GrooveGraph-next (v1 reference)
+# Agent onboarding — GrooveGraph v2
 
-Use this document when you are new to the workspace and need to know how **GrooveGraph** (v2) relates to **GrooveGraph-next** (v1). All implementation work for the new product belongs in **GrooveGraph**; v1 is **read-only reference** unless explicitly asked to change that repo.
+Use this file when you are **new to the project**. It answers: **what this is**, **what we are building now**, **how we work**, and **where to read next**. For day-one commands, see [`cli/README.md`](../cli/README.md) and [`WORKFLOWS.md`](WORKFLOWS.md).
 
-## Implementing v2 — first session (read in order)
+---
 
-Use this when the task is **building**, not only browsing v1.
+## 1. What this project is
 
-1. **[`docs/WORKFLOWS.md`](WORKFLOWS.md)** — diagrams for **`gg`** (doctor, schema, search, analyze, extract, ingest, pending) and how services connect.
-2. **[`docs/v2-implementer-defaults.md`](v2-implementer-defaults.md)** — stack choices, defaults table, and **implementation slice** status.
-3. **[`docs/v2-product-qa-log.md`](v2-product-qa-log.md)** — full product Q&A (search → DB then web, drafts/pending, MO-first, Brave, Azure, CLI, and so on).
-4. **[`docs/USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP API (`/extract`, optional `/schema-pipeline/*`). You need a **running** entity-service for NER and schema pipeline calls (typically local: clone [`Studio13/entity-service`](https://github.com/Studio13/entity-service) per that repo’s README, `uv run` / Docker as documented there).
-5. **Secrets:** copy [`.env.example`](../.env.example) → `.env` at repo root; never commit `.env`.
-6. **TypeDB Cloud:** credentials in `.env` as in the USER guide §7; **manual** schema apply policy in [`typedb/README.md`](../typedb/README.md).
-7. **`cli/`** + **`gg`:** install and commands in [`cli/README.md`](../cli/README.md); deeper command reference in [`docs/WORKFLOWS.md`](WORKFLOWS.md).
+**GrooveGraph** (this repo) is the **greenfield v2** stack for a **music / catalog knowledge graph** and the tooling around it. We are **not** extending the legacy app in place; we **replace** [GrooveGraph-next](https://github.com/Studio13-NYC/GrooveGraph-next) over time.
 
-## Goal
+| Layer | Role |
+|--------|------|
+| **TypeDB** | System of record for **catalog-style entities** (names, MO-ish types, approval, ingestion provenance). Target: **TypeDB Cloud**; schema lives under **`typedb/`**. |
+| **`gg` (Python CLI)** | Operator and agent interface: **readiness**, **search**, **discovery NER**, **schema slice for extract**, **draft ingest**, **pending review**. Lives under **`cli/`**. JSON-first output for automation. |
+| **entity-service (ES)** | **Stateless HTTP** service: **`POST /extract`**, optional **`POST /schema-pipeline/*`** when **its** process has TypeDB env. It does **not** own GrooveGraph’s persistence story. |
+| **Brave** | First **web search** adapter for enrichment (`gg search`, `gg analyze`). |
+| **GrooveGraph-next** | **v1 read-only reference** only (tag `v1-reference-for-v2`). Do not ship v2 work there unless the product owner explicitly says so. |
 
-Wire your **GrooveGraph** repo so **GrooveGraph-next** stays a **read-only reference** (remote + tag + docs + side-by-side workspace).
+**Ontology direction:** **MO-first** (Music Ontology mindset) — see [`ontology/mo-coverage-matrix.md`](../ontology/mo-coverage-matrix.md) and TypeQL under **`typedb/`**. Your **live TypeDB** schema may differ from the repo file until operators **manually apply** updates ([`typedb/README.md`](../typedb/README.md)).
 
-## What was set up
+---
 
-### GrooveGraph (new repo)
+## 2. What we are working on (current slice)
 
-- Added remote **`groovegraph-next-v1`** → `https://github.com/Studio13-NYC/GrooveGraph-next.git` (canonical URL; GitHub previously redirected from `nickknyc`).
-- Run **`git fetch groovegraph-next-v1`** so your clone has branches and tags from v1 locally.
+This moves; the **canonical checklist** is [`v2-implementer-defaults.md`](v2-implementer-defaults.md). In plain terms, the active arc is:
 
-### GrooveGraph-next (legacy)
+1. **Reliable integrations** — `gg doctor` (TypeDB + ES `/health` + Brave), clear errors when ES is missing TypeDB on the **server** process.
+2. **Operator loop** — DB-first **`gg search`**, Brave enrichment, **`gg analyze`** for NER discovery (optional **`--schema`** so ES gets a DB-backed **`schema`**), **`gg extract`** for ad-hoc text.
+3. **Schema path** — Default **`gg`** flows call **`POST /schema-pipeline/formatted`** only (types already in TypeDB). **`/raw`** is for **testing / define inspection** (`gg schema raw`), not the main extract path.
+4. **Draft persistence** — **`gg ingest-draft`** (stdin envelope) and **`gg pending list`** for human-in-the-loop catalog rows (`approval-status`, `ingestion-batch`).
+5. **Docs and agent ergonomics** — [`WORKFLOWS.md`](WORKFLOWS.md) (diagrams), [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md) (empty `entities` / dual TypeDB env debugging), [`ENTITY_SERVICE_PUNCH_LIST.md`](ENTITY_SERVICE_PUNCH_LIST.md) (upstream vs GrooveGraph).
 
-- Created annotated tag **`v1-reference-for-v2`** on **`main`** at commit **`8b1128b`** (“session hygiene…” — last `main` before the in-repo `twodotzero/` scaffold).
-- **`v1-reference-for-v2`** was pushed to GitHub.
-- **`origin`** on active developer clones of GrooveGraph-next should point at **`https://github.com/Studio13-NYC/GrooveGraph-next.git`** (canonical). If you still see “repository moved” on push/fetch, run:
+**Explicitly not assumed:** GitHub Actions CI (off until requested), automatic `gg typedb apply` (manual apply policy), silent promotion of web results to trusted graph data.
 
-  ```bash
-  cd /path/to/GrooveGraph-next
-  git remote set-url origin https://github.com/Studio13-NYC/GrooveGraph-next.git
-  ```
+---
 
-### GrooveGraph repository contents (reference)
+## 3. How we work (process + code)
 
-- **[`AGENTS.md`](../AGENTS.md)** — **entry index** for AI agents (links to onboarding, defaults, Q&A, entity-service guide).
-- **`README.md`** — remotes, tag, `git show` / `git grep`, sibling clone, “reference only” rules, and links to **v2 product** docs.
-- **[`docs/v2-product-qa-log.md`](v2-product-qa-log.md)** — discovery Q&A (permanent record).
-- **[`docs/v2-implementer-defaults.md`](v2-implementer-defaults.md)** — canonical implementer defaults and first implementation slice.
-- **[`docs/USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md)** — entity-service API (including optional TypeDB schema pipeline); mirrored for GrooveGraph agents.
-- **`ontology/`** — MO pointers and [`ontology/mo-coverage-matrix.md`](../ontology/mo-coverage-matrix.md) (coverage matrix stub).
-- **`typedb/`** — canonical TypeQL and [`typedb/README.md`](../typedb/README.md) (manual apply policy).
-- **`ner-client/`** — minimal TypeScript client types for `POST /extract` (optional for TS callers).
-- **`groovegraph-dev.code-workspace`** — multi-root workspace: this repo + `../GrooveGraph-next`.
-- Default branch **`main`** on `https://github.com/Studio13-NYC/GrooveGraph.git` holds the bootstrap commits.
+Align with **[`AGENTS.md`](../AGENTS.md)** — it is the **binding** agent index (non-negotiables, test markers, coding rules). Summary:
 
-## Prerequisites for side-by-side editing
+| Practice | Detail |
+|----------|--------|
+| **Repo boundary** | All **v2 implementation** in **GrooveGraph** `origin`. v1 at **`groovegraph-next-v1`** remote + tag — **`git show` / `git grep`**, re-implement; no bulk copy. |
+| **Secrets** | Never commit **`.env`**. Names only in [`.env.example`](../.env.example). |
+| **Diffs** | **Small, purposeful** changes; match neighboring style; no drive-by refactors or deps without need. |
+| **Python stack** | **`uv`**, **Typer**, **Pydantic**, **httpx**, **typedb-driver**, **`pytest`**. `requires-python >= 3.12` unless the repo changes it. |
+| **Tests** | Under **`cli/tests/`**. Markers: **`core`**, **`entity_service`**, **`e2e`**, **`brave_only`**. Upstream ES/TypeDB gaps → **`skip`** + tags in punch list / [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md), not fake “GrooveGraph green”. |
+| **Test data in TypeDB** | Rows created by automation use **`approval_status`: `test`** so they are filterable and never confused with real pending drafts ([`AGENTS.md`](../AGENTS.md)). |
+| **Uncertainty** | After docs, if **product intent**, **schema safety**, **secrets**, or **compliance** is unclear → **stop and ask the human** with evidence ([`AGENTS.md`](../AGENTS.md)). |
+| **Handoff** | Commit messages: **full sentences**, what changed and why. |
 
-You need:
+**Workflow (repeatable):** orient (read order below) → small vertical slice → run targeted tests / `gg doctor` → commit. Prefer **`gg`** and JSON logs under **`logs/`** for dogfooding.
 
-1. A **GrooveGraph** clone (this repo).
-2. A **GrooveGraph-next** clone in a **sibling directory** (same parent folder as GrooveGraph).
+---
 
-Example layout (adjust drive and parent folder for your machine). The workspace file expects **`../GrooveGraph-next`** relative to the GrooveGraph root.
+## 4. First session — read in this order
 
-| Repo             | Example path (Windows)                  |
-| ---------------- | --------------------------------------- |
-| GrooveGraph      | `D:\Studio13\Lab\Code\GrooveGraph`      |
-| GrooveGraph-next | `D:\Studio13\Lab\Code\GrooveGraph-next` |
+When you **implement or debug**, read **before** large changes:
 
-## How you use it day to day
+1. **[`AGENTS.md`](../AGENTS.md)** — rules, read order pointer, non-negotiables.
+2. **[`WORKFLOWS.md`](WORKFLOWS.md)** — **who calls whom** (diagrams): TypeDB, ES, Brave, `gg`.
+3. **[`v2-implementer-defaults.md`](v2-implementer-defaults.md)** — stack choices and **slice status** (done vs next).
+4. **[`v2-product-qa-log.md`](v2-product-qa-log.md)** — product **Q&A**; do not contradict without a recorded decision.
+5. **[`USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP contract (`/extract`, `/schema-pipeline/*`).
+6. **[`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md)** — if **`/extract`** or **`/formatted`** look empty or “wrong” (two TypeDB configs, symptoms).
+7. **[`ENTITY_SERVICE_PUNCH_LIST.md`](ENTITY_SERVICE_PUNCH_LIST.md)** — upstream checklist and tags.
 
-### Normal work
+**Hands-on setup:**
 
-Clone or open **GrooveGraph** only. Commit, branch, and open PRs only against **GrooveGraph** `origin` unless the task explicitly says to patch v1.
+- **Secrets:** copy [`.env.example`](../.env.example) → **`.env`** at repo root (gitignored).
+- **TypeDB:** credentials per USER guide §7; **manual** apply of [`typedb/groovegraph-schema.tql`](../typedb/groovegraph-schema.tql) per [`typedb/README.md`](../typedb/README.md).
+- **entity-service:** clone [`Studio13/entity-service`](https://github.com/Studio13/entity-service), run per upstream README; set **`NER_SERVICE_URL`** in `.env`. Put **`TYPEDB_*` on the ES process** if you use the schema pipeline.
+- **CLI:** [`cli/README.md`](../cli/README.md) — `uv sync`, `uv run gg --help`, `uv run gg doctor`.
 
-### Inspect v1 without copying files
+---
 
-From the **GrooveGraph** root:
+## 5. Repo layout (where things live)
+
+| Path | Purpose |
+|------|---------|
+| **`cli/`** | **`gg`** package, Typer entrypoint, **`cli/tests/`** pytest. |
+| **`typedb/`** | Canonical **TypeQL** and apply policy. |
+| **`ontology/`** | MO coverage matrix and pointers. |
+| **`docs/`** | Product Q&A, workflows, ES guides, agent issues. |
+| **`ner-client/`** | Thin **TypeScript** types + `fetch` client for ES (optional callers). |
+| **`logs/`** | Rotating **`gg.log`** / **`pytest.log`** (see [`logs/README.md`](../logs/README.md)). |
+| **`groovegraph-dev.code-workspace`** | Opens this repo + sibling **GrooveGraph-next** for reference. |
+
+---
+
+## 6. v1 reference (GrooveGraph-next) — how to use it
+
+**Goal:** Keep v1 as **read-only** reference (remote + tag + workspace), not a second place to commit v2.
+
+### Remotes and tag
+
+- **GrooveGraph** should have remote **`groovegraph-next-v1`** → `https://github.com/Studio13-NYC/GrooveGraph-next.git`. Run **`git fetch groovegraph-next-v1`** periodically.
+- **v1 snapshot tag:** **`v1-reference-for-v2`** on GrooveGraph-next `main` (see root [`README.md`](../README.md) for `git show` examples).
+
+### Inspect v1 without copying
+
+From **GrooveGraph** root:
 
 ```bash
 git fetch groovegraph-next-v1
@@ -79,24 +107,24 @@ git show groovegraph-next-v1/v1-reference-for-v2:README.md
 git grep -n "session" groovegraph-next-v1/v1-reference-for-v2 -- product/src
 ```
 
-Replace the path after the colon (`README.md`, `product/src`, etc.) with any path that exists in v1 at that tag.
+Replace the path after the colon with any v1 path you need.
 
 ### Side-by-side in Cursor / VS Code
 
-1. Ensure **GrooveGraph-next** exists next to **GrooveGraph** (see table above).
-2. Open **`groovegraph-dev.code-workspace`** from the GrooveGraph root (File → Open Workspace from File…).
-3. Treat the **GrooveGraph-next** folder as **read-only reference** for search and navigation; do not land v2 features or fixes there unless the product owner directs otherwise.
+1. Clone **GrooveGraph-next** as a **sibling** of GrooveGraph (e.g. `../GrooveGraph-next`).
+2. Open **`groovegraph-dev.code-workspace`** from the GrooveGraph root.
+3. Use v1 folder for **search/navigation only**; commit v2 work only on **GrooveGraph** `origin`.
 
-## Conventions (agents)
+### Conventions
 
-- Prefer **`git show`** / **`git grep`** on `groovegraph-next-v1/v1-reference-for-v2` over copying large trees into GrooveGraph.
-- When reusing behavior from v1, **re-implement** in GrooveGraph so ownership and dependencies stay clear.
-- Do not add GrooveGraph-next as a git submodule of GrooveGraph unless the team decides that explicitly.
+- Prefer **`git show` / `git grep`** over vendoring v1 trees.
+- **Re-implement** ideas from v1 in GrooveGraph; do not add GrooveGraph-next as a submodule unless the team decides explicitly.
 
-## Quick clone checklist (new machine)
+---
+
+## 7. Quick clone checklist (new machine)
 
 ```bash
-# Parent folder, e.g. ~/Code or D:\Studio13\Lab\Code
 git clone https://github.com/Studio13-NYC/GrooveGraph.git
 git clone https://github.com/Studio13-NYC/GrooveGraph-next.git
 cd GrooveGraph
@@ -104,4 +132,12 @@ git remote -v
 git fetch groovegraph-next-v1
 ```
 
-Then open **`groovegraph-dev.code-workspace`** if you want both trees in one window.
+Copy **`.env.example`** → **`.env`**, then `cd cli && uv sync && uv run gg doctor`.
+
+---
+
+## 8. When you are still stuck
+
+1. Re-read [`v2-product-qa-log.md`](v2-product-qa-log.md) and [`v2-implementer-defaults.md`](v2-implementer-defaults.md).
+2. For HTTP / ES behavior: [`USER_AND_AGENT_GUIDE.md`](USER_AND_AGENT_GUIDE.md) + [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md).
+3. If product or data-risk remains ambiguous, follow [`AGENTS.md`](../AGENTS.md): **ask the human** with a short evidence summary.

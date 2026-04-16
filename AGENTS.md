@@ -8,7 +8,7 @@
 
 1. **[README.md](README.md)** — repo role, v1 reference rules, doc index.
 2. **[docs/WORKFLOWS.md](docs/WORKFLOWS.md)** — **visual map** of `gg` commands and integrations (TypeDB, entity-service, Brave); read before changing CLI orchestration.
-3. **[docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md)** — **“Implementing v2 — first session”**: ordered steps, **entity-service** runtime, `.env`, TypeDB manual apply.
+3. **[docs/AGENT_ONBOARDING.md](docs/AGENT_ONBOARDING.md)** — **new agent brief**: what GrooveGraph v2 is, current work slice, how we work, doc read order, v1 reference workflow, clone checklist.
 4. **[docs/v2-implementer-defaults.md](docs/v2-implementer-defaults.md)** — **canonical** stack choices, tool versions, and **implementation-slice status** (what is done vs next).
 5. **[docs/v2-product-qa-log.md](docs/v2-product-qa-log.md)** — full **product Q&A** (intent, tradeoffs, deferred items). Do not contradict it without an explicit product decision recorded there.
 6. **[docs/USER_AND_AGENT_GUIDE.md](docs/USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP contract (`/extract`, optional `/schema-pipeline/*`). Mirrored from upstream; treat the **wire shapes** as stable.
