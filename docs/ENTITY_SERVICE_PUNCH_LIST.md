@@ -52,3 +52,5 @@ GrooveGraph (**`gg`**) and other clients integrate with **entity-service** over 
 ---
 
 When you change HTTP behavior, update **`docs/USER_AND_AGENT_GUIDE.md`** / **`README.md`** and adjust this table if new tags are needed.
+
+**Agent debugging (symptoms, two TypeDB configs, extract vs formatted):** [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md).

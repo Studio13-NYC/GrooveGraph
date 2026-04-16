@@ -217,5 +217,6 @@ Full list: [`.env.example`](../.env.example).
 | [`v2-implementer-defaults.md`](v2-implementer-defaults.md) | Decisions and slice checklist. |
 | [`v2-product-qa-log.md`](v2-product-qa-log.md) | Full Q&A. |
 | [`ENTITY_SERVICE_PUNCH_LIST.md`](ENTITY_SERVICE_PUNCH_LIST.md) | Entity-service vs GrooveGraph responsibilities. |
+| [`AGENT_ENTITY_SERVICE_ISSUES.md`](AGENT_ENTITY_SERVICE_ISSUES.md) | Why ES may not return entities / empty `knownEntities`; two TypeDB configs; acceptance checks. |
 | [`typedb/README.md`](../typedb/README.md) | Manual schema apply. |
 | [`ontology/mo-coverage-matrix.md`](../ontology/mo-coverage-matrix.md) | MO coverage. |

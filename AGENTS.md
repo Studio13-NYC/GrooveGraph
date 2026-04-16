@@ -12,6 +12,7 @@
 4. **[docs/v2-implementer-defaults.md](docs/v2-implementer-defaults.md)** — **canonical** stack choices, tool versions, and **implementation-slice status** (what is done vs next).
 5. **[docs/v2-product-qa-log.md](docs/v2-product-qa-log.md)** — full **product Q&A** (intent, tradeoffs, deferred items). Do not contradict it without an explicit product decision recorded there.
 6. **[docs/USER_AND_AGENT_GUIDE.md](docs/USER_AND_AGENT_GUIDE.md)** — **entity-service** HTTP contract (`/extract`, optional `/schema-pipeline/*`). Mirrored from upstream; treat the **wire shapes** as stable.
+7. **[docs/AGENT_ENTITY_SERVICE_ISSUES.md](docs/AGENT_ENTITY_SERVICE_ISSUES.md)** — when **`/extract`** or **`/schema-pipeline/formatted`** look “broken” (empty `entities`, empty `knownEntities`, 503): symptom matrix, **two TypeDB envs**, and what **`gg`** does *not* do.
 
 ---
 
