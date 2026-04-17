@@ -7,8 +7,11 @@ test("graph view dedupes duplicate labels and strips debug overlays from the mai
   const view = buildGraphView({
     runId: "run-1",
     question: "Talking Heads Fear of Music",
-    status: "completed_with_warnings",
+    status: "completed",
     summary: "summary",
+    currentStage: "commit",
+    nextStage: null,
+    awaitingApproval: false,
     artifacts: [],
     graph: {
       nodes: [

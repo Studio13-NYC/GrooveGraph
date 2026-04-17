@@ -10,18 +10,18 @@
     <div class="shell">
       <aside class="sidebar">
         <div class="brand-block">
-          <p class="eyebrow">GrooveGraph</p>
-          <h1>Ask the graph what a recording is really made of.</h1>
+          <p class="eyebrow">GrooveGraph Reset</p>
+          <h1>One path. One operator. One graph that grows on purpose.</h1>
           <p class="lede">
-            Serial runs, visible evidence, reviewed draft persistence, and a graph you can actually inspect.
+            Plan, collect evidence, extract, propose a graph batch, and commit only when the stage output looks real.
           </p>
         </div>
 
         <form id="run-form" class="question-form">
           <label for="question-input">Question</label>
-          <textarea id="question-input" name="question" rows="4" placeholder="Find what makes Talking Heads' sound special on Fear of Music."></textarea>
+          <textarea id="question-input" name="question" rows="4" placeholder="Brian Eno aliases Roxy Music David Bowie relationships"></textarea>
           <div class="form-actions">
-            <button type="submit" id="run-submit">Run workflow</button>
+            <button type="submit" id="run-submit">Create plan</button>
             <button type="button" id="refresh-runs">Refresh runs</button>
           </div>
           <div id="run-feedback" class="run-feedback" aria-live="polite">
@@ -32,7 +32,7 @@
         <section class="panel">
           <div class="panel-header">
             <h2>Runs</h2>
-            <p>Newest first, with direct run-trace inspection</p>
+            <p>Latest run on top, older runs folded away by default</p>
           </div>
           <div id="runs-rollup" class="runs-rollup hidden">
             <button type="button" id="toggle-run-history" class="history-toggle" aria-expanded="false">^ Previous runs</button>
@@ -43,7 +43,7 @@
         <section class="panel chips-panel">
           <div class="panel-header">
             <h2>Filters</h2>
-            <p>Toggle graph types and source signals</p>
+            <p>Keep the graph readable while you inspect a run</p>
           </div>
           <div id="filter-chips" class="chip-row"></div>
         </section>
@@ -55,11 +55,19 @@
             <div>
               <p class="eyebrow">Graph View</p>
               <h2 id="graph-title">No run selected</h2>
+              <p id="graph-subtitle" class="graph-subtitle">Create a plan to start the human-steered pipeline.</p>
             </div>
             <div class="graph-tools">
               <input id="graph-search" type="search" placeholder="Search nodes (Cmd/Ctrl+K)" />
               <button id="toggle-view">Starter view</button>
             </div>
+          </div>
+          <div class="stage-toolbar">
+            <div class="stage-status">
+              <span id="stage-pill" class="status-pill">no run</span>
+              <span id="stage-summary" class="stage-summary">No stage output yet.</span>
+            </div>
+            <button id="stage-advance" class="stage-advance" type="button" disabled>Approve and continue</button>
           </div>
           <div id="graph-canvas" class="graph-canvas"></div>
         </section>
@@ -69,14 +77,13 @@
             <div class="panel-header inspector-header">
               <div>
                 <h2>Inspector</h2>
-                <p>Primary graph, run trace, and debug candidates stay separate</p>
+                <p>Stage output, evidence, extraction, and graph metadata stay easy to review.</p>
               </div>
               <div class="inspector-tabs">
                 <button type="button" class="inspector-tab active" data-tab="trace">Run Trace</button>
-                <button type="button" class="inspector-tab" data-tab="es_output">ES Output</button>
+                <button type="button" class="inspector-tab" data-tab="evidence">Evidence</button>
+                <button type="button" class="inspector-tab" data-tab="extract">Extraction</button>
                 <button type="button" class="inspector-tab" data-tab="metadata">Selected Node</button>
-                <button type="button" class="inspector-tab" data-tab="candidates">Rejected / Unpersisted</button>
-                <button type="button" class="inspector-tab" data-tab="sources">Evidence Sources</button>
               </div>
             </div>
             <div id="inspector-content" class="inspector-content">
@@ -90,4 +97,4 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
     <script type="module" src="/assets/app.js"></script>
   </body>
-  </html>
+</html>

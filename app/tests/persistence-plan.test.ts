@@ -8,20 +8,15 @@ test("persistence plan only persists connected supported entities", () => {
     "run-1",
     "Talking Heads Fear of Music studio gear",
     {
-      summary: "Reviewed candidates.",
-      persistence_decision: "persist_draft",
-      accepted_entities: [
-        { text: "Talking Heads", label: "Artist", confidence: 0.9 },
-        { text: "Fear of Music", label: "Recording", confidence: 0.9 },
-        { text: "Chris Frantz Loft", label: "Studio", confidence: 0.7 },
-        { text: "Brian Eno", label: "Person", confidence: 0.7 },
+      entities: [
+        { text: "Talking Heads", label: "Artist", confidence: 0.9, sources: ["musicbrainz"], evidence: ["artist evidence"] },
+        { text: "Fear of Music", label: "Recording", confidence: 0.9, sources: ["wikipedia"], evidence: ["recording evidence"] },
+        { text: "Chris Frantz Loft", label: "Studio", confidence: 0.7, sources: ["web"], evidence: ["studio evidence"] },
+        { text: "Brian Eno", label: "Person", confidence: 0.8, sources: ["wikipedia"], evidence: ["producer evidence"] },
+        { text: "Alias Span", label: "Alias", confidence: 0.5, sources: ["spacy"], evidence: ["unsupported"] },
       ],
-      rejected_entities: [{ text: "Noise Candidate", label: "Equipment", confidence: 0.2 }],
-    },
-    {
-      entities: [],
-      properties: [],
-      relations: [],
+      properties: [{ subject: "Fear of Music", property: "year", value: "1979", confidence: 0.8, source: "musicbrainz" }],
+      relations: [{ type: "produced", source_entity: "Brian Eno", source_label: "Person", target_entity: "Fear of Music", target_label: "Recording", confidence: 0.8 }],
     },
     {
       sources: {
@@ -42,8 +37,8 @@ test("persistence plan only persists connected supported entities", () => {
   );
 
   assert.equal(plan.decision, "persist_draft");
-  assert.equal(plan.nodes.length, 3);
-  assert.equal(plan.relations.length, 2);
-  assert.equal(plan.unpersisted_candidates.length, 2);
+  assert.equal(plan.nodes.length, 4);
+  assert.equal(plan.relations.length, 3);
+  assert.equal(plan.unpersisted_candidates.length, 0);
   assert.equal(plan.rejected_candidates.length, 1);
 });

@@ -8,5 +8,8 @@
     "dev": "node --watch --experimental-strip-types app/server.ts",
     "start": "node --experimental-strip-types app/server.ts",
     "test": "node --test --experimental-strip-types app/tests/*.test.ts"
+  },
+  "dependencies": {
+    "puppeteer": "^24.41.0"
   }
 }

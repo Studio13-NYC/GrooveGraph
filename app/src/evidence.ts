@@ -1,3 +1,5 @@
+import puppeteer from "puppeteer";
+
 import { getEnvValue } from "./env.ts";
 import type { SourceQueryPlan } from "./query-planner.ts";
 
@@ -31,13 +33,13 @@ export interface EvidenceBundle {
 
 const FETCH_CACHE = new Map<string, { expires_at: number; value: unknown }>();
 const BRAVE_WEB_SEARCH_URL = "https://api.search.brave.com/res/v1/web/search";
-const WIKIPEDIA_PAGE_MAX_CHARS = 40_000;
-const WEB_PAGE_MAX_CHARS = 30_000;
+const WIKIPEDIA_PAGE_MAX_CHARS = 50_000;
+const WEB_PAGE_MAX_CHARS = 40_000;
 
 function defaultHeaders(): Record<string, string> {
   const userAgent =
     getEnvValue("GROOVEGRAPH_HTTP_USER_AGENT", "").trim() ||
-    "GrooveGraphReset/0.1 (+https://github.com/Studio13-NYC/GrooveGraph)";
+    "GrooveGraphReset/0.2 (+https://github.com/Studio13-NYC/GrooveGraph)";
   return {
     "User-Agent": userAgent,
     "Api-User-Agent": userAgent,
@@ -47,18 +49,6 @@ function defaultHeaders(): Record<string, string> {
 
 function compact(value: unknown): string {
   return String(value || "").replace(/\s+/g, " ").trim();
-}
-
-function decodeHtmlEntities(value: string): string {
-  return value
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/&#160;/gi, " ")
-    .replace(/&#32;/gi, " ")
-    .replace(/&#(\d+);/g, (_, num) => String.fromCharCode(Number.parseInt(num, 10)))
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCharCode(Number.parseInt(hex, 16)));
 }
 
 function dedupeStrings(values: Array<unknown>): string[] {
@@ -113,70 +103,6 @@ async function fetchJson(url: string, headers: Record<string, string> = {}, retr
   throw lastError ?? new Error("fetch_failed");
 }
 
-async function fetchText(url: string, headers: Record<string, string> = {}, retries = 1): Promise<string> {
-  const cached = FETCH_CACHE.get(url);
-  if (cached && cached.expires_at > Date.now()) {
-    return String(cached.value || "");
-  }
-
-  let lastError: Error | null = null;
-  for (let attempt = 0; attempt <= retries; attempt += 1) {
-    try {
-      const response = await fetch(url, {
-        headers: {
-          ...defaultHeaders(),
-          Accept: "text/html,application/xhtml+xml;q=0.9,*/*;q=0.8",
-          ...headers,
-        },
-      });
-      if (!response.ok) {
-        const retryable = response.status === 429 || response.status >= 500;
-        if (retryable && attempt < retries) {
-          await sleep(500 * (attempt + 1));
-          continue;
-        }
-        throw new Error(`${response.status} ${response.statusText}`);
-      }
-      const value = await response.text();
-      FETCH_CACHE.set(url, { expires_at: Date.now() + 10 * 60_000, value });
-      return value;
-    } catch (error) {
-      lastError = error instanceof Error ? error : new Error("fetch_text_failed");
-      if (attempt < retries) {
-        await sleep(500 * (attempt + 1));
-        continue;
-      }
-    }
-  }
-  throw lastError ?? new Error("fetch_text_failed");
-}
-
-function extractReadableText(html: string, maxChars = WEB_PAGE_MAX_CHARS): string {
-  const withoutScripts = html
-    .replace(/<script[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style[\s\S]*?<\/style>/gi, " ")
-    .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ")
-    .replace(/<svg[\s\S]*?<\/svg>/gi, " ")
-    .replace(/<nav[\s\S]*?<\/nav>/gi, " ")
-    .replace(/<header[\s\S]*?<\/header>/gi, " ")
-    .replace(/<footer[\s\S]*?<\/footer>/gi, " ")
-    .replace(/<aside[\s\S]*?<\/aside>/gi, " ")
-    .replace(/<form[\s\S]*?<\/form>/gi, " ");
-  const titleMatch = withoutScripts.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const mainMatch = withoutScripts.match(/<(main|article)[^>]*>([\s\S]*?)<\/\1>/i);
-  const paragraphMatches = Array.from((mainMatch?.[2] || withoutScripts).matchAll(/<(p|li|h2|h3)[^>]*>([\s\S]*?)<\/\1>/gi));
-  const extractedBlocks = paragraphMatches
-    .map((match) => decodeHtmlEntities(match[2] || ""))
-    .map((block) => compact(block.replace(/<[^>]+>/g, " ")))
-    .filter((block) => block.length >= 40)
-    .filter((block) => !/^(main menu|navigation|contents|appearance|tools|personal tools|edit links)$/i.test(block));
-  const bodySource = extractedBlocks.length ? extractedBlocks.join("\n\n") : decodeHtmlEntities((mainMatch?.[2] || withoutScripts).replace(/<[^>]+>/g, " "));
-  const text = compact(bodySource);
-  const title = compact(titleMatch?.[1] || "");
-  const combined = compact([title, text].filter(Boolean).join(" — "));
-  return combined.slice(0, maxChars);
-}
-
 async function searchWikipediaTitle(query: string): Promise<{ title: string; summary: any; search_url: string; summary_url: string } | null> {
   const searchUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&srlimit=1`;
   const search = await fetchJson(searchUrl);
@@ -193,7 +119,7 @@ async function searchWikipediaTitle(query: string): Promise<{ title: string; sum
 async function fetchWikipediaPageExtract(title: string): Promise<{ extract: string; fullurl: string }> {
   const pageUrl = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts|info&explaintext=true&redirects=1&inprop=url&titles=${encodeURIComponent(title)}`;
   const page = await fetchJson(pageUrl, {}, 3);
-  const pages = ((page?.query || {}).pages) || {};
+  const pages = (page?.query || {}).pages || {};
   const first = typeof pages === "object" ? Object.values(pages)[0] : null;
   if (!first || typeof first !== "object") {
     throw new Error("wikipedia_page_missing");
@@ -242,7 +168,7 @@ async function fetchWikipedia(plan: SourceQueryPlan): Promise<SourceChunk> {
         continue;
       }
       const page = await fetchWikipediaPageExtract(match.title);
-      const snippet = compact(String(match.summary?.extract || page.extract || "")).slice(0, 1400);
+      const snippet = compact(String(match.summary?.extract || page.extract || "")).slice(0, 1600);
       const sourceUrl = String(page.fullurl || match.summary?.content_urls?.desktop?.page || "");
       const fullExtract = compact(page.extract || "");
       if (!fullExtract) {
@@ -317,7 +243,7 @@ async function fetchMusicBrainz(plan: SourceQueryPlan): Promise<SourceChunk> {
         break;
       }
     } catch {
-      // Try the next planner query.
+      // Try the next query.
     }
   }
 
@@ -335,7 +261,7 @@ async function fetchMusicBrainz(plan: SourceQueryPlan): Promise<SourceChunk> {
         break;
       }
     } catch {
-      // Try the next planner query.
+      // Try the next query.
     }
   }
 
@@ -423,10 +349,7 @@ async function fetchDiscogs(plan: SourceQueryPlan): Promise<SourceChunk> {
       source: "discogs",
       ok: false,
       detail: "missing_DISCOGS_TOKEN",
-      request_sample: {
-        artist_queries: artistQueries,
-        release_queries: releaseQueries,
-      },
+      request_sample: { artist_queries: artistQueries, release_queries: releaseQueries },
       response_sample: {},
       snippets: [],
       items: [],
@@ -435,13 +358,7 @@ async function fetchDiscogs(plan: SourceQueryPlan): Promise<SourceChunk> {
 
   async function searchDiscogs(type: "artist" | "release", query: string): Promise<any[]> {
     const url = `https://api.discogs.com/database/search?type=${encodeURIComponent(type)}&per_page=3&q=${encodeURIComponent(query)}`;
-    const json = await fetchJson(
-      url,
-      {
-        Authorization: `Discogs token=${token}`,
-      },
-      2,
-    );
+    const json = await fetchJson(url, { Authorization: `Discogs token=${token}` }, 2);
     return Array.isArray(json?.results) ? json.results : [];
   }
 
@@ -456,7 +373,7 @@ async function fetchDiscogs(plan: SourceQueryPlan): Promise<SourceChunk> {
         break;
       }
     } catch {
-      // Try the next artist query.
+      // Try the next query.
     }
   }
 
@@ -471,7 +388,7 @@ async function fetchDiscogs(plan: SourceQueryPlan): Promise<SourceChunk> {
         break;
       }
     } catch {
-      // Try the next release query.
+      // Try the next query.
     }
   }
 
@@ -503,18 +420,6 @@ async function fetchDiscogs(plan: SourceQueryPlan): Promise<SourceChunk> {
     response_sample: {
       artist_count: artistResults.length,
       release_count: releaseResults.length,
-      top_artist: artistResults[0]
-        ? {
-            title: artistResults[0].title,
-            resource_url: artistResults[0].resource_url,
-          }
-        : null,
-      top_release: releaseResults[0]
-        ? {
-            title: releaseResults[0].title,
-            resource_url: releaseResults[0].resource_url,
-          }
-        : null,
     },
     snippets,
     items: [
@@ -549,10 +454,14 @@ async function searchBrave(plan: SourceQueryPlan): Promise<any> {
   for (const query of plan.source_queries.brave) {
     try {
       const url = `${BRAVE_WEB_SEARCH_URL}?q=${encodeURIComponent(query)}&count=5`;
-      const body = await fetchJson(url, {
-        "X-Subscription-Token": apiKey,
-        Accept: "application/json",
-      }, 2);
+      const body = await fetchJson(
+        url,
+        {
+          "X-Subscription-Token": apiKey,
+          Accept: "application/json",
+        },
+        2,
+      );
       const results = Array.isArray(body?.web?.results) ? body.web.results : [];
       if (results.length) {
         return { ok: true, query, body };
@@ -563,6 +472,74 @@ async function searchBrave(plan: SourceQueryPlan): Promise<any> {
     }
   }
   return lastResult;
+}
+
+async function fetchRenderedPage(url: string): Promise<{ title: string; text: string; url: string; headings: string[] }> {
+  const cached = FETCH_CACHE.get(url);
+  if (cached && cached.expires_at > Date.now()) {
+    return cached.value as { title: string; text: string; url: string; headings: string[] };
+  }
+
+  const browser = await puppeteer.launch({ headless: true });
+  try {
+    const page = await browser.newPage();
+    await page.setUserAgent(defaultHeaders()["User-Agent"]);
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 30_000 });
+    await page.waitForTimeout(500);
+    const result = await page.evaluate((maxChars) => {
+      const removeSelectors = [
+        "script",
+        "style",
+        "noscript",
+        "svg",
+        "nav",
+        "header",
+        "footer",
+        "aside",
+        "form",
+        "iframe",
+        ".cookie",
+        ".cookies",
+        ".consent",
+        ".advert",
+        ".ads",
+        ".promo",
+        ".newsletter",
+        ".related",
+        ".social",
+      ];
+      for (const selector of removeSelectors) {
+        document.querySelectorAll(selector).forEach((node) => node.remove());
+      }
+
+      const root =
+        document.querySelector("article") ||
+        document.querySelector("main") ||
+        document.body;
+
+      const blocks = Array.from(root.querySelectorAll("h1,h2,h3,p,li"))
+        .map((node) => (node.textContent || "").replace(/\s+/g, " ").trim())
+        .filter((text) => text.length >= 40)
+        .filter((text) => !/^(home|menu|share|subscribe|newsletter|advertisement)$/i.test(text));
+
+      const headings = Array.from(root.querySelectorAll("h1,h2,h3"))
+        .map((node) => (node.textContent || "").replace(/\s+/g, " ").trim())
+        .filter(Boolean)
+        .slice(0, 12);
+
+      return {
+        title: (document.title || "").replace(/\s+/g, " ").trim(),
+        url: window.location.href,
+        headings,
+        text: blocks.join("\n\n").slice(0, maxChars),
+      };
+    }, WEB_PAGE_MAX_CHARS);
+
+    FETCH_CACHE.set(url, { expires_at: Date.now() + 10 * 60_000, value: result });
+    return result;
+  } finally {
+    await browser.close();
+  }
 }
 
 async function fetchWeb(plan: SourceQueryPlan): Promise<SourceChunk> {
@@ -587,39 +564,32 @@ async function fetchWeb(plan: SourceQueryPlan): Promise<SourceChunk> {
     .filter((result: any) => typeof result?.url === "string" && /^https?:\/\//.test(result.url))
     .slice(0, 5);
 
-  const snippets = topResults.map((result: any) => ({
-    name: compact(result.title || result.url),
-    snippet: compact(result.description || ""),
-    source_url: String(result.url || ""),
-    source: "brave",
-  }));
-
   const pageSamples: Array<Record<string, unknown>> = [];
   for (const result of topResults.slice(0, 3)) {
     try {
-      const html = await fetchText(String(result.url));
-      const text = extractReadableText(html);
-      if (!text) {
+      const rendered = await fetchRenderedPage(String(result.url));
+      if (!rendered.text) {
         continue;
       }
       pageSamples.push({
-        url: String(result.url),
-        title: compact(result.title || ""),
-        extracted_text: text,
+        url: rendered.url,
+        title: compact(rendered.title || result.title || rendered.url),
+        headings: rendered.headings,
+        extracted_text: compact(rendered.text),
       });
     } catch {
-      // Leave as Brave snippet-only if the page fetch fails.
+      // Keep only discovery results when render fails.
     }
   }
 
   return {
     source: "web",
-    ok: topResults.length > 0,
-    detail: "brave_ranked_results",
+    ok: pageSamples.length > 0,
+    detail: pageSamples.length > 0 ? "puppeteer_rendered_pages" : "no_rendered_pages",
     request_sample: {
       brave_queries: plan.source_queries.brave,
       matched_brave_query: brave.query,
-      web_queries: plan.source_queries.web,
+      selected_urls: topResults.map((result: any) => result.url),
     },
     response_sample: {
       top_urls: topResults.map((result: any) => ({
@@ -628,14 +598,12 @@ async function fetchWeb(plan: SourceQueryPlan): Promise<SourceChunk> {
       })),
       fetched_pages: pageSamples.map((sample) => sample.url),
     },
-    snippets: [
-      ...pageSamples.map((sample) => ({
-        name: compact(sample.title || sample.url || "web page"),
-        snippet: compact(sample.extracted_text || ""),
-        source_url: String(sample.url || ""),
-        source: "web_page",
-      })),
-    ].slice(0, 5),
+    snippets: pageSamples.map((sample) => ({
+      name: compact(sample.title || sample.url || "web page"),
+      snippet: compact(sample.extracted_text || "").slice(0, 1600),
+      source_url: String(sample.url || ""),
+      source: "web_page",
+    })),
     items: [
       ...topResults.map((result: any) => ({
         title: result.title,
@@ -681,10 +649,10 @@ function buildExtractionText(question: string, graphContext: any, sources: Evide
 
   const webPageText = (sources.web.items || [])
     .filter((item: any) => typeof item?.extracted_text === "string" && item.extracted_text.trim())
-    .map((item: any) => `URL: ${item.url}\n${compact(item.extracted_text)}`)
+    .map((item: any) => `URL: ${item.url}\nTITLE: ${item.title}\n${compact(item.extracted_text)}`)
     .join("\n\n---\n\n");
   if (webPageText) {
-    sections.push(`--- Supplementary web page text ---\n${webPageText}`);
+    sections.push(`--- Browser-rendered web page text ---\n${webPageText}`);
   }
 
   return sections.join("\n\n");

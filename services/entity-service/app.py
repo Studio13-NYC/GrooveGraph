@@ -1,104 +1,114 @@
 from __future__ import annotations
 
+import importlib.util
 import json
 import os
 import re
-from collections import Counter
+from dataclasses import dataclass, field
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Any
+
+import spacy
 
 
 PERSISTENCE_LABELS = {"Artist", "Recording", "Studio", "Equipment", "Person"}
 ALLOWED_LABELS = PERSISTENCE_LABELS | {"Release", "Instrument", "Manufacturer", "Label", "Alias"}
-NAME_CAPTURE = r"[A-Z][a-zA-Z0-9'&./-]+(?:\s+[A-Z][a-zA-Z0-9'&./-]+){0,4}"
-CAPITALIZED_SPAN = re.compile(rf"\b({NAME_CAPTURE})\b")
+SPACY_LABELS = {"PERSON", "ORG", "WORK_OF_ART", "FAC", "GPE", "LOC", "PRODUCT", "EVENT"}
 SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+(?=[A-Z0-9\"'])")
-STOPWORDS = {
-    "Question",
-    "Graph",
-    "Evidence",
-    "Music",
-    "Artist",
-    "Recording",
-    "Release",
-    "Studio",
-    "Equipment",
-    "Instrument",
-    "Manufacturer",
-    "Person",
-    "Wikipedia",
-    "MusicBrainz",
-    "Discogs",
-    "URL",
-    "Background",
-    "References",
-    "Personnel",
-    "Charts",
-    "Certifications",
-    "Critical Reception",
-    "Main Menu",
-    "Main Page",
-    "Current Events",
-    "Random Article",
-    "External Links",
-    "Track Listing",
-    "Further Reading",
+NON_NAME_PREFIXES = {
+    "a",
+    "an",
+    "and",
+    "as",
+    "at",
+    "by",
+    "for",
+    "from",
+    "he",
+    "her",
+    "his",
+    "in",
+    "it",
+    "its",
+    "of",
+    "on",
+    "part",
+    "some",
+    "that",
+    "the",
+    "their",
+    "them",
+    "they",
+    "this",
+    "those",
+    "we",
+    "with",
 }
-LABEL_HINTS: dict[str, tuple[str, ...]] = {
-    "Studio": ("studio", "recorded at", "recording at", "tracked at", "cut at", "mixed at"),
-    "Equipment": ("console", "microphone", "compressor", "desk", "tape", "pedal", "amp", "amplifier", "synth", "drum machine"),
-    "Instrument": ("guitar", "bass", "synthesizer", "synth", "keyboard", "drums", "piano", "microphone"),
-    "Manufacturer": ("manufactured by", "built by", "made by"),
-    "Label": ("label", "released by", "imprint"),
-    "Recording": ("album", "recording", "track", "song", "single"),
-    "Release": ("release", "lp", "ep", "soundtrack"),
-    "Person": ("producer", "engineer", "drummer", "guitarist", "bassist", "singer", "vocalist", "keyboardist", "member"),
-    "Artist": ("band", "artist", "group", "duo"),
+NON_NAME_PHRASES = {
+    "part of the",
+    "pop music",
+    "some iconic work",
+    "them on stage playing the",
 }
-RELATION_PATTERNS: list[dict[str, Any]] = [
+ROLE_HINTS = {
+    "producer",
+    "engineer",
+    "drummer",
+    "guitarist",
+    "bassist",
+    "vocalist",
+    "singer",
+    "keyboardist",
+    "member",
+    "artist",
+    "band",
+    "group",
+    "duo",
+}
+STUDIO_HINTS = {"studio", "recorded", "tracked", "mixed", "cut", "session", "facility"}
+EQUIPMENT_HINTS = {"console", "microphone", "compressor", "desk", "tape", "pedal", "amp", "synth", "drum machine"}
+RELATION_PATTERNS = [
     {
         "type": "alias_of",
-        "pattern": re.compile(rf"(?P<left>{NAME_CAPTURE})\s+(?:also known as|aka|a\.k\.a\.)\s+(?P<right>{NAME_CAPTURE})", re.IGNORECASE),
-        "left_label": "Person",
-        "right_label": "Alias",
+        "pattern": re.compile(r"\b(?P<left>[^.]{2,80}?)\s+(?:also known as|aka|a\.k\.a\.)\s+(?P<right>[^.]{2,80}?)\b", re.IGNORECASE),
+        "left_label": {"Person", "Artist"},
+        "right_label": {"Alias"},
     },
     {
         "type": "member_of",
-        "pattern": re.compile(rf"(?P<left>{NAME_CAPTURE})\s+(?:was a member of|played in|joined|co-founded|formed)\s+(?P<right>{NAME_CAPTURE})", re.IGNORECASE),
-        "left_label": "Person",
-        "right_label": "Artist",
+        "pattern": re.compile(r"\b(?P<left>[^.]{2,80}?)\s+(?:joined|co-founded|founded|was a member of|played in)\s+(?P<right>[^.]{2,80}?)\b", re.IGNORECASE),
+        "left_label": {"Person"},
+        "right_label": {"Artist"},
     },
     {
         "type": "produced",
-        "pattern": re.compile(rf"(?P<left>{NAME_CAPTURE})\s+(?:produced|co-produced)\s+(?P<right>{NAME_CAPTURE})", re.IGNORECASE),
-        "left_label": "Person",
-        "right_label": "Artist",
-    },
-    {
-        "type": "produced_by",
-        "pattern": re.compile(rf"(?P<left>{NAME_CAPTURE}).{{0,80}}?produced by\s+(?P<right>{NAME_CAPTURE})", re.IGNORECASE),
-        "left_label": "Recording",
-        "right_label": "Person",
+        "pattern": re.compile(r"\b(?P<left>[^.]{2,80}?)\s+(?:produced|co-produced)\s+(?P<right>[^.]{2,80}?)\b", re.IGNORECASE),
+        "left_label": {"Person"},
+        "right_label": {"Artist", "Recording"},
     },
     {
         "type": "recorded_at",
-        "pattern": re.compile(rf"(?P<left>{NAME_CAPTURE}).{{0,80}}?(?:recorded|tracked|cut|mixed)\s+(?:at|in)\s+(?P<right>{NAME_CAPTURE})", re.IGNORECASE),
-        "left_label": "Recording",
-        "right_label": "Studio",
-    },
-    {
-        "type": "released_by",
-        "pattern": re.compile(rf"(?P<left>{NAME_CAPTURE}).{{0,80}}?released by\s+(?P<right>{NAME_CAPTURE})", re.IGNORECASE),
-        "left_label": "Release",
-        "right_label": "Label",
-    },
-    {
-        "type": "manufactured_by",
-        "pattern": re.compile(rf"(?P<left>{NAME_CAPTURE}).{{0,80}}?(?:built|manufactured|made)\s+by\s+(?P<right>{NAME_CAPTURE})", re.IGNORECASE),
-        "left_label": "Equipment",
-        "right_label": "Manufacturer",
+        "pattern": re.compile(r"\b(?P<left>[^.]{2,80}?)\s+(?:was recorded at|recorded at|tracked at|mixed at)\s+(?P<right>[^.]{2,80}?)\b", re.IGNORECASE),
+        "left_label": {"Recording"},
+        "right_label": {"Studio"},
     },
 ]
+MODEL_CANDIDATES = ("en_core_web_trf", "en_core_web_lg")
+_NLP = None
+_MODEL_NAME = None
+_MODEL_ERROR = None
+
+
+@dataclass
+class CandidateEntity:
+    text: str
+    label: str
+    confidence: float
+    source: str
+    source_url: str = ""
+    evidence: list[str] = field(default_factory=list)
+    properties: dict[str, Any] = field(default_factory=dict)
+    spans: list[tuple[int, int]] = field(default_factory=list)
 
 
 def _json_response(handler: BaseHTTPRequestHandler, status: int, payload: dict[str, Any]) -> None:
@@ -130,7 +140,52 @@ def _sentence_split(text: str) -> list[str]:
     return [_compact(part) for part in SENTENCE_SPLIT.split(text or "") if _compact(part)]
 
 
-def _entity_priority(label: str) -> int:
+def _dedupe_strings(values: list[Any]) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for value in values:
+        cleaned = _compact(value)
+        key = cleaned.casefold()
+        if not cleaned or key in seen:
+            continue
+        seen.add(key)
+        out.append(cleaned)
+    return out
+
+
+def _clean_list(values: Any) -> list[str]:
+    return [_compact(value) for value in list(values or []) if _compact(value)]
+
+
+def _title_ratio(text: str) -> float:
+    tokens = re.findall(r"[A-Za-z0-9][A-Za-z0-9'&./-]*", text)
+    if not tokens:
+        return 0.0
+    titled = sum(1 for token in tokens if token[:1].isupper() or token.isupper() or any(char.isdigit() for char in token))
+    return titled / len(tokens)
+
+
+def _looks_like_named_entity(text: str) -> bool:
+    cleaned = _compact(text)
+    if not cleaned:
+        return False
+    lowered = cleaned.casefold().strip(" .,:;!?")
+    if lowered in NON_NAME_PHRASES:
+        return False
+    if len(cleaned) < 2 or len(cleaned) > 90:
+        return False
+    if not re.search(r"[A-Za-z]", cleaned):
+        return False
+    if lowered.split(" ", 1)[0] in NON_NAME_PREFIXES:
+        return False
+    if cleaned.lower() == cleaned and not any(char.isdigit() for char in cleaned):
+        return False
+    if _title_ratio(cleaned) < 0.55:
+        return False
+    return True
+
+
+def _label_rank(label: str) -> int:
     order = {
         "Artist": 9,
         "Person": 8,
@@ -146,97 +201,143 @@ def _entity_priority(label: str) -> int:
     return order.get(label, -1)
 
 
-def _best_label(current_label: str, current_confidence: float, candidate_label: str, candidate_confidence: float) -> str:
+def _better_label(current_label: str, current_confidence: float, candidate_label: str, candidate_confidence: float) -> str:
     if candidate_confidence > current_confidence:
         return candidate_label
-    if candidate_confidence == current_confidence and _entity_priority(candidate_label) > _entity_priority(current_label):
+    if candidate_confidence == current_confidence and _label_rank(candidate_label) > _label_rank(current_label):
         return candidate_label
     return current_label
 
 
-def _label_from_context(text: str, default: str | None = None) -> str | None:
-    window = _compact(text).casefold()
-    for label, hints in LABEL_HINTS.items():
-        if any(hint in window for hint in hints):
-            return label
-    return default
-
-
-def _make_entity(
-    text: str,
-    label: str,
-    confidence: float,
-    source: str,
-    evidence: str = "",
-    source_url: str = "",
-    properties: dict[str, Any] | None = None,
-) -> dict[str, Any]:
-    cleaned = _compact(text)
+def _source_bonus(source: str) -> float:
     return {
-        "id": f"{label}:{_normalize(cleaned)}",
-        "text": cleaned,
-        "label": label,
-        "start": 0,
-        "end": len(cleaned),
-        "confidence": round(confidence, 3),
-        "sources": [source],
-        "source_urls": [source_url] if source_url else [],
-        "evidence": [_snippet(evidence)] if evidence else [],
-        "properties": properties or {},
+        "graph_context": 0.08,
+        "musicbrainz": 0.07,
+        "discogs": 0.05,
+        "wikipedia": 0.04,
+        "spacy": 0.0,
+    }.get(source, 0.0)
+
+
+def _context_window(text: str, start: int, end: int, width: int = 100) -> str:
+    return _snippet(text[max(0, start - width): min(len(text), end + width)])
+
+
+def _sentence_for_offset(text: str, start: int, end: int) -> str:
+    for sentence in _sentence_split(text):
+        if _compact(text[start:end]) in sentence:
+            return sentence
+    return _context_window(text, start, end)
+
+
+def _contextual_label(span_text: str, spacy_label: str, sentence: str) -> str | None:
+    lowered = sentence.casefold()
+    span_lower = span_text.casefold()
+    if spacy_label == "PERSON":
+        return "Person"
+    if spacy_label == "WORK_OF_ART":
+        return "Recording"
+    if spacy_label in {"FAC", "GPE", "LOC"}:
+        if any(hint in lowered for hint in STUDIO_HINTS):
+            return "Studio"
+        return None
+    if spacy_label == "PRODUCT":
+        if any(hint in lowered for hint in EQUIPMENT_HINTS):
+            return "Equipment"
+        return None
+    if spacy_label == "ORG":
+        if "records" in span_lower or "label" in lowered:
+            return "Label"
+        if any(hint in lowered for hint in STUDIO_HINTS):
+            return "Studio"
+        if any(hint in lowered for hint in ROLE_HINTS) or span_text.endswith(("Band", "Orchestra")):
+            return "Artist"
+        return "Artist"
+    if spacy_label == "EVENT":
+        return "Release"
+    return None
+
+
+def _resolve_allowed_label(label: str | None, allowed_labels: set[str]) -> str | None:
+    if not label:
+        return None
+    if label in allowed_labels:
+        return label
+    if label == "Release" and "Recording" in allowed_labels:
+        return "Recording"
+    return None
+
+
+def _candidate_dict(entity: CandidateEntity) -> dict[str, Any]:
+    start = min((span[0] for span in entity.spans), default=0)
+    end = max((span[1] for span in entity.spans), default=len(entity.text))
+    return {
+        "id": f"{entity.label}:{_normalize(entity.text)}",
+        "text": entity.text,
+        "label": entity.label,
+        "start": start,
+        "end": end,
+        "confidence": round(entity.confidence, 3),
+        "sources": _dedupe_strings([entity.source]),
+        "source_urls": _dedupe_strings([entity.source_url]) if entity.source_url else [],
+        "evidence": _dedupe_strings(entity.evidence)[:4],
+        "properties": dict(entity.properties),
     }
 
 
-def _merge_entity(existing: dict[str, Any], candidate: dict[str, Any]) -> None:
-    chosen_label = _best_label(
-        _clean(existing.get("label")),
-        float(existing.get("confidence") or 0),
-        _clean(candidate.get("label")),
-        float(candidate.get("confidence") or 0),
-    )
-    existing["label"] = chosen_label
-    existing["confidence"] = max(float(existing.get("confidence") or 0), float(candidate.get("confidence") or 0))
-    existing["sources"] = sorted(set([*_clean_list(existing.get("sources")), *_clean_list(candidate.get("sources"))]))
-    existing["source_urls"] = sorted(set([*_clean_list(existing.get("source_urls")), *_clean_list(candidate.get("source_urls"))]))
-    existing["evidence"] = _dedupe_strings([*existing.get("evidence", []), *candidate.get("evidence", [])])[:4]
-    existing_properties = dict(existing.get("properties") or {})
-    existing_properties.update({key: value for key, value in (candidate.get("properties") or {}).items() if value not in ("", None, [])})
-    existing["properties"] = existing_properties
-    existing["id"] = f"{existing['label']}:{_normalize(existing['text'])}"
-    existing["start"] = min(int(existing.get("start") or 0), int(candidate.get("start") or 0))
-    existing["end"] = max(int(existing.get("end") or 0), int(candidate.get("end") or 0))
-
-
-def _clean_list(values: Any) -> list[str]:
-    return [_compact(value) for value in list(values or []) if _compact(value)]
-
-
-def _dedupe_strings(values: list[Any]) -> list[str]:
-    out: list[str] = []
-    seen: set[str] = set()
-    for value in values:
-        cleaned = _compact(value)
-        key = cleaned.casefold()
-        if not cleaned or key in seen:
-            continue
-        seen.add(key)
-        out.append(cleaned)
-    return out
-
-
-def _register_entity(registry: dict[str, dict[str, Any]], candidate: dict[str, Any], allowed_labels: set[str]) -> dict[str, Any] | None:
-    label = _clean(candidate.get("label"))
-    text = _compact(candidate.get("text"))
-    if not text or label not in allowed_labels:
+def _register_entity(
+    registry: dict[str, dict[str, Any]],
+    text: str,
+    label: str | None,
+    confidence: float,
+    source: str,
+    *,
+    source_url: str = "",
+    evidence: str = "",
+    properties: dict[str, Any] | None = None,
+    span: tuple[int, int] | None = None,
+    allowed_labels: set[str],
+) -> dict[str, Any] | None:
+    cleaned = _compact(text)
+    resolved_label = _resolve_allowed_label(label, allowed_labels)
+    if not cleaned or not resolved_label or not _looks_like_named_entity(cleaned):
         return None
-    key = _normalize(text)
+
+    key = _normalize(cleaned)
     if not key:
         return None
-    if key in {"the", "and", "with"} or text in STOPWORDS:
-        return None
+
+    candidate = {
+        "id": f"{resolved_label}:{key}",
+        "text": cleaned,
+        "label": resolved_label,
+        "start": span[0] if span else 0,
+        "end": span[1] if span else len(cleaned),
+        "confidence": round(min(0.99, confidence + _source_bonus(source)), 3),
+        "sources": [source],
+        "source_urls": [source_url] if source_url else [],
+        "evidence": [_snippet(evidence)] if evidence else [],
+        "properties": dict(properties or {}),
+    }
+
     existing = registry.get(key)
     if existing:
-        _merge_entity(existing, candidate)
+        existing["label"] = _better_label(
+            _clean(existing.get("label")),
+            float(existing.get("confidence") or 0.0),
+            resolved_label,
+            float(candidate["confidence"]),
+        )
+        existing["confidence"] = max(float(existing.get("confidence") or 0.0), float(candidate["confidence"]))
+        existing["sources"] = _dedupe_strings([*existing.get("sources", []), source])
+        existing["source_urls"] = _dedupe_strings([*existing.get("source_urls", []), source_url])
+        existing["evidence"] = _dedupe_strings([*existing.get("evidence", []), *candidate["evidence"]])[:4]
+        merged_properties = dict(existing.get("properties") or {})
+        merged_properties.update({k: v for k, v in candidate["properties"].items() if v not in ("", None, [])})
+        existing["properties"] = merged_properties
+        existing["id"] = f"{existing['label']}:{key}"
         return existing
+
     registry[key] = candidate
     return candidate
 
@@ -262,8 +363,7 @@ def _register_property(
             _clean(item.get("subject")).casefold(),
             _clean(item.get("property")).casefold(),
             _clean(item.get("value")).casefold(),
-        )
-        == key
+        ) == key
         for item in properties
     ):
         return
@@ -274,7 +374,7 @@ def _register_property(
             "value": cleaned_value,
             "source": source,
             "source_url": source_url,
-            "confidence": round(confidence, 3),
+            "confidence": round(confidence + _source_bonus(source), 3),
             "evidence": _snippet(evidence),
         }
     )
@@ -302,8 +402,7 @@ def _register_relation(
             _clean(item.get("type")).casefold(),
             _clean(item.get("source_entity")).casefold(),
             _clean(item.get("target_entity")).casefold(),
-        )
-        == key
+        ) == key
         for item in relations
     ):
         return
@@ -314,7 +413,7 @@ def _register_relation(
             "source_label": left_entity.get("label"),
             "target_entity": right_entity.get("text"),
             "target_label": right_entity.get("label"),
-            "confidence": round(confidence, 3),
+            "confidence": round(confidence + _source_bonus(source), 3),
             "source": source,
             "source_url": source_url,
             "evidence": _snippet(evidence),
@@ -322,243 +421,250 @@ def _register_relation(
     )
 
 
-def _scan_known_entities(
-    text: str,
-    known_entities: list[dict[str, Any]],
-    allowed_labels: set[str],
-    registry: dict[str, dict[str, Any]],
-) -> None:
+def _infer_wikipedia_label(item: dict[str, Any], allowed_labels: set[str]) -> str | None:
+    kind = _clean(item.get("kind"))
+    if kind == "artist":
+        return _resolve_allowed_label("Artist", allowed_labels)
+    if kind == "recording":
+        return _resolve_allowed_label("Recording", allowed_labels)
+    description = _compact(item.get("description"))
+    if "band" in description.casefold() or "musician" in description.casefold() or "artist" in description.casefold():
+        return _resolve_allowed_label("Artist", allowed_labels)
+    return _resolve_allowed_label("Recording", allowed_labels)
+
+
+def _scan_known_entities(text: str, known_entities: list[dict[str, Any]], allowed_labels: set[str], registry: dict[str, dict[str, Any]]) -> int:
     lowered = text.casefold()
+    count = 0
     for item in known_entities:
-        label = _clean(item.get("label"))
-        aliases = [_clean(item.get("canonical")), *[_clean(alias) for alias in item.get("aliases", [])]]
+        label = _resolve_allowed_label(_clean(item.get("label")), allowed_labels)
+        aliases = _dedupe_strings([item.get("canonical"), *list(item.get("aliases", []))])
         for alias in aliases:
-            if not alias:
+            index = lowered.find(alias.casefold())
+            if index < 0:
                 continue
-            idx = lowered.find(alias.casefold())
-            if idx < 0:
-                continue
-            _register_entity(
+            registered = _register_entity(
                 registry,
-                {
-                    "text": text[idx : idx + len(alias)],
-                    "label": label if label in allowed_labels else "Artist",
-                    "start": idx,
-                    "end": idx + len(alias),
-                    "confidence": 0.94,
-                    "sources": ["graph_context"],
-                    "source_urls": [],
-                    "evidence": [_snippet(text[max(0, idx - 70) : idx + len(alias) + 70])],
-                    "properties": {"known_entity": "true"},
-                },
-                allowed_labels,
+                alias,
+                label,
+                0.96,
+                "graph_context",
+                evidence=_context_window(text, index, index + len(alias)),
+                span=(index, index + len(alias)),
+                properties={"known_entity": "true"},
+                allowed_labels=allowed_labels,
             )
+            if registered:
+                count += 1
+                break
+    return count
 
 
-def _extract_from_structured_sources(
+def _extract_structured_sources(
     payload: dict[str, Any],
     allowed_labels: set[str],
     registry: dict[str, dict[str, Any]],
     properties: list[dict[str, Any]],
-) -> None:
+) -> dict[str, int]:
+    counts = {"wikipedia": 0, "musicbrainz": 0, "discogs": 0}
     sources = payload.get("evidence", {}).get("sources", {})
 
-    wikipedia_items = sources.get("wikipedia", {}).get("items", [])
-    for item in wikipedia_items:
+    for item in sources.get("wikipedia", {}).get("items", []):
         title = _compact(item.get("title"))
+        if not title:
+            continue
+        label = _infer_wikipedia_label(item, allowed_labels)
         description = _compact(item.get("description"))
         extract = _compact(item.get("extract"))
-        kind = _compact(item.get("kind"))
-        label = "Artist" if kind == "artist" else _label_from_context(f"{description} {extract}", "Recording") or "Recording"
-        entity = _register_entity(
+        registered = _register_entity(
             registry,
-            _make_entity(
-                title,
-                label if label in allowed_labels else "Recording",
-                0.9,
-                "wikipedia",
-                evidence=extract or description,
-                source_url=_clean(item.get("content_url")),
-                properties={"wikipedia_title": title, "description": description},
-            ),
-            allowed_labels,
+            title,
+            label,
+            0.9,
+            "wikipedia",
+            source_url=_clean(item.get("content_url")),
+            evidence=extract or description,
+            properties={"wikipedia_title": title, "description": description},
+            allowed_labels=allowed_labels,
         )
-        if entity:
-            _register_property(properties, title, "wikipedia_url", _clean(item.get("content_url")), "wikipedia", 0.9, extract or description, _clean(item.get("content_url")))
-            if description:
-                _register_property(properties, title, "description", description, "wikipedia", 0.72, extract, _clean(item.get("content_url")))
+        if not registered:
+            continue
+        counts["wikipedia"] += 1
+        _register_property(properties, title, "wikipedia_url", _clean(item.get("content_url")), "wikipedia", 0.88, extract or description, _clean(item.get("content_url")))
+        if description:
+            _register_property(properties, title, "description", description, "wikipedia", 0.78, extract, _clean(item.get("content_url")))
 
-    musicbrainz_items = sources.get("musicbrainz", {}).get("items", [])
-    for item in musicbrainz_items:
-        label = _clean(item.get("entity_type") or "Artist")
+    for item in sources.get("musicbrainz", {}).get("items", []):
         name = _compact(item.get("name"))
-        if label == "Release":
-            label = "Recording"
-        entity = _register_entity(
+        label = _resolve_allowed_label(_clean(item.get("entity_type")), allowed_labels)
+        if not name or not label:
+            continue
+        registered = _register_entity(
             registry,
-            _make_entity(
-                name,
-                label if label in allowed_labels else "Artist",
-                0.92,
-                "musicbrainz",
-                evidence=_compact(
-                    " • ".join(
-                        [
-                            _clean(item.get("disambiguation")),
-                            _clean(item.get("first_release_date")),
-                            _clean(item.get("country")),
-                            _clean(item.get("type")),
-                        ]
-                    )
-                ),
-                source_url=_clean(item.get("source_url")),
-                properties={
-                    "musicbrainz_id": _clean(item.get("id")),
-                    "country": _clean(item.get("country")),
-                    "musicbrainz_type": _clean(item.get("type")),
-                    "first_release_date": _clean(item.get("first_release_date")),
-                },
+            name,
+            label,
+            0.93,
+            "musicbrainz",
+            source_url=_clean(item.get("source_url")),
+            evidence=" ".join(
+                part for part in [
+                    _clean(item.get("disambiguation")),
+                    _clean(item.get("first_release_date")),
+                    _clean(item.get("country")),
+                    _clean(item.get("type")),
+                ] if part
             ),
-            allowed_labels,
+            properties={
+                "musicbrainz_id": _clean(item.get("id")),
+                "country": _clean(item.get("country")),
+                "musicbrainz_type": _clean(item.get("type")),
+                "first_release_date": _clean(item.get("first_release_date")),
+            },
+            allowed_labels=allowed_labels,
         )
-        if entity:
-            _register_property(properties, name, "musicbrainz_id", _clean(item.get("id")), "musicbrainz", 0.94, "", _clean(item.get("source_url")))
-            _register_property(properties, name, "country", _clean(item.get("country")), "musicbrainz", 0.8, "", _clean(item.get("source_url")))
-            _register_property(properties, name, "first_release_date", _clean(item.get("first_release_date")), "musicbrainz", 0.88, "", _clean(item.get("source_url")))
-            _register_property(properties, name, "musicbrainz_type", _clean(item.get("type")), "musicbrainz", 0.76, "", _clean(item.get("source_url")))
+        if not registered:
+            continue
+        counts["musicbrainz"] += 1
+        _register_property(properties, name, "musicbrainz_id", _clean(item.get("id")), "musicbrainz", 0.94, "", _clean(item.get("source_url")))
+        _register_property(properties, name, "first_release_date", _clean(item.get("first_release_date")), "musicbrainz", 0.87, "", _clean(item.get("source_url")))
+        _register_property(properties, name, "country", _clean(item.get("country")), "musicbrainz", 0.8, "", _clean(item.get("source_url")))
 
-    discogs_items = sources.get("discogs", {}).get("items", [])
-    for item in discogs_items:
-        label = _clean(item.get("entity_type") or "Release")
+    for item in sources.get("discogs", {}).get("items", []):
         name = _compact(item.get("title"))
-        mapped_label = "Artist" if label == "Artist" else "Release"
-        entity = _register_entity(
+        raw_label = _clean(item.get("entity_type"))
+        label = "Artist" if raw_label == "Artist" else "Recording"
+        label = _resolve_allowed_label(label, allowed_labels)
+        if not name or not label:
+            continue
+        registered = _register_entity(
             registry,
-            _make_entity(
-                name,
-                mapped_label if mapped_label in allowed_labels else "Release",
-                0.82,
-                "discogs",
-                evidence=_compact(
-                    " • ".join(
-                        [
-                            _clean(item.get("country")),
-                            _clean(item.get("year")),
-                            _clean(item.get("format")),
-                        ]
-                    )
-                ),
-                source_url=_clean(item.get("resource_url") or item.get("uri")),
-                properties={
-                    "discogs_url": _clean(item.get("resource_url") or item.get("uri")),
-                    "country": _clean(item.get("country")),
-                    "year": _clean(item.get("year")),
-                    "format": _clean(item.get("format")),
-                },
-            ),
-            allowed_labels,
+            name,
+            label,
+            0.84,
+            "discogs",
+            source_url=_clean(item.get("resource_url") or item.get("uri")),
+            evidence=" ".join(part for part in [_clean(item.get("country")), _clean(item.get("year")), _clean(item.get("format"))] if part),
+            properties={
+                "discogs_url": _clean(item.get("resource_url") or item.get("uri")),
+                "country": _clean(item.get("country")),
+                "year": _clean(item.get("year")),
+                "format": _clean(item.get("format")),
+            },
+            allowed_labels=allowed_labels,
         )
-        if entity:
-            _register_property(properties, name, "discogs_url", _clean(item.get("resource_url") or item.get("uri")), "discogs", 0.83, "", _clean(item.get("resource_url") or item.get("uri")))
-            _register_property(properties, name, "year", _clean(item.get("year")), "discogs", 0.78, "", _clean(item.get("resource_url") or item.get("uri")))
-            _register_property(properties, name, "format", _clean(item.get("format")), "discogs", 0.72, "", _clean(item.get("resource_url") or item.get("uri")))
+        if not registered:
+            continue
+        counts["discogs"] += 1
+        _register_property(properties, name, "discogs_url", _clean(item.get("resource_url") or item.get("uri")), "discogs", 0.82, "", _clean(item.get("resource_url") or item.get("uri")))
+        _register_property(properties, name, "year", _clean(item.get("year")), "discogs", 0.78, "", _clean(item.get("resource_url") or item.get("uri")))
+    return counts
 
 
-def _scan_heuristic_entities(text: str, allowed_labels: set[str], registry: dict[str, dict[str, Any]]) -> None:
-    sentences = _sentence_split(text)
-    counts = Counter()
-    candidates: list[tuple[str, str, str]] = []
+def _load_spacy() -> tuple[Any | None, str | None, str | None]:
+    global _NLP, _MODEL_NAME, _MODEL_ERROR
+    if _NLP is not None or _MODEL_ERROR is not None:
+        return _NLP, _MODEL_NAME, _MODEL_ERROR
 
-    for sentence in sentences:
-        for match in CAPITALIZED_SPAN.finditer(sentence):
-            candidate = _compact(match.group(1))
-            if not candidate or candidate in STOPWORDS or len(candidate) < 4:
-                continue
-            label = _label_from_context(sentence)
-            if not label:
-                continue
-            counts[_normalize(candidate)] += 1
-            candidates.append((candidate, label, sentence))
+    for model_name in MODEL_CANDIDATES:
+        if importlib.util.find_spec(model_name) is None:
+            continue
+        try:
+            _NLP = spacy.load(model_name)
+            _MODEL_NAME = model_name
+            _MODEL_ERROR = None
+            return _NLP, _MODEL_NAME, None
+        except Exception as error:
+            _MODEL_ERROR = str(error)
 
-    for candidate, label, sentence in candidates:
-        normalized = _normalize(candidate)
-        confidence = 0.68 if counts[normalized] > 1 else 0.58
-        _register_entity(
-            registry,
-            _make_entity(
-                candidate,
-                label if label in allowed_labels else "Person",
-                confidence,
-                "text_heuristic",
-                evidence=sentence,
-            ),
-            allowed_labels,
-        )
+    _MODEL_ERROR = _MODEL_ERROR or "no_spacy_model_installed"
+    return None, None, _MODEL_ERROR
 
 
-def _ensure_entity_from_relation(
-    registry: dict[str, dict[str, Any]],
-    text: str,
-    label: str,
-    allowed_labels: set[str],
-    evidence: str,
-    source: str,
-    source_url: str = "",
-) -> dict[str, Any] | None:
-    return _register_entity(
-        registry,
-        _make_entity(text, label if label in allowed_labels else "Person", 0.76, source, evidence=evidence, source_url=source_url),
-        allowed_labels,
-    )
-
-
-def _scan_relations_and_properties(
+def _extract_spacy_entities(
     text: str,
     allowed_labels: set[str],
     registry: dict[str, dict[str, Any]],
-    relations: list[dict[str, Any]],
-    properties: list[dict[str, Any]],
-) -> None:
+) -> tuple[int, str | None]:
+    nlp, _, model_error = _load_spacy()
+    if not nlp:
+        return 0, model_error
+
+    count = 0
+    doc = nlp(text)
+    for ent in doc.ents:
+        if ent.label_ not in SPACY_LABELS:
+            continue
+        sentence = _compact(ent.sent.text if ent.sent is not None else _sentence_for_offset(text, ent.start_char, ent.end_char))
+        label = _contextual_label(ent.text, ent.label_, sentence)
+        registered = _register_entity(
+            registry,
+            ent.text,
+            label,
+            0.76,
+            "spacy",
+            evidence=sentence,
+            span=(ent.start_char, ent.end_char),
+            properties={"spacy_label": ent.label_},
+            allowed_labels=allowed_labels,
+        )
+        if registered:
+            count += 1
+    return count, None
+
+
+def _entity_lookup(registry: dict[str, dict[str, Any]], name: str) -> dict[str, Any] | None:
+    normalized = _normalize(name)
+    if not normalized:
+        return None
+    return registry.get(normalized)
+
+
+def _extract_relations_and_properties(text: str, registry: dict[str, dict[str, Any]], relations: list[dict[str, Any]], properties: list[dict[str, Any]]) -> int:
+    count = 0
     for sentence in _sentence_split(text):
+        if len(sentence) > 300:
+            continue
         for relation_pattern in RELATION_PATTERNS:
             for match in relation_pattern["pattern"].finditer(sentence):
-                left = _ensure_entity_from_relation(
-                    registry,
-                    _clean(match.group("left")),
-                    relation_pattern["left_label"],
-                    allowed_labels,
-                    sentence,
-                    "text_pattern",
-                )
-                right = _ensure_entity_from_relation(
-                    registry,
-                    _clean(match.group("right")),
-                    relation_pattern["right_label"],
-                    allowed_labels,
-                    sentence,
-                    "text_pattern",
-                )
-                _register_relation(relations, relation_pattern["type"], left, right, 0.76, "text_pattern", sentence)
-                if relation_pattern["type"] == "alias_of" and left and right:
-                    _register_property(properties, left["text"], "alias", right["text"], "text_pattern", 0.78, sentence)
-
-        year_match = re.search(r"\b(19\d{2}|20\d{2})\b", sentence)
-        if "released" in sentence.casefold() and year_match:
-            for match in CAPITALIZED_SPAN.finditer(sentence):
-                subject = _compact(match.group(1))
-                if subject and subject not in STOPWORDS:
-                    _register_property(properties, subject, "release_year", year_match.group(1), "text_pattern", 0.62, sentence)
-                    break
+                left_text = _compact(match.group("left"))
+                right_text = _compact(match.group("right"))
+                left = _entity_lookup(registry, left_text)
+                right = _entity_lookup(registry, right_text)
+                if not left or not right:
+                    continue
+                if _clean(left.get("label")) not in relation_pattern["left_label"]:
+                    continue
+                if _clean(right.get("label")) not in relation_pattern["right_label"]:
+                    continue
+                _register_relation(relations, relation_pattern["type"], left, right, 0.72, "spacy", sentence)
+                if relation_pattern["type"] == "alias_of":
+                    _register_property(properties, left["text"], "alias", right["text"], "spacy", 0.72, sentence)
+                count += 1
+    return count
 
 
 def _dedupe_entities(entities: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    return sorted(entities, key=lambda item: (-float(item.get("confidence") or 0), _clean(item.get("label")), _clean(item.get("text"))))
+    return sorted(
+        entities,
+        key=lambda item: (-float(item.get("confidence") or 0.0), _clean(item.get("label")), _clean(item.get("text"))),
+    )
 
 
 class EntityServiceHandler(BaseHTTPRequestHandler):
     def do_GET(self) -> None:  # noqa: N802
         if self.path == "/health":
-            _json_response(self, 200, {"ok": True, "service": "groovegraph-entity-service"})
+            _, model_name, model_error = _load_spacy()
+            _json_response(
+                self,
+                200,
+                {
+                    "ok": model_error is None,
+                    "service": "groovegraph-entity-service",
+                    "mode": "source_backed_plus_spacy",
+                    "spacy_model": model_name,
+                    "spacy_error": model_error,
+                },
+            )
             return
         _json_response(self, 404, {"ok": False, "error": "route_not_found"})
 
@@ -581,24 +687,28 @@ class EntityServiceHandler(BaseHTTPRequestHandler):
         relations: list[dict[str, Any]] = []
         properties: list[dict[str, Any]] = []
 
-        _scan_known_entities(text, known_entities, allowed_labels, registry)
-        _extract_from_structured_sources(payload, allowed_labels, registry, properties)
-        if payload.get("options", {}).get("use_model", True):
-            _scan_heuristic_entities(text, allowed_labels, registry)
-            _scan_relations_and_properties(text, allowed_labels, registry, relations, properties)
+        known_count = _scan_known_entities(text, known_entities, allowed_labels, registry)
+        structured_counts = _extract_structured_sources(payload, allowed_labels, registry, properties)
+        spacy_count, model_error = _extract_spacy_entities(text, allowed_labels, registry)
+        relation_count = _extract_relations_and_properties(text, registry, relations, properties)
 
         body = {
-            "entities": _dedupe_entities(list(registry.values()))[:60],
+            "entities": _dedupe_entities(list(registry.values()))[:120],
             "relations": relations[:80],
-            "properties": properties[:120],
+            "properties": properties[:160],
             "diagnostics": {
                 "allowed_labels": sorted(allowed_labels),
                 "known_entities": len(known_entities),
-                "entity_count": len(registry),
-                "relation_count": len(relations),
+                "registered_entities": len(registry),
+                "structured_entities": structured_counts,
+                "graph_context_entities": known_count,
+                "spacy_entities": spacy_count,
+                "relation_count": relation_count,
                 "property_count": len(properties),
-                "used_heuristics": True,
-                "mode": "broad_corpus_extraction",
+                "used_heuristics": False,
+                "mode": "source_backed_plus_spacy",
+                "spacy_model": _MODEL_NAME,
+                "spacy_error": model_error,
             },
         }
         _json_response(self, 200, body)

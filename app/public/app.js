@@ -6,12 +6,16 @@ const state = {
   showFullGraph: false,
   selectedNodeId: null,
   inspectorTab: "trace",
-  selectedStage: "graph_delta",
+  selectedStage: "plan",
 };
 
 const runsList = document.getElementById("runs-list");
 const inspectorContent = document.getElementById("inspector-content");
 const graphTitle = document.getElementById("graph-title");
+const graphSubtitle = document.getElementById("graph-subtitle");
+const stagePill = document.getElementById("stage-pill");
+const stageSummary = document.getElementById("stage-summary");
+const stageAdvance = document.getElementById("stage-advance");
 const filterChips = document.getElementById("filter-chips");
 const graphSearch = document.getElementById("graph-search");
 const toggleViewButton = document.getElementById("toggle-view");
@@ -23,103 +27,15 @@ const runFeedback = document.getElementById("run-feedback");
 const runsRollup = document.getElementById("runs-rollup");
 const toggleRunHistoryButton = document.getElementById("toggle-run-history");
 
+const STAGE_LABELS = {
+  plan: "Plan",
+  evidence: "Evidence",
+  extract: "Extract",
+  persistence_proposal: "Proposal",
+  commit: "Commit",
+};
+
 let showRunHistory = false;
-
-function setRunFeedback(kind, message) {
-  runFeedback.className = `run-feedback ${kind}`.trim();
-  runFeedback.innerHTML = `<p>${escapeHtml(message)}</p>`;
-}
-
-function setRunControlsBusy(isBusy) {
-  runSubmit.disabled = isBusy;
-  refreshRunsButton.disabled = isBusy;
-  questionInput.disabled = isBusy;
-  runSubmit.textContent = isBusy ? "Running..." : "Run workflow";
-}
-
-function setRunHistoryExpanded(expanded) {
-  showRunHistory = expanded;
-  toggleRunHistoryButton.setAttribute("aria-expanded", expanded ? "true" : "false");
-  toggleRunHistoryButton.textContent = expanded ? "v Previous runs" : "^ Previous runs";
-}
-
-async function submitRun(question) {
-  setRunControlsBusy(true);
-  setRunFeedback("running", `Running workflow for "${question}"...`);
-
-  try {
-    const response = await fetch("/runs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question }),
-    });
-
-    if (!response.ok) {
-      const payload = await response.json().catch(() => ({}));
-      throw new Error(payload.detail || payload.error || `run_failed_${response.status}`);
-    }
-
-    const result = await response.json();
-    if (!result.run_id) {
-      throw new Error("run_id_missing");
-    }
-
-    setRunFeedback("success", `Completed ${result.run_id}. Loading run trace...`);
-    state.inspectorTab = "trace";
-    await refreshRuns();
-    await selectRun(result.run_id);
-  } catch (error) {
-    await refreshRuns();
-    setRunFeedback("error", `Workflow request failed or was interrupted: ${error instanceof Error ? error.message : "unknown_error"}`);
-  } finally {
-    setRunControlsBusy(false);
-  }
-}
-
-document.getElementById("run-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const question = questionInput.value.trim();
-  if (!question) return;
-  await submitRun(question);
-});
-
-refreshRunsButton.addEventListener("click", async () => {
-  setRunFeedback("", "Refreshing runs...");
-  await refreshRuns();
-  setRunFeedback("", "Ready.");
-});
-toggleRunHistoryButton.addEventListener("click", () => {
-  setRunHistoryExpanded(!showRunHistory);
-  refreshRuns();
-});
-toggleViewButton.addEventListener("click", () => {
-  state.showFullGraph = !state.showFullGraph;
-  toggleViewButton.textContent = state.showFullGraph ? "Full graph" : "Starter view";
-  renderGraph();
-});
-
-graphSearch.addEventListener("input", () => renderGraph());
-window.addEventListener("keydown", (event) => {
-  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-    event.preventDefault();
-    graphSearch.focus();
-  }
-});
-
-for (const button of inspectorTabs) {
-  button.addEventListener("click", () => {
-    state.inspectorTab = button.dataset.tab || "trace";
-    renderInspector();
-  });
-}
-
-function statusLabel(status) {
-  return String(status || "").replaceAll("_", " ");
-}
-
-function prettyJson(value) {
-  return `<pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>`;
-}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -133,37 +49,45 @@ function compactText(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
 }
 
-function normalizeKey(value) {
-  return compactText(value).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+function statusLabel(status) {
+  return compactText(status).replaceAll("_", " ") || "unknown";
+}
+
+function prettyJson(value) {
+  return `<pre>${escapeHtml(JSON.stringify(value, null, 2))}</pre>`;
+}
+
+function setRunFeedback(kind, message) {
+  runFeedback.className = `run-feedback ${kind}`.trim();
+  runFeedback.innerHTML = `<p>${escapeHtml(message)}</p>`;
+}
+
+function setRunControlsBusy(isBusy) {
+  runSubmit.disabled = isBusy;
+  refreshRunsButton.disabled = isBusy;
+  questionInput.disabled = isBusy;
+  runSubmit.textContent = isBusy ? "Creating..." : "Create plan";
+}
+
+function setAdvanceBusy(isBusy) {
+  stageAdvance.disabled = isBusy || !state.selectedRun?.awaitingApproval || !state.selectedRun?.nextStage;
+  if (isBusy) {
+    stageAdvance.textContent = "Advancing...";
+    return;
+  }
+  stageAdvance.textContent = state.selectedRun?.nextStage
+    ? `Approve ${STAGE_LABELS[state.selectedRun.currentStage] || state.selectedRun.currentStage} -> ${STAGE_LABELS[state.selectedRun.nextStage] || state.selectedRun.nextStage}`
+    : "No next stage";
+}
+
+function setRunHistoryExpanded(expanded) {
+  showRunHistory = expanded;
+  toggleRunHistoryButton.setAttribute("aria-expanded", expanded ? "true" : "false");
+  toggleRunHistoryButton.textContent = expanded ? "v Previous runs" : "^ Previous runs";
 }
 
 function artifactByStage(stageName) {
   return state.selectedRun?.artifacts?.find((artifact) => artifact.stage === stageName) ?? null;
-}
-
-function nodeKey(nodeLike) {
-  const normalized = compactText(nodeLike?.metadata_preview?.normalized_name || "") || normalizeKey(nodeLike?.label || "");
-  return `${nodeLike?.type || "unknown"}:${normalized}`;
-}
-
-function getDebugCandidates() {
-  const planArtifact = artifactByStage("persistence_plan");
-  const graphKeys = new Set((state.graph?.nodes || []).map((node) => nodeKey(node)));
-  const candidates = [
-    ...((planArtifact?.output_sample?.rejected_candidates) || []),
-    ...((planArtifact?.output_sample?.unpersisted_candidates) || []),
-  ];
-  const seen = new Set();
-  const deduped = [];
-  for (const candidate of candidates) {
-    const key = nodeKey(candidate);
-    if (!key || seen.has(key) || graphKeys.has(key)) {
-      continue;
-    }
-    seen.add(key);
-    deduped.push(candidate);
-  }
-  return deduped;
 }
 
 async function refreshRuns() {
@@ -174,7 +98,7 @@ async function refreshRuns() {
   runsRollup.classList.add("hidden");
 
   if (!state.runs.length) {
-    runsList.innerHTML = '<p class="runs-empty">No runs yet. Ask a question to start the serial workflow.</p>';
+    runsList.innerHTML = '<p class="runs-empty">No runs yet. Create a plan to begin the single-path workflow.</p>';
     return;
   }
 
@@ -182,7 +106,6 @@ async function refreshRuns() {
   if (latestRun) {
     runsList.appendChild(buildRunCard(latestRun));
   }
-
   if (previousRuns.length) {
     runsRollup.classList.remove("hidden");
     const history = document.createElement("div");
@@ -195,52 +118,127 @@ async function refreshRuns() {
 }
 
 function buildRunCard(run) {
-    const card = document.createElement("article");
-    card.className = "run-card";
-    if (state.selectedRun?.runId === run.run_id) {
-      card.classList.add("active");
-    }
-    card.innerHTML = `
-      <div class="run-card-header">
-        <h3>${escapeHtml(run.question || run.run_id)}</h3>
-        <span class="status-pill ${run.status || "completed_with_warnings"}">${statusLabel(run.status || "completed_with_warnings")}</span>
-      </div>
-      <p>${escapeHtml(run.summary || "No summary yet.")}</p>
-      <div class="run-card-actions">
-        <span>${escapeHtml(run.run_id)}</span>
-        <button type="button" class="run-trace-button">Inspect run trace</button>
-      </div>
-    `;
-    card.addEventListener("click", () => selectRun(run.run_id));
-    card.querySelector(".run-trace-button").addEventListener("click", async (event) => {
-      event.stopPropagation();
-      state.inspectorTab = "trace";
-      await selectRun(run.run_id);
+  const card = document.createElement("article");
+  card.className = "run-card";
+  if (state.selectedRun?.runId === run.run_id) {
+    card.classList.add("active");
+  }
+
+  const next = run.awaiting_approval && run.next_stage
+    ? `Waiting for approval: ${STAGE_LABELS[run.next_stage] || run.next_stage}`
+    : "No pending stage";
+
+  card.innerHTML = `
+    <div class="run-card-header">
+      <h3>${escapeHtml(run.question || run.run_id)}</h3>
+      <span class="status-pill ${run.status || "awaiting_approval"}">${statusLabel(run.status || "awaiting_approval")}</span>
+    </div>
+    <p>${escapeHtml(run.summary || "No summary yet.")}</p>
+    <p class="run-meta">${escapeHtml(STAGE_LABELS[run.current_stage] || run.current_stage)} • ${escapeHtml(next)}</p>
+    <div class="run-card-actions">
+      <span>${escapeHtml(run.run_id)}</span>
+      <button type="button" class="run-open-button">Open</button>
+    </div>
+  `;
+  card.addEventListener("click", () => selectRun(run.run_id));
+  card.querySelector(".run-open-button").addEventListener("click", async (event) => {
+    event.stopPropagation();
+    await selectRun(run.run_id);
+  });
+  return card;
+}
+
+async function submitRun(question) {
+  setRunControlsBusy(true);
+  setRunFeedback("running", `Creating plan for "${question}"...`);
+
+  try {
+    const response = await fetch("/runs", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question }),
     });
-    return card;
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.detail || payload.error || `create_failed_${response.status}`);
+    }
+
+    const result = await response.json();
+    await refreshRuns();
+    await selectRun(result.run_id);
+    setRunFeedback("success", `Plan created. Review the stage output, then approve the next step.`);
+  } catch (error) {
+    setRunFeedback("error", `Plan creation failed: ${error instanceof Error ? error.message : "unknown_error"}`);
+  } finally {
+    setRunControlsBusy(false);
+  }
+}
+
+async function advanceSelectedRun() {
+  if (!state.selectedRun?.runId || !state.selectedRun?.nextStage) {
+    return;
+  }
+  setAdvanceBusy(true);
+  setRunFeedback("running", `Advancing to ${STAGE_LABELS[state.selectedRun.nextStage] || state.selectedRun.nextStage}...`);
+
+  try {
+    const response = await fetch(`/runs/${state.selectedRun.runId}/advance`, { method: "POST" });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      throw new Error(payload.detail || payload.error || `advance_failed_${response.status}`);
+    }
+
+    await refreshRuns();
+    await selectRun(state.selectedRun.runId);
+    setRunFeedback("success", "Stage completed. Review the new output before approving the next step.");
+  } catch (error) {
+    setRunFeedback("error", `Advance failed: ${error instanceof Error ? error.message : "unknown_error"}`);
+  } finally {
+    setAdvanceBusy(false);
+  }
 }
 
 async function selectRun(runId) {
   const runResponse = await fetch(`/runs/${runId}`);
   if (!runResponse.ok) {
-    await refreshRuns();
     inspectorContent.innerHTML = "<p>This run record is no longer available. Refreshing the run list.</p>";
+    await refreshRuns();
     return;
   }
   const runPayload = await runResponse.json();
   state.selectedRun = runPayload.run;
-  state.selectedStage = state.selectedRun.artifacts?.[state.selectedRun.artifacts.length - 1]?.stage || "graph_delta";
+  state.selectedStage = state.selectedRun.currentStage || "plan";
+
   const graphResponse = await fetch(`/runs/${runId}/graph`);
   const graphPayload = await graphResponse.json();
   state.graph = graphPayload.graph;
-  state.selectedNodeId = state.graph.nodes[0]?.id ?? null;
-  state.activeTypes = new Set(state.graph.view.filters);
+  state.selectedNodeId = state.graph?.nodes?.[0]?.id ?? null;
+  state.activeTypes = new Set(state.graph?.view?.filters || []);
   renderRun();
 }
 
 function renderRun() {
-  if (!state.selectedRun || !state.graph) return;
+  if (!state.selectedRun || !state.graph) {
+    graphTitle.textContent = "No run selected";
+    graphSubtitle.textContent = "Create a plan to start the human-steered pipeline.";
+    stagePill.textContent = "no run";
+    stagePill.className = "status-pill";
+    stageSummary.textContent = "No stage output yet.";
+    stageAdvance.disabled = true;
+    inspectorContent.innerHTML = "<p>No run selected.</p>";
+    return;
+  }
+
   graphTitle.textContent = state.selectedRun.question;
+  const currentArtifact = artifactByStage(state.selectedRun.currentStage) || state.selectedRun.artifacts?.[state.selectedRun.artifacts.length - 1] || null;
+  graphSubtitle.textContent = state.selectedRun.awaitingApproval && state.selectedRun.nextStage
+    ? `Current stage: ${STAGE_LABELS[state.selectedRun.currentStage] || state.selectedRun.currentStage}. Next stage waits for approval: ${STAGE_LABELS[state.selectedRun.nextStage] || state.selectedRun.nextStage}.`
+    : `Current stage: ${STAGE_LABELS[state.selectedRun.currentStage] || state.selectedRun.currentStage}.`;
+  stagePill.textContent = statusLabel(currentArtifact?.status || state.selectedRun.status);
+  stagePill.className = `status-pill ${currentArtifact?.status || state.selectedRun.status}`;
+  stageSummary.textContent = state.selectedRun.summary || "No summary available.";
+  setAdvanceBusy(false);
   renderFilterChips();
   renderInspector();
   renderGraph();
@@ -249,7 +247,7 @@ function renderRun() {
 
 function renderFilterChips() {
   filterChips.innerHTML = "";
-  for (const type of state.graph.view.filters) {
+  for (const type of state.graph?.view?.filters || []) {
     const chip = document.createElement("button");
     chip.type = "button";
     chip.className = `chip ${state.activeTypes.has(type) ? "active" : ""}`;
@@ -271,7 +269,7 @@ function renderInspector() {
     button.classList.toggle("active", button.dataset.tab === state.inspectorTab);
   }
 
-  if (!state.selectedRun || !state.graph) {
+  if (!state.selectedRun) {
     inspectorContent.innerHTML = "<p>No run selected.</p>";
     return;
   }
@@ -280,43 +278,39 @@ function renderInspector() {
     renderMetadataPanel();
     return;
   }
-  if (state.inspectorTab === "es_output") {
-    renderEsOutputPanel();
+  if (state.inspectorTab === "evidence") {
+    renderEvidencePanel();
     return;
   }
-  if (state.inspectorTab === "candidates") {
-    renderCandidatesPanel();
-    return;
-  }
-  if (state.inspectorTab === "sources") {
-    renderSourcesPanel();
+  if (state.inspectorTab === "extract") {
+    renderExtractionPanel();
     return;
   }
   renderTracePanel();
 }
 
 function renderTracePanel() {
-  const selectedArtifact = artifactByStage(state.selectedStage) || state.selectedRun.artifacts?.[state.selectedRun.artifacts.length - 1] || null;
+  const selectedArtifact = artifactByStage(state.selectedStage) || artifactByStage(state.selectedRun.currentStage) || null;
   const traceLayout = document.createElement("div");
   traceLayout.className = "trace-layout";
 
   const stageColumn = document.createElement("div");
   stageColumn.className = "stage-list";
-  for (const stage of state.selectedRun.artifacts) {
-    const node = document.createElement("article");
-    node.className = "stage-card";
-    node.innerHTML = `
+  for (const stage of state.selectedRun.artifacts || []) {
+    const card = document.createElement("article");
+    card.className = `stage-card ${stage.stage === state.selectedStage ? "active" : ""}`;
+    card.innerHTML = `
       <div class="stage-header">
-        <h3>${escapeHtml(stage.stage)}</h3>
+        <h3>${escapeHtml(STAGE_LABELS[stage.stage] || stage.stage)}</h3>
         <span class="status-pill ${stage.status}">${statusLabel(stage.status)}</span>
       </div>
       <p>${Object.entries(stage.counts).map(([key, value]) => `${key}: ${value}`).join(" • ") || "no counts"}</p>
     `;
-    node.addEventListener("click", () => {
+    card.addEventListener("click", () => {
       state.selectedStage = stage.stage;
       renderTracePanel();
     });
-    stageColumn.appendChild(node);
+    stageColumn.appendChild(card);
   }
 
   const detailColumn = document.createElement("div");
@@ -325,13 +319,18 @@ function renderTracePanel() {
     <div class="panel-header">
       <div>
         <h2>Run Trace</h2>
-        <p>Representative stage sample plus persistence summary</p>
+        <p>Every completed stage artifact is preserved and reviewable.</p>
       </div>
       <span class="status-pill ${selectedArtifact?.status || "ok"}">${statusLabel(selectedArtifact?.status || "ok")}</span>
     </div>
-    <div class="persistence-summary">${renderPersistenceSummaryMarkup()}</div>
+    <div class="summary-card">
+      <h3>Run status</h3>
+      <p>${escapeHtml(statusLabel(state.selectedRun.status))}</p>
+      <p>${escapeHtml(state.selectedRun.summary || "")}</p>
+      <p>${state.selectedRun.awaitingApproval && state.selectedRun.nextStage ? `Waiting for approval to enter ${escapeHtml(STAGE_LABELS[state.selectedRun.nextStage] || state.selectedRun.nextStage)}.` : "No pending stage."}</p>
+    </div>
     <div class="trace-sample-block">
-      <h3>${escapeHtml(selectedArtifact?.stage || "artifact")}</h3>
+      <h3>${escapeHtml(STAGE_LABELS[selectedArtifact?.stage] || selectedArtifact?.stage || "artifact")}</h3>
       ${prettyJson(selectedArtifact?.output_sample ?? {})}
     </div>
   `;
@@ -342,142 +341,41 @@ function renderTracePanel() {
   inspectorContent.appendChild(traceLayout);
 }
 
-function renderPersistenceSummaryMarkup() {
-  const planArtifact = artifactByStage("persistence_plan");
-  const writeArtifact = artifactByStage("typedb_write");
-  const summary = planArtifact?.output_sample?.persistence_summary || {};
-  const merged = writeArtifact?.output_sample?.merged_entities || [];
-  const created = writeArtifact?.output_sample?.created_entities || [];
-  const edges = writeArtifact?.output_sample?.created_relations || [];
-  const rejected = planArtifact?.output_sample?.rejected_candidates || [];
-  const unpersisted = planArtifact?.output_sample?.unpersisted_candidates || [];
+function renderEvidencePanel() {
+  const planArtifact = artifactByStage("plan");
+  const evidenceArtifact = artifactByStage("evidence");
+  const plan = planArtifact?.output_sample?.query_plan || {};
+  const sources = evidenceArtifact?.output_sample?.sources || {};
 
-  return `
+  inspectorContent.innerHTML = `
+    <div class="panel-header">
+      <div>
+        <h2>Evidence</h2>
+        <p>Source plan first, then the collected evidence bundle.</p>
+      </div>
+    </div>
     <article class="summary-card">
-      <h3>Decision</h3>
-      <p>${escapeHtml(planArtifact?.output_sample?.decision || "n/a")}${planArtifact?.output_sample?.blocked_reason ? ` • ${escapeHtml(planArtifact.output_sample.blocked_reason)}` : ""}</p>
+      <h3>Source plan</h3>
+      ${prettyJson(plan)}
     </article>
-    <div class="summary-grid">
-      <article class="summary-card"><h3>Merged</h3><p>${merged.length || summary.merged_entities || 0}</p></article>
-      <article class="summary-card"><h3>Draft Entities</h3><p>${created.length || summary.draft_entities || 0}</p></article>
-      <article class="summary-card"><h3>Draft Edges</h3><p>${edges.length || summary.draft_edges || 0}</p></article>
-      <article class="summary-card"><h3>Rejected</h3><p>${rejected.length || summary.rejected_candidates || 0}</p></article>
-      <article class="summary-card"><h3>Unpersisted</h3><p>${unpersisted.length || summary.unpersisted_candidates || 0}</p></article>
-    </div>
-  `;
-}
-
-function renderMetadataPanel() {
-  const selected = state.graph.nodes.find((node) => node.id === state.selectedNodeId) || state.graph.nodes[0];
-  if (!selected) {
-    inspectorContent.innerHTML = "<p>No node selected.</p>";
-    return;
-  }
-
-  const rows = Object.entries(selected.metadata_preview || {}).map(([key, value]) => `
-    <div class="meta-row">
-      <span class="meta-key">${escapeHtml(key)}</span>
-      <span class="meta-value">${escapeHtml(typeof value === "object" ? JSON.stringify(value) : value)}</span>
-    </div>
-  `).join("");
-
-  inspectorContent.innerHTML = `
-    <div class="panel-header">
-      <div>
-        <h2>Selected Node</h2>
-        <p>Only connected graph nodes render in the primary graph view</p>
-      </div>
-      <span class="status-pill ${selected.status}">${statusLabel(selected.status)}</span>
-    </div>
-    <div class="meta-grid">
-      <div class="meta-row"><span class="meta-key">label</span><span class="meta-value">${escapeHtml(selected.label)}</span></div>
-      <div class="meta-row"><span class="meta-key">type</span><span class="meta-value">${escapeHtml(selected.type)}</span></div>
-      <div class="meta-row"><span class="meta-key">status</span><span class="meta-value">${escapeHtml(selected.status)}</span></div>
-      <div class="meta-row"><span class="meta-key">sources</span><span class="meta-value">${escapeHtml(selected.source_flags.join(", ") || "none")}</span></div>
-      ${rows}
-    </div>
-  `;
-}
-
-function renderCandidatesPanel() {
-  const candidates = getDebugCandidates();
-  if (!candidates.length) {
-    inspectorContent.innerHTML = `
-      <div class="candidate-empty">
-        <h2>Rejected / Unpersisted Candidates</h2>
-        <p>No separate debug candidates for this run. The graph view is showing only connected graph state.</p>
-      </div>
-    `;
-    return;
-  }
-
-  inspectorContent.innerHTML = `
-    <div class="panel-header">
-      <div>
-        <h2>Rejected / Unpersisted Candidates</h2>
-        <p>Debug-only candidates kept out of the primary graph</p>
-      </div>
-    </div>
-    <div class="candidate-list">
-      ${candidates.map((candidate) => `
-        <article class="candidate-card ${escapeHtml(candidate.status)}">
-          <div class="candidate-status">
-            <span class="status-pill ${escapeHtml(candidate.status)}">${statusLabel(candidate.status)}</span>
-          </div>
-          <h3>${escapeHtml(candidate.label)}</h3>
-          <p>${escapeHtml(candidate.type)}</p>
-          <p>${escapeHtml(candidate.metadata_preview?.reason || "no reason provided")}</p>
-        </article>
-      `).join("")}
-    </div>
-  `;
-}
-
-function renderSourcesPanel() {
-  const evidenceStage = artifactByStage("evidence");
-  const evidencePayload = evidenceStage?.output_sample || {};
-  const sources = evidencePayload.sources || {};
-  const plan = evidencePayload.plan || null;
-  const sourceEntries = Object.entries(sources);
-
-  inspectorContent.innerHTML = `
-    <div class="panel-header">
-      <div>
-        <h2>Evidence Sources</h2>
-        <p>GPT-planned source queries, request samples, and representative source responses</p>
-      </div>
-    </div>
-    ${plan ? `
-      <article class="summary-card">
-        <h3>Query Planner</h3>
-        <p>${escapeHtml(plan.provider || "unknown")} • ${escapeHtml(plan.planner_status || "unknown")}</p>
-        <p>${escapeHtml(plan.summary || "")}</p>
-        ${prettyJson({
-          interpretations: plan.interpretations || [],
-          source_queries: plan.source_queries || {},
-        })}
-      </article>
-    ` : ""}
     <div class="sources-layout">
-      ${sourceEntries.map(([key, value]) => {
-        const snippet = Array.isArray(value.snippets) && value.snippets[0]
-          ? value.snippets[0].snippet
-          : (value.detail || "unavailable");
+      ${Object.entries(sources).map(([key, value]) => {
+        const snippet = Array.isArray(value?.snippets) && value.snippets[0] ? value.snippets[0].snippet : (value?.detail || "");
         return `
-          <article class="source-card ${value.ok ? "" : "disabled"}">
+          <article class="source-card ${value?.ok ? "" : "disabled"}">
             <div class="stage-header">
               <h3>${escapeHtml(key)}</h3>
-              <span class="status-pill ${value.ok ? "ok" : "warning"}">${value.ok ? "ok" : "warning"}</span>
+              <span class="status-pill ${value?.ok ? "ok" : "warning"}">${value?.ok ? "ok" : "warning"}</span>
             </div>
-            <p>${escapeHtml(value.ok ? "available" : value.detail || "unavailable")}</p>
-            <p>${escapeHtml(snippet || "")}</p>
+            <p>${escapeHtml(value?.detail || "")}</p>
+            <p>${escapeHtml(snippet)}</p>
             ${prettyJson({
-              request_sample: value.request_sample || {},
-              response_sample: value.response_sample || {},
+              request_sample: value?.request_sample || {},
+              response_sample: value?.response_sample || {},
             })}
           </article>
         `;
-      }).join("")}
+      }).join("") || '<p class="runs-empty">No evidence has been collected for this run yet.</p>'}
     </div>
   `;
 }
@@ -494,9 +392,7 @@ function groupBy(items, keyFn) {
 }
 
 function renderEntityCard(entity) {
-  const properties = Object.entries(entity.properties || {})
-    .filter(([, value]) => value !== "" && value !== null && value !== undefined)
-    .slice(0, 6);
+  const properties = Object.entries(entity.properties || {}).slice(0, 6);
   return `
     <article class="extract-card">
       <div class="extract-card-header">
@@ -505,11 +401,7 @@ function renderEntityCard(entity) {
       </div>
       <p>confidence ${Number(entity.confidence || 0).toFixed(2)} • ${escapeHtml((entity.sources || []).join(", ") || "unknown source")}</p>
       ${entity.evidence?.[0] ? `<p>${escapeHtml(entity.evidence[0])}</p>` : ""}
-      ${properties.length ? `
-        <div class="extract-pill-row">
-          ${properties.map(([key, value]) => `<span class="extract-pill">${escapeHtml(key)}: ${escapeHtml(typeof value === "object" ? JSON.stringify(value) : value)}</span>`).join("")}
-        </div>
-      ` : ""}
+      ${properties.length ? `<div class="extract-pill-row">${properties.map(([key, value]) => `<span class="extract-pill">${escapeHtml(key)}: ${escapeHtml(typeof value === "object" ? JSON.stringify(value) : value)}</span>`).join("")}</div>` : ""}
     </article>
   `;
 }
@@ -519,9 +411,9 @@ function renderRelationCard(relation) {
     <article class="extract-card">
       <div class="extract-card-header">
         <h4>${escapeHtml(relation.type || "relation")}</h4>
-        <span class="status-pill ok">${escapeHtml(relation.source_label || "unknown")} → ${escapeHtml(relation.target_label || "unknown")}</span>
+        <span class="status-pill ok">${escapeHtml(relation.source_label || "unknown")} -> ${escapeHtml(relation.target_label || "unknown")}</span>
       </div>
-      <p>${escapeHtml(relation.source_entity || "unknown")} → ${escapeHtml(relation.target_entity || "unknown")}</p>
+      <p>${escapeHtml(relation.source_entity || "unknown")} -> ${escapeHtml(relation.target_entity || "unknown")}</p>
       <p>confidence ${Number(relation.confidence || 0).toFixed(2)} • ${escapeHtml(relation.source || "unknown source")}</p>
       ${relation.evidence ? `<p>${escapeHtml(relation.evidence)}</p>` : ""}
     </article>
@@ -542,7 +434,7 @@ function renderPropertyCard(property) {
   `;
 }
 
-function renderEsOutputPanel() {
+function renderExtractionPanel() {
   const extractArtifact = artifactByStage("extract");
   const extract = extractArtifact?.output_sample || {};
   const entities = Array.isArray(extract.entities) ? [...extract.entities] : [];
@@ -552,8 +444,8 @@ function renderEsOutputPanel() {
   if (!entities.length && !relations.length && !properties.length) {
     inspectorContent.innerHTML = `
       <div class="candidate-empty">
-        <h2>ES Output</h2>
-        <p>No extraction output is available for this run yet.</p>
+        <h2>Extraction</h2>
+        <p>No extractor output is available for this run yet.</p>
       </div>
     `;
     return;
@@ -562,14 +454,13 @@ function renderEsOutputPanel() {
   entities.sort((left, right) => Number(right.confidence || 0) - Number(left.confidence || 0));
   relations.sort((left, right) => Number(right.confidence || 0) - Number(left.confidence || 0));
   properties.sort((left, right) => Number(right.confidence || 0) - Number(left.confidence || 0));
-
   const entitiesByLabel = groupBy(entities, (entity) => entity.label || "Unknown");
 
   inspectorContent.innerHTML = `
     <div class="panel-header">
       <div>
-        <h2>ES Output</h2>
-        <p>Human-readable list of what the extractor pulled from the collected evidence corpus</p>
+        <h2>Extraction</h2>
+        <p>Real extractor output from the collected evidence bundle.</p>
       </div>
       <span class="status-pill ${extractArtifact?.status || "ok"}">${statusLabel(extractArtifact?.status || "ok")}</span>
     </div>
@@ -581,7 +472,7 @@ function renderEsOutputPanel() {
     <section class="extract-section">
       <div class="panel-header">
         <h3>Entities</h3>
-        <p>Grouped by label</p>
+        <p>Grouped by resolved label</p>
       </div>
       <div class="extract-groups">
         ${Array.from(entitiesByLabel.entries()).map(([label, grouped]) => `
@@ -599,8 +490,8 @@ function renderEsOutputPanel() {
     </section>
     <section class="extract-section">
       <div class="panel-header">
-        <h3>Relationships</h3>
-        <p>What ES thinks is connected to what</p>
+        <h3>Relations</h3>
+        <p>Only conservative relations anchored to resolved entities</p>
       </div>
       <div class="extract-card-list">
         ${relations.length ? relations.map(renderRelationCard).join("") : '<p class="runs-empty">No relations were extracted.</p>'}
@@ -609,7 +500,7 @@ function renderEsOutputPanel() {
     <section class="extract-section">
       <div class="panel-header">
         <h3>Properties</h3>
-        <p>Structured facts ES found while reading the evidence bundle</p>
+        <p>Source-backed structured facts</p>
       </div>
       <div class="extract-card-list">
         ${properties.length ? properties.map(renderPropertyCard).join("") : '<p class="runs-empty">No properties were extracted.</p>'}
@@ -618,15 +509,47 @@ function renderEsOutputPanel() {
   `;
 }
 
+function renderMetadataPanel() {
+  const selected = state.graph?.nodes?.find((node) => node.id === state.selectedNodeId) || state.graph?.nodes?.[0];
+  if (!selected) {
+    inspectorContent.innerHTML = "<p>No node selected.</p>";
+    return;
+  }
+  const rows = Object.entries(selected.metadata_preview || {}).map(([key, value]) => `
+    <div class="meta-row">
+      <span class="meta-key">${escapeHtml(key)}</span>
+      <span class="meta-value">${escapeHtml(typeof value === "object" ? JSON.stringify(value) : value)}</span>
+    </div>
+  `).join("");
+
+  inspectorContent.innerHTML = `
+    <div class="panel-header">
+      <div>
+        <h2>Selected Node</h2>
+        <p>Connected graph state only. Unsupported candidates stay in the extraction view.</p>
+      </div>
+      <span class="status-pill ${selected.status}">${statusLabel(selected.status)}</span>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-row"><span class="meta-key">label</span><span class="meta-value">${escapeHtml(selected.label)}</span></div>
+      <div class="meta-row"><span class="meta-key">type</span><span class="meta-value">${escapeHtml(selected.type)}</span></div>
+      <div class="meta-row"><span class="meta-key">status</span><span class="meta-value">${escapeHtml(selected.status)}</span></div>
+      <div class="meta-row"><span class="meta-key">sources</span><span class="meta-value">${escapeHtml(selected.source_flags.join(", ") || "none")}</span></div>
+      ${rows}
+    </div>
+  `;
+}
+
 function renderGraph() {
-  if (!state.graph) return;
+  if (!state.graph) {
+    return;
+  }
 
   const container = document.getElementById("graph-canvas");
   container.innerHTML = "";
-
   const searchTerm = graphSearch.value.trim().toLowerCase();
   const nodes = state.graph.nodes.filter((node) => {
-    const typeAllowed = state.activeTypes.has(node.type);
+    const typeAllowed = state.activeTypes.size ? state.activeTypes.has(node.type) : true;
     const searchAllowed = !searchTerm || node.label.toLowerCase().includes(searchTerm);
     const starterAllowed = state.showFullGraph || state.graph.view.focal_ids.includes(node.id) || node.degree_hint > 1;
     return typeAllowed && searchAllowed && starterAllowed;
@@ -634,8 +557,13 @@ function renderGraph() {
   const nodeIds = new Set(nodes.map((node) => node.id));
   const edges = state.graph.edges.filter((edge) => nodeIds.has(edge.source) && nodeIds.has(edge.target));
 
-  const width = container.clientWidth;
-  const height = container.clientHeight;
+  if (!nodes.length) {
+    container.innerHTML = '<div class="graph-empty"><p>No graph nodes match the current view.</p></div>';
+    return;
+  }
+
+  const width = container.clientWidth || 900;
+  const height = container.clientHeight || 520;
   const svg = d3.select(container).append("svg");
   const root = svg.append("g");
 
@@ -646,10 +574,10 @@ function renderGraph() {
     .range(["#8192ae", "#f4b860"]);
 
   const simulation = d3.forceSimulation(nodes)
-    .force("link", d3.forceLink(edges).id((d) => d.id).distance(110))
-    .force("charge", d3.forceManyBody().strength(-280))
+    .force("link", d3.forceLink(edges).id((d) => d.id).distance(120))
+    .force("charge", d3.forceManyBody().strength(-300))
     .force("center", d3.forceCenter(width / 2, height / 2))
-    .force("collide", d3.forceCollide().radius(28));
+    .force("collide", d3.forceCollide().radius(30));
 
   const link = root.append("g")
     .attr("stroke", "rgba(255,255,255,0.14)")
@@ -718,4 +646,51 @@ function renderGraph() {
   });
 }
 
+document.getElementById("run-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const question = questionInput.value.trim();
+  if (!question) {
+    return;
+  }
+  await submitRun(question);
+});
+
+refreshRunsButton.addEventListener("click", async () => {
+  setRunFeedback("", "Refreshing runs...");
+  await refreshRuns();
+  setRunFeedback("", "Ready.");
+});
+
+toggleRunHistoryButton.addEventListener("click", () => {
+  setRunHistoryExpanded(!showRunHistory);
+  refreshRuns();
+});
+
+toggleViewButton.addEventListener("click", () => {
+  state.showFullGraph = !state.showFullGraph;
+  toggleViewButton.textContent = state.showFullGraph ? "Full graph" : "Starter view";
+  renderGraph();
+});
+
+graphSearch.addEventListener("input", () => renderGraph());
+
+window.addEventListener("keydown", (event) => {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    graphSearch.focus();
+  }
+});
+
+for (const button of inspectorTabs) {
+  button.addEventListener("click", () => {
+    state.inspectorTab = button.dataset.tab || "trace";
+    renderInspector();
+  });
+}
+
+stageAdvance.addEventListener("click", async () => {
+  await advanceSelectedRun();
+});
+
+setRunHistoryExpanded(false);
 refreshRuns();

@@ -1,38 +1,47 @@
-# GrooveGraph App Reset
+# GrooveGraph Reset App
 
-This repo now includes an app-first monorepo scaffold alongside the legacy CLI.
+This is the active app-first reset surface for GrooveGraph.
 
-## New entry points
+It replaces the earlier exploratory reset pipeline with one **single, human-steered path**:
 
-- App backend: `npm run dev`
-- Python extraction service: `python services/entity-service/app.py`
+1. `plan`
+2. `evidence`
+3. `extract`
+4. `persistence proposal`
+5. `commit`
+
+Every stage is visible and requires approval before the next stage runs.
+
+## Entry points
+
+- App backend/UI: `npm start`
+- Entity-service: `python services/entity-service/app.py`
 - Reset DB init: `cli\.venv\Scripts\python.exe services/graph-bridge/init_reset_db.py`
 
-The app runs on `http://127.0.0.1:3100` by default.
-The local extraction service runs on `http://127.0.0.1:8200` by default.
+Default local URLs:
 
-## What works now
+- App: `http://127.0.0.1:3100`
+- Entity-service: `http://127.0.0.1:8200`
 
-- `POST /runs`
-- `GET /runs/:run_id`
-- `GET /runs/:run_id/graph`
-- `GET /runs/:run_id/artifacts/:stage`
-- `GET /health`
-- D3 graph UI
-- human-readable `ES Output` inspector panel
-- observable run artifacts under `artifacts/runs/<run_id>/`
+## What the reset app does
 
-## Extraction status
+- reads graph context from the reset TypeDB database
+- plans source-specific lookups
+- collects evidence from Wikipedia, MusicBrainz, Discogs, and browser-rendered web pages
+- runs a real spaCy-based extraction pass using the installed English model
+- shows entities, relations, and properties for operator review
+- proposes a draft persistence batch
+- writes only approved connected draft graph data
 
-The in-repo entity-service now returns broader graph-shaped output from the collected evidence bundle:
+## What it explicitly does not do
 
-- entities
-- relations
-- properties
+- no hidden autonomous end-to-end run
+- no heuristic fragment entity creation
+- no Brave-snippet extraction
+- no legacy CLI-style orchestration flags
+- no multiple pipeline variants
 
-This extraction layer is broader than the current reset TypeDB persistence slice. The app can inspect the broader ES result now, while persistence remains intentionally narrower until the supported graph schema catches up.
+## Core docs
 
-## Current bridge status
-
-The Python graph bridge now targets a dedicated reset TypeDB database using `GG_RESET_TYPEDB_DATABASE`.
-Initialize that database before the first real run so the reset schema in `typedb/groovegraph-reset-schema.tql` is applied.
+- Reset onboarding: `docs/RESET_AGENT_ONBOARDING.md`
+- Reset schema: `typedb/groovegraph-reset-schema.tql`

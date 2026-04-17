@@ -5,7 +5,6 @@ import { persistGraphPlan, readGraphContext } from "./graph-bridge.ts";
 import { createRunId } from "./id.ts";
 import { buildPersistencePlan } from "./persistence-plan.ts";
 import { planSourceQueries } from "./query-planner.ts";
-import { reviewExtraction } from "./review.ts";
 import type { GraphView, RunArtifact, RunRecord, StageName } from "./types.ts";
 
 const EXTRACTION_LABELS = [
@@ -19,7 +18,9 @@ const EXTRACTION_LABELS = [
   "Label",
   "Person",
   "Alias",
-];
+] as const;
+
+const STAGE_SEQUENCE: StageName[] = ["plan", "evidence", "extract", "persistence_proposal", "commit"];
 
 function artifactTemplate(runId: string, stage: StageName, inputSample: unknown): RunArtifact {
   const now = new Date().toISOString();
@@ -58,36 +59,8 @@ async function recordStage(
   return completed;
 }
 
-function buildExtractionPayload(question: string, graphContext: any, evidence: any): any {
-  const contextEntities = Array.isArray(graphContext?.nodes)
-    ? graphContext.nodes.slice(0, 20).map((node: any) => ({
-        label: node.type,
-        canonical: node.label,
-        aliases: node.metadata_preview?.aliases ?? [],
-      }))
-    : [];
-
-  return {
-    question,
-    labels: EXTRACTION_LABELS,
-    graph_context: {
-      nodes: Array.isArray(graphContext?.nodes) ? graphContext.nodes.slice(0, 20) : [],
-      edges: Array.isArray(graphContext?.edges) ? graphContext.edges.slice(0, 20) : [],
-    },
-    evidence,
-    text: [
-      evidence.extract_text,
-    ].join("\n\n"),
-    schema: {
-      entityTypes: EXTRACTION_LABELS,
-      knownEntities: contextEntities,
-    },
-    options: {
-      use_aliases: true,
-      use_model: true,
-      useLiteralProperties: false,
-    },
-  };
+function artifactByStage(run: RunRecord, stage: StageName): RunArtifact | null {
+  return run.artifacts.find((artifact) => artifact.stage === stage) ?? null;
 }
 
 function normalizeKey(value: string): string {
@@ -106,9 +79,7 @@ function sanitizeGraphView(graph: GraphView): GraphView {
   const aliasMap = new Map<string, string>();
 
   for (const node of graph.nodes) {
-    const normalized =
-      String(node.metadata_preview?.normalized_name || "").trim() ||
-      normalizeKey(node.label);
+    const normalized = String(node.metadata_preview?.normalized_name || "").trim() || normalizeKey(node.label);
     const canonicalId = `${node.type}:${normalized}`;
     const existing = nodeMap.get(canonicalId);
     if (!existing) {
@@ -179,6 +150,103 @@ function sanitizeGraphView(graph: GraphView): GraphView {
   };
 }
 
+function nextStageAfter(stage: StageName): StageName | null {
+  const index = STAGE_SEQUENCE.indexOf(stage);
+  if (index < 0 || index === STAGE_SEQUENCE.length - 1) {
+    return null;
+  }
+  return STAGE_SEQUENCE[index + 1];
+}
+
+function buildExtractionPayload(question: string, graphContext: any, evidence: any): any {
+  const contextEntities = Array.isArray(graphContext?.nodes)
+    ? graphContext.nodes.slice(0, 24).map((node: any) => ({
+        label: node.type,
+        canonical: node.label,
+        aliases: node.metadata_preview?.aliases ?? [],
+      }))
+    : [];
+
+  return {
+    question,
+    labels: [...EXTRACTION_LABELS],
+    graph_context: {
+      nodes: Array.isArray(graphContext?.nodes) ? graphContext.nodes.slice(0, 20) : [],
+      edges: Array.isArray(graphContext?.edges) ? graphContext.edges.slice(0, 20) : [],
+    },
+    evidence,
+    text: evidence.extract_text,
+    schema: {
+      entityTypes: [...EXTRACTION_LABELS],
+      knownEntities: contextEntities,
+    },
+    options: {
+      use_aliases: true,
+      use_model: true,
+      useLiteralProperties: true,
+    },
+  };
+}
+
+function proposalPreviewGraph(baseGraph: GraphView, proposal: any): GraphView {
+  const nodes = [...(baseGraph?.nodes ?? [])];
+  const edges = [...(baseGraph?.edges ?? [])];
+  const focalIds = [...(baseGraph?.view?.focal_ids ?? [])];
+
+  for (const node of proposal?.nodes ?? []) {
+    const graphId = `${node.label}:${node.normalized_name}`;
+    nodes.push({
+      id: graphId,
+      label: node.name,
+      type: node.label,
+      status: node.graph_status,
+      source_flags: [node.external_source || "proposal"].filter(Boolean),
+      degree_hint: 0,
+      metadata_preview: {
+        normalized_name: node.normalized_name,
+        summary: node.summary,
+        source_url: node.source_url,
+      },
+    });
+    focalIds.push(graphId);
+  }
+
+  const refToId = new Map<string, string>((proposal?.nodes ?? []).map((node: any) => [node.ref, `${node.label}:${node.normalized_name}`]));
+  for (const relation of proposal?.relations ?? []) {
+    const sourceId = refToId.get(relation.left_ref);
+    const targetId = refToId.get(relation.right_ref);
+    if (!sourceId || !targetId) {
+      continue;
+    }
+    edges.push({
+      id: `${relation.kind}:${sourceId}:${targetId}`,
+      source: sourceId,
+      target: targetId,
+      type: relation.kind,
+      status: "draft_added",
+      provenance_hint: "proposal",
+    });
+  }
+
+  return sanitizeGraphView({
+    nodes,
+    edges,
+    view: {
+      focal_ids: focalIds,
+      filters: Array.from(new Set(nodes.map((node) => node.type))).sort(),
+      legend: baseGraph?.view?.legend ?? [],
+      counts: { nodes: nodes.length, edges: edges.length },
+    },
+  });
+}
+
+function planSummary(question: string, queryPlan: any): string {
+  const interpretation = Array.isArray(queryPlan?.interpretations) && queryPlan.interpretations.length
+    ? queryPlan.interpretations[0]
+    : question;
+  return `Plan ready for review: ${interpretation}`;
+}
+
 export function buildGraphView(run: RunRecord): GraphView {
   return sanitizeGraphView(run.graph);
 }
@@ -187,175 +255,220 @@ export async function loadRunRecord(runId: string): Promise<RunRecord | null> {
   return readRunRecord(runId);
 }
 
-export async function runPipeline(question: string): Promise<RunRecord> {
+export async function createRun(question: string): Promise<RunRecord> {
   const runId = createRunId(question);
-  const artifacts: RunArtifact[] = [];
-
-  artifacts.push(
-    await recordStage(
-      artifactTemplate(runId, "question", { question }),
-      { question },
-      { characters: question.length },
-    ),
-  );
-
-  let graphContext = await readGraphContext(question);
-  artifacts.push(
-    await recordStage(
-      artifactTemplate(runId, "graph_context", { question }),
-      graphContext,
-      {
-        nodes: Array.isArray(graphContext?.nodes) ? graphContext.nodes.length : 0,
-        edges: Array.isArray(graphContext?.edges) ? graphContext.edges.length : 0,
-      },
-      graphContext?.warnings ?? [],
-      graphContext?.errors ?? [],
-    ),
-  );
-
+  const graphContext = await readGraphContext(question);
   const queryPlan = await planSourceQueries(question, graphContext);
-  const queryPlanWarnings = queryPlan.planner_status === "fallback" ? [queryPlan.summary] : [];
-  artifacts.push(
-    await recordStage(
-      artifactTemplate(runId, "query_planning", { question }),
-      queryPlan,
-      {
-        interpretations: queryPlan.interpretations.length,
-        wikipedia_queries: queryPlan.source_queries.wikipedia.length,
-        musicbrainz_queries:
-          queryPlan.source_queries.musicbrainz_artist.length + queryPlan.source_queries.musicbrainz_recording.length,
-        web_queries: queryPlan.source_queries.brave.length,
-      },
-      queryPlanWarnings,
-      [],
-      queryPlan.planner_status === "fallback",
-    ),
-  );
+  const warnings = [
+    ...(graphContext?.warnings ?? []),
+    ...(queryPlan.planner_status === "fallback" ? [queryPlan.summary] : []),
+  ];
 
-  const evidence = await collectEvidence(question, graphContext, queryPlan);
-  const evidenceWarnings = Object.values(evidence.sources)
-    .filter((source: any) => source && source.ok === false)
-    .map((source: any) => `${source.source}:${source.detail ?? "unavailable"}`);
-  artifacts.push(
-    await recordStage(
-      artifactTemplate(runId, "evidence", { question }),
-      { plan: evidence.plan, sources: evidence.sources },
-      {
-        wikipedia_items: evidence.sources.wikipedia.items.length,
-        musicbrainz_items: evidence.sources.musicbrainz.items.length,
-        graph_items: evidence.sources.graph_context.items.length,
-        web_items: evidence.sources.web.items.length,
-      },
-      evidenceWarnings,
-      [],
-    ),
+  const planArtifact = await recordStage(
+    artifactTemplate(runId, "plan", { question }),
+    { graph_context: graphContext, query_plan: queryPlan },
+    {
+      graph_nodes: Array.isArray(graphContext?.nodes) ? graphContext.nodes.length : 0,
+      graph_edges: Array.isArray(graphContext?.edges) ? graphContext.edges.length : 0,
+      artist_candidates: Array.isArray(queryPlan.artist_candidates) ? queryPlan.artist_candidates.length : 0,
+      recording_candidates: Array.isArray(queryPlan.recording_candidates) ? queryPlan.recording_candidates.length : 0,
+    },
+    warnings,
+    graphContext?.errors ?? [],
   );
-
-  const extractPayload = buildExtractionPayload(question, graphContext, evidence);
-  const extract = await callExtractionService(extractPayload);
-  const extractWarnings = extract.ok ? [] : [String(extract.body?.diagnostics?.detail || `extract_failed_${extract.status_code}`)];
-  artifacts.push(
-    await recordStage(
-      artifactTemplate(runId, "extract", {
-        payload_preview: {
-          question,
-          labels: extractPayload.labels,
-          graph_nodes: extractPayload.graph_context.nodes.length,
-        },
-      }),
-      extract.body,
-      {
-        entities: Array.isArray(extract.body?.entities) ? extract.body.entities.length : 0,
-        properties: Array.isArray(extract.body?.properties) ? extract.body.properties.length : 0,
-        relations: Array.isArray(extract.body?.relations) ? extract.body.relations.length : 0,
-      },
-      extractWarnings,
-      [],
-    ),
-  );
-
-  const review = await reviewExtraction(question, graphContext, evidence, extract.body);
-  const reviewBlocked = review?.persistence_decision === "blocked_review";
-  artifacts.push(
-    await recordStage(
-      artifactTemplate(runId, "review", {
-        question,
-        extract_entities: Array.isArray(extract.body?.entities) ? extract.body.entities.length : 0,
-      }),
-      review,
-      {
-        accepted_entities: Array.isArray(review?.accepted_entities) ? review.accepted_entities.length : 0,
-        rejected_entities: Array.isArray(review?.rejected_entities) ? review.rejected_entities.length : 0,
-        merge_candidates: Array.isArray(review?.merge_candidates) ? review.merge_candidates.length : 0,
-      },
-      reviewBlocked ? [String(review?.observations?.[0] || "review_blocked")] : [],
-      [],
-      reviewBlocked,
-    ),
-  );
-
-  const persistencePlan = buildPersistencePlan(runId, question, review, extract.body, evidence, graphContext);
-  const persistenceBlocked = persistencePlan.decision !== "persist_draft";
-  artifacts.push(
-    await recordStage(
-      artifactTemplate(runId, "persistence_plan", { question }),
-      persistencePlan,
-      {
-        nodes: persistencePlan.nodes.length,
-        relations: persistencePlan.relations.length,
-        rejected: persistencePlan.rejected_candidates.length,
-      },
-      persistenceBlocked && persistencePlan.blocked_reason ? [persistencePlan.blocked_reason] : [],
-      [],
-      persistenceBlocked,
-    ),
-  );
-
-  const typedbWrite = await persistGraphPlan(persistencePlan);
-  const typedbBlocked = persistenceBlocked || typedbWrite?.ok === false;
-  artifacts.push(
-    await recordStage(
-      artifactTemplate(runId, "typedb_write", { decision: persistencePlan.decision }),
-      typedbWrite,
-      {
-        written_nodes: Array.isArray(typedbWrite?.created_entities) ? typedbWrite.created_entities.length : 0,
-        merged_entities: Array.isArray(typedbWrite?.merged_entities) ? typedbWrite.merged_entities.length : 0,
-        written_edges: Array.isArray(typedbWrite?.created_relations) ? typedbWrite.created_relations.length : 0,
-      },
-      typedbWrite?.warnings ?? [],
-      typedbWrite?.errors ?? [],
-      typedbBlocked,
-    ),
-  );
-
-  graphContext = typedbWrite?.graph ?? graphContext;
-  artifacts.push(
-    await recordStage(
-      artifactTemplate(runId, "graph_delta", { run_id: runId }),
-      graphContext,
-      {
-        nodes: Array.isArray(graphContext?.nodes) ? graphContext.nodes.length : 0,
-        edges: Array.isArray(graphContext?.edges) ? graphContext.edges.length : 0,
-      },
-      graphContext?.warnings ?? [],
-      graphContext?.errors ?? [],
-    ),
-  );
-
-  const status =
-    artifacts.some((artifact) => artifact.status === "error") ? "failed" :
-    artifacts.some((artifact) => artifact.status === "warning" || artifact.status === "blocked") ? "completed_with_warnings" :
-    "completed";
 
   const run: RunRecord = {
     runId,
     question,
-    status,
-    summary: review?.summary ?? `Run ${runId} completed.`,
-    artifacts,
-    graph: graphContext as GraphView,
+    status: "awaiting_approval",
+    summary: planSummary(question, queryPlan),
+    currentStage: "plan",
+    nextStage: "evidence",
+    awaitingApproval: true,
+    artifacts: [planArtifact],
+    graph: sanitizeGraphView(graphContext as GraphView),
   };
 
   await writeRunRecord(run);
+  return run;
+}
+
+async function advanceToEvidence(run: RunRecord): Promise<RunRecord> {
+  const planArtifact = artifactByStage(run, "plan");
+  const graphContext = (planArtifact?.output_sample as any)?.graph_context ?? { nodes: [], edges: [], view: { focal_ids: [], filters: [], legend: [], counts: {} } };
+  const queryPlan = (planArtifact?.output_sample as any)?.query_plan ?? {};
+  const evidence = await collectEvidence(run.question, graphContext, queryPlan);
+  const evidenceWarnings = Object.values(evidence.sources)
+    .filter((source: any) => source && source.ok === false)
+    .map((source: any) => `${source.source}:${source.detail ?? "unavailable"}`);
+
+  const evidenceArtifact = await recordStage(
+    artifactTemplate(run.runId, "evidence", { question: run.question, query_plan: queryPlan }),
+    { plan: evidence.plan, sources: evidence.sources, summary_text: evidence.summary_text, extract_text: evidence.extract_text },
+    {
+      wikipedia_items: evidence.sources.wikipedia.items.length,
+      musicbrainz_items: evidence.sources.musicbrainz.items.length,
+      discogs_items: evidence.sources.discogs.items.length,
+      web_items: evidence.sources.web.items.length,
+    },
+    evidenceWarnings,
+    [],
+  );
+
+  const updated: RunRecord = {
+    ...run,
+    status: "awaiting_approval",
+    summary: "Evidence bundle ready for review.",
+    currentStage: "evidence",
+    nextStage: "extract",
+    awaitingApproval: true,
+    artifacts: [...run.artifacts, evidenceArtifact],
+  };
+  await writeRunRecord(updated);
+  return updated;
+}
+
+async function advanceToExtract(run: RunRecord): Promise<RunRecord> {
+  const planArtifact = artifactByStage(run, "plan");
+  const evidenceArtifact = artifactByStage(run, "evidence");
+  const graphContext = (planArtifact?.output_sample as any)?.graph_context ?? { nodes: [], edges: [], view: { focal_ids: [], filters: [], legend: [], counts: {} } };
+  const evidence = {
+    plan: (evidenceArtifact?.output_sample as any)?.plan ?? {},
+    sources: (evidenceArtifact?.output_sample as any)?.sources ?? {},
+    summary_text: (evidenceArtifact?.output_sample as any)?.summary_text ?? "",
+    extract_text: (evidenceArtifact?.output_sample as any)?.extract_text ?? "",
+  };
+
+  const extractPayload = buildExtractionPayload(run.question, graphContext, evidence);
+  const extract = await callExtractionService(extractPayload);
+  const diagnostics = extract.body?.diagnostics ?? {};
+  const extractWarnings = [
+    ...(extract.ok ? [] : [String(diagnostics.detail || `extract_failed_${extract.status_code}`)]),
+    ...(diagnostics.spacy_error ? [String(diagnostics.spacy_error)] : []),
+  ];
+
+  const extractArtifact = await recordStage(
+    artifactTemplate(run.runId, "extract", {
+      question: run.question,
+      labels: extractPayload.labels,
+    }),
+    extract.body,
+    {
+      entities: Array.isArray(extract.body?.entities) ? extract.body.entities.length : 0,
+      relations: Array.isArray(extract.body?.relations) ? extract.body.relations.length : 0,
+      properties: Array.isArray(extract.body?.properties) ? extract.body.properties.length : 0,
+    },
+    extractWarnings,
+    extract.ok ? [] : [String(diagnostics.detail || "extract_failed")],
+    !extract.ok,
+  );
+
+  const updated: RunRecord = {
+    ...run,
+    status: "awaiting_approval",
+    summary: "Extraction output ready for review.",
+    currentStage: "extract",
+    nextStage: "persistence_proposal",
+    awaitingApproval: true,
+    artifacts: [...run.artifacts, extractArtifact],
+  };
+  await writeRunRecord(updated);
+  return updated;
+}
+
+async function advanceToProposal(run: RunRecord): Promise<RunRecord> {
+  const planArtifact = artifactByStage(run, "plan");
+  const evidenceArtifact = artifactByStage(run, "evidence");
+  const extractArtifact = artifactByStage(run, "extract");
+  const graphContext = (planArtifact?.output_sample as any)?.graph_context ?? { nodes: [], edges: [], view: { focal_ids: [], filters: [], legend: [], counts: {} } };
+  const evidence = {
+    plan: (evidenceArtifact?.output_sample as any)?.plan ?? {},
+    sources: (evidenceArtifact?.output_sample as any)?.sources ?? {},
+    summary_text: (evidenceArtifact?.output_sample as any)?.summary_text ?? "",
+  };
+  const extractBody = extractArtifact?.output_sample ?? {};
+  const proposal = buildPersistencePlan(run.runId, run.question, extractBody, evidence, graphContext);
+  const blocked = proposal.decision !== "persist_draft";
+  const proposalArtifact = await recordStage(
+    artifactTemplate(run.runId, "persistence_proposal", { question: run.question }),
+    proposal,
+    {
+      nodes: proposal.nodes.length,
+      relations: proposal.relations.length,
+      rejected: proposal.rejected_candidates.length,
+      unpersisted: proposal.unpersisted_candidates.length,
+    },
+    blocked && proposal.blocked_reason ? [proposal.blocked_reason] : [],
+    [],
+    blocked,
+  );
+
+  const updated: RunRecord = {
+    ...run,
+    status: blocked ? "completed" : "awaiting_approval",
+    summary: blocked ? "Persistence proposal blocked: no clean connected batch is ready." : "Persistence proposal ready for review.",
+    currentStage: "persistence_proposal",
+    nextStage: blocked ? null : "commit",
+    awaitingApproval: !blocked,
+    artifacts: [...run.artifacts, proposalArtifact],
+    graph: proposalPreviewGraph(run.graph, proposal),
+  };
+  await writeRunRecord(updated);
+  return updated;
+}
+
+async function advanceToCommit(run: RunRecord): Promise<RunRecord> {
+  const proposalArtifact = artifactByStage(run, "persistence_proposal");
+  const proposal = proposalArtifact?.output_sample ?? {};
+  const typedbWrite = await persistGraphPlan(proposal);
+  const blocked = typedbWrite?.ok === false || proposal?.decision !== "persist_draft";
+  const commitArtifact = await recordStage(
+    artifactTemplate(run.runId, "commit", { decision: proposal?.decision || "skip_persist" }),
+    typedbWrite,
+    {
+      written_nodes: Array.isArray(typedbWrite?.created_entities) ? typedbWrite.created_entities.length : 0,
+      merged_entities: Array.isArray(typedbWrite?.merged_entities) ? typedbWrite.merged_entities.length : 0,
+      written_edges: Array.isArray(typedbWrite?.created_relations) ? typedbWrite.created_relations.length : 0,
+    },
+    typedbWrite?.warnings ?? [],
+    typedbWrite?.errors ?? [],
+    blocked,
+  );
+
+  const updated: RunRecord = {
+    ...run,
+    status: blocked ? "failed" : "completed",
+    summary: blocked ? "Commit failed or was blocked." : "Draft graph batch committed to the reset database.",
+    currentStage: "commit",
+    nextStage: null,
+    awaitingApproval: false,
+    artifacts: [...run.artifacts, commitArtifact],
+    graph: sanitizeGraphView((typedbWrite?.graph ?? run.graph) as GraphView),
+  };
+  await writeRunRecord(updated);
+  return updated;
+}
+
+export async function advanceRun(runId: string): Promise<RunRecord> {
+  const run = await loadRunRecord(runId);
+  if (!run) {
+    throw new Error("run_not_found");
+  }
+  if (!run.awaitingApproval || !run.nextStage) {
+    return run;
+  }
+
+  if (run.nextStage === "evidence") {
+    return advanceToEvidence(run);
+  }
+  if (run.nextStage === "extract") {
+    return advanceToExtract(run);
+  }
+  if (run.nextStage === "persistence_proposal") {
+    return advanceToProposal(run);
+  }
+  if (run.nextStage === "commit") {
+    return advanceToCommit(run);
+  }
   return run;
 }

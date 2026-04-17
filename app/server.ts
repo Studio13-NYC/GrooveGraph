@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import { getEnvValue } from "./src/env.ts";
 import { readGraphBridgeHealth } from "./src/graph-bridge.ts";
-import { buildGraphView, loadRunRecord, runPipeline } from "./src/run-pipeline.ts";
+import { advanceRun, buildGraphView, createRun, loadRunRecord } from "./src/run-pipeline.ts";
 import { jsonResponse, notFoundResponse, parseJsonBody, textResponse } from "./src/http.ts";
 import { ensureRuntimeDirectories, getPublicAssetPath, listRunArtifacts, resolveArtifactPath } from "./src/runtime-paths.ts";
 
@@ -43,6 +43,7 @@ const server = createServer(async (req, res) => {
   const method = req.method ?? "GET";
   const url = new URL(req.url ?? "/", "http://127.0.0.1");
   const pathname = url.pathname;
+  const runRoute = routeRunPath(pathname);
 
   if (method === "GET" && pathname === "/health") {
     const [graphBridge, extractor] = await Promise.all([readGraphBridgeHealth(), readExtractorHealth()]);
@@ -62,7 +63,7 @@ const server = createServer(async (req, res) => {
       if (!body.question || !body.question.trim()) {
         return jsonResponse(res, 400, { ok: false, error: "question_required" });
       }
-      const run = await runPipeline(body.question.trim());
+      const run = await createRun(body.question.trim());
       return jsonResponse(res, 200, {
         ok: true,
         run_id: run.runId,
@@ -72,6 +73,24 @@ const server = createServer(async (req, res) => {
     } catch (error) {
       const message = error instanceof Error ? error.message : "unknown_error";
       return jsonResponse(res, 500, { ok: false, error: "run_failed", detail: message });
+    }
+  }
+
+  if (runRoute && method === "POST" && runRoute.tail.length === 1 && runRoute.tail[0] === "advance") {
+    try {
+      const run = await advanceRun(runRoute.runId);
+      return jsonResponse(res, 200, {
+        ok: true,
+        run_id: run.runId,
+        status: run.status,
+        summary: run.summary,
+        current_stage: run.currentStage,
+        next_stage: run.nextStage,
+        awaiting_approval: run.awaitingApproval,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "unknown_error";
+      return jsonResponse(res, 500, { ok: false, error: "advance_failed", detail: message });
     }
   }
 
@@ -88,6 +107,9 @@ const server = createServer(async (req, res) => {
           question: run.question,
           summary: run.summary,
           status: run.status,
+          current_stage: run.currentStage,
+          next_stage: run.nextStage,
+          awaiting_approval: run.awaitingApproval,
         };
       }),
     ))
@@ -96,7 +118,6 @@ const server = createServer(async (req, res) => {
     return jsonResponse(res, 200, { ok: true, runs });
   }
 
-  const runRoute = routeRunPath(pathname);
   if (runRoute && method === "GET") {
     const { runId, tail } = runRoute;
     const run = await loadRunRecord(runId);

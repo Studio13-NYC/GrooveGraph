@@ -1,15 +1,6 @@
-export type StageName =
-  | "question"
-  | "graph_context"
-  | "query_planning"
-  | "evidence"
-  | "extract"
-  | "review"
-  | "persistence_plan"
-  | "typedb_write"
-  | "graph_delta";
+export type StageName = "plan" | "evidence" | "extract" | "persistence_proposal" | "commit";
 
-export type RunStatus = "completed" | "completed_with_warnings" | "failed";
+export type RunStatus = "awaiting_approval" | "in_progress" | "completed" | "failed";
 
 export type GraphNodeStatus = "existing" | "draft_added" | "candidate_rejected" | "candidate_unpersisted";
 
@@ -61,6 +52,9 @@ export interface RunRecord {
   question: string;
   status: RunStatus;
   summary: string;
+  currentStage: StageName;
+  nextStage: StageName | null;
+  awaitingApproval: boolean;
   artifacts: RunArtifact[];
   graph: GraphView;
 }

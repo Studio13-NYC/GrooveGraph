@@ -24,7 +24,17 @@ export async function readRunRecord(runId: string): Promise<RunRecord | null> {
   }
   try {
     const raw = await readFile(filePath, "utf8");
-    return JSON.parse(raw) as RunRecord;
+    const parsed = JSON.parse(raw) as Partial<RunRecord>;
+    if (
+      !parsed ||
+      typeof parsed.runId !== "string" ||
+      typeof parsed.question !== "string" ||
+      typeof parsed.currentStage !== "string" ||
+      !Array.isArray(parsed.artifacts)
+    ) {
+      return null;
+    }
+    return parsed as RunRecord;
   } catch {
     return null;
   }
