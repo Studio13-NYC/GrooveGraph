@@ -1,0 +1,75 @@
+{
+  "nodes": [
+    {
+      "id": "artist:talking-heads",
+      "label": "Talking Heads",
+      "type": "Artist",
+      "status": "existing",
+      "source_flags": ["graph_context", "musicbrainz", "wikipedia"],
+      "degree_hint": 3,
+      "metadata_preview": {
+        "summary": "Art-rock band connected to studio experimentation and equipment-heavy sessions.",
+        "aliases": ["Talking Heads"]
+      }
+    },
+    {
+      "id": "recording:fear-of-music",
+      "label": "Fear of Music",
+      "type": "Recording",
+      "status": "existing",
+      "source_flags": ["graph_context", "discogs"],
+      "degree_hint": 3,
+      "metadata_preview": {
+        "summary": "Album-era focal recording context."
+      }
+    },
+    {
+      "id": "studio:chris-frantz-loft",
+      "label": "Chris Frantz Loft",
+      "type": "Studio",
+      "status": "existing",
+      "source_flags": ["wikipedia"],
+      "degree_hint": 2,
+      "metadata_preview": {
+        "summary": "Early recording location in the project lore."
+      }
+    },
+    {
+      "id": "equipment:ssl-console",
+      "label": "SSL Console",
+      "type": "Equipment",
+      "status": "candidate_unpersisted",
+      "source_flags": ["web"],
+      "degree_hint": 1,
+      "metadata_preview": {
+        "summary": "Representative gear candidate for demo visualization."
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge:artist-recording",
+      "source": "artist:talking-heads",
+      "target": "recording:fear-of-music",
+      "type": "created",
+      "status": "existing",
+      "provenance_hint": "graph_context"
+    },
+    {
+      "id": "edge:recording-studio",
+      "source": "recording:fear-of-music",
+      "target": "studio:chris-frantz-loft",
+      "type": "recorded_at",
+      "status": "existing",
+      "provenance_hint": "wikipedia"
+    },
+    {
+      "id": "edge:recording-equipment",
+      "source": "recording:fear-of-music",
+      "target": "equipment:ssl-console",
+      "type": "used_equipment",
+      "status": "candidate_unpersisted",
+      "provenance_hint": "web"
+    }
+  ]
+}

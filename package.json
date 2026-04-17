@@ -1,0 +1,12 @@
+{
+  "name": "groovegraph-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "GrooveGraph app-first monorepo scaffold with TypeScript backend, D3 UI, and in-repo Python extraction service.",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --experimental-strip-types app/server.ts",
+    "start": "node --experimental-strip-types app/server.ts",
+    "test": "node --test --experimental-strip-types app/tests/*.test.ts"
+  }
+}

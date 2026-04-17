@@ -1,0 +1,151 @@
+define
+
+  attribute name, value string;
+  attribute normalized-name, value string;
+  attribute external-id, value string;
+  attribute external-source, value string;
+  attribute source-url, value string;
+  attribute draft-status, value string;
+  attribute summary, value string;
+  attribute evidence-snippet, value string;
+  attribute run-id, value string;
+  attribute role-name, value string;
+
+  entity gg-artist,
+    owns name,
+    owns normalized-name,
+    owns external-id,
+    owns external-source,
+    owns source-url,
+    owns draft-status,
+    owns summary;
+
+  entity gg-recording,
+    owns name,
+    owns normalized-name,
+    owns external-id,
+    owns external-source,
+    owns source-url,
+    owns draft-status,
+    owns summary;
+
+  entity gg-studio,
+    owns name,
+    owns normalized-name,
+    owns external-id,
+    owns external-source,
+    owns source-url,
+    owns draft-status,
+    owns summary;
+
+  entity gg-equipment,
+    owns name,
+    owns normalized-name,
+    owns external-id,
+    owns external-source,
+    owns source-url,
+    owns draft-status,
+    owns summary;
+
+  entity gg-person,
+    owns name,
+    owns normalized-name,
+    owns external-id,
+    owns external-source,
+    owns source-url,
+    owns draft-status,
+    owns summary;
+
+  entity gg-evidence,
+    owns name,
+    owns normalized-name,
+    owns source-url,
+    owns external-source,
+    owns evidence-snippet,
+    owns summary,
+    owns draft-status;
+
+  entity gg-source,
+    owns name,
+    owns normalized-name,
+    owns external-source,
+    owns source-url,
+    owns summary,
+    owns draft-status;
+
+  entity gg-run,
+    owns run-id,
+    owns summary,
+    owns draft-status;
+
+  relation gg-rel-artist-recording,
+    relates artist,
+    relates recording,
+    owns run-id,
+    owns draft-status,
+    owns summary;
+
+  relation gg-rel-recording-studio,
+    relates recording,
+    relates studio,
+    owns run-id,
+    owns draft-status,
+    owns summary;
+
+  relation gg-rel-recording-equipment,
+    relates recording,
+    relates equipment,
+    owns run-id,
+    owns draft-status,
+    owns summary;
+
+  relation gg-rel-person-recording,
+    relates person,
+    relates recording,
+    owns role-name,
+    owns run-id,
+    owns draft-status,
+    owns summary;
+
+  relation gg-rel-entity-evidence,
+    relates subject-artist,
+    relates subject-recording,
+    relates subject-studio,
+    relates subject-equipment,
+    relates subject-person,
+    relates evidence,
+    owns run-id,
+    owns draft-status,
+    owns summary;
+
+  relation gg-rel-run-subject,
+    relates run,
+    relates artist,
+    relates recording,
+    relates studio,
+    relates equipment,
+    relates person,
+    owns summary;
+
+  gg-artist plays gg-rel-artist-recording:artist;
+  gg-recording plays gg-rel-artist-recording:recording;
+  gg-recording plays gg-rel-recording-studio:recording;
+  gg-studio plays gg-rel-recording-studio:studio;
+  gg-recording plays gg-rel-recording-equipment:recording;
+  gg-equipment plays gg-rel-recording-equipment:equipment;
+  gg-person plays gg-rel-person-recording:person;
+  gg-recording plays gg-rel-person-recording:recording;
+
+  gg-artist plays gg-rel-entity-evidence:subject-artist;
+  gg-recording plays gg-rel-entity-evidence:subject-recording;
+  gg-studio plays gg-rel-entity-evidence:subject-studio;
+  gg-equipment plays gg-rel-entity-evidence:subject-equipment;
+  gg-person plays gg-rel-entity-evidence:subject-person;
+  gg-evidence plays gg-rel-entity-evidence:evidence;
+
+  gg-run plays gg-rel-run-subject:run;
+  gg-artist plays gg-rel-run-subject:artist;
+  gg-recording plays gg-rel-run-subject:recording;
+  gg-studio plays gg-rel-run-subject:studio;
+  gg-equipment plays gg-rel-run-subject:equipment;
+  gg-person plays gg-rel-run-subject:person;
