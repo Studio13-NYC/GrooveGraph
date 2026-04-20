@@ -1,3 +1,7 @@
+# GrooveGraph has been deprecated and will be replaced by MusicMesh. 
+
+
+
 # GrooveGraph
 
 Greenfield **v2** application and tooling for a **music / catalog knowledge graph**: TypeDB + TypeQL, the **`gg`** CLI, entity-service integration, and Brave-backed search. All product and tooling development for v2 happens **in this repository**.
